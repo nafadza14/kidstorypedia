@@ -189,13 +189,22 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
+  /** Inline bilingual string helper: tx("Hello", "مرحبا") */
+  tx: (en: string, ar?: string) => string;
   dir: 'ltr' | 'rtl';
 }
 
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>(() => {
+    try { return (localStorage.getItem('kidstorypedia:lang') as Language) || 'en'; } catch { return 'en'; }
+  });
+  const setLanguage = (l: Language) => {
+    setLanguageState(l);
+    try { localStorage.setItem('kidstorypedia:lang', l); } catch { /* ignore */ }
+  };
+  const tx = (en: string, ar?: string) => (language === 'ar' && ar ? ar : en);
 
   const t = (key: string, params?: Record<string, string | number>) => {
     let text = translations[language][key] || key;
@@ -215,7 +224,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [dir, language]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, tx, dir }}>
       {children}
     </LanguageContext.Provider>
   );

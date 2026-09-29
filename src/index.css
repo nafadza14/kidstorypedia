@@ -37,3 +37,15 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
+/* Arabic typography */
+[lang="ar"] body, [dir="rtl"] .font-body {
+  font-family: 'Amiri', var(--font-body);
+}
+
+/* Hide scrollbars on horizontal story rows */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+@media print {
+  body { background: #fff !important; }
+}

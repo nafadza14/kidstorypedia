@@ -1,0 +1,13 @@
+{
+  "name": "Kidstorypedia — Islamic Character Learning",
+  "short_name": "Kidstorypedia",
+  "description": "Trusted Islamic stories turned into family learning journeys for children ages 4–12.",
+  "start_url": "/child",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
+  "icons": [
+    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

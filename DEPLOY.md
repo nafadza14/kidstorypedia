@@ -1,62 +1,27 @@
-# Panduan Deploy ke Vercel (Kidstorypedia)
+# Deploy ke Vercel (Kidstorypedia v2)
 
-Project ini telah dikonfigurasi dan 100% siap untuk di-deploy ke **Vercel**.
+## Konfigurasi
+- `vercel.json` — SPA rewrite ke `/index.html`, **kecuali** `/api/*`, `sw.js`, `manifest.webmanifest`, `icons/`.
+- `api/ai.ts` — Vercel Serverless Function untuk semua panggilan Gemini. API key **tidak** pernah dikirim ke browser.
+- Build: `npm run build` → output `dist` (Framework preset: Vite).
 
----
+## Environment variables (Vercel → Project → Settings → Environment Variables)
+| Key | Wajib | Keterangan |
+|---|---|---|
+| `GEMINI_API_KEY` | untuk fitur AI | Server-side saja. **Jangan** pakai prefix `VITE_`. |
+| `GEMINI_FAST_MODEL` | opsional | default `gemini-2.5-flash-lite` |
+| `GEMINI_STRONG_MODEL` | opsional | default `gemini-2.5-flash` |
+| `GEMINI_IMAGE_MODEL` | opsional | default `gemini-2.5-flash-image` |
 
-## 1. Konfigurasi yang Telah Diterapkan
+Catatan: versi lama memakai `VITE_GEMINI_API_KEY` yang ikut ter-bundle ke browser. Hapus variabel itu dari Vercel dan **rotate** key-nya jika pernah dipakai di production.
 
-1. **`vercel.json`**:
-   - Ditambahkan rewrite rule `/(.*) -> /index.html` untuk memastikan semua route SPA React Router (`/`, `/dashboard`, `/child`, `/story/:id`) dapat di-refresh dan diakses langsung tanpa error 404 di Vercel.
+## Langkah
+1. Push ke GitHub.
+2. Vercel → Add New → Project → pilih repo `kidstorypedia` (auto-detect Vite).
+3. Tambahkan `GEMINI_API_KEY`.
+4. Deploy. Tes: buka `/studio/generate` → Generate draft.
 
-2. **`package.json`**:
-   - Script build standar Vite: `"build": "vite build"`.
-   - Output directory: `dist`.
-
-3. **`vite.config.ts`**:
-   - Mendukung environment variable `GEMINI_API_KEY` maupun `VITE_GEMINI_API_KEY`.
-
----
-
-## 2. Cara Deploy ke Vercel
-
-### Metode A: Via Vercel Dashboard (Rekomendasi)
-
-1. Push repository ini ke GitHub / GitLab / Bitbucket.
-2. Buka [vercel.com](https://vercel.com) dan login ke akun Anda.
-3. Klik tombol **"Add New..."** > **"Project"**.
-4. Pilih repository **kidstorypedia**.
-5. Vercel akan otomatis mendeteksi pengaturan:
-   - **Framework Preset**: `Vite`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Install Command**: `npm install`
-6. *(Opsional)* Pada bagian **Environment Variables**, tambahkan:
-   - Key: `GEMINI_API_KEY` (atau `VITE_GEMINI_API_KEY`)
-   - Value: *(API Key Gemini Anda untuk fitur generator kisah AI)*
-7. Klik **"Deploy"**.
-
----
-
-### Metode B: Via Vercel CLI
-
-Jika Anda menggunakan terminal lokal:
-
-```bash
-# 1. Install Vercel CLI (jika belum)
-npm install -g vercel
-
-# 2. Login ke akun Vercel
-vercel login
-
-# 3. Jalankan perintah deploy
-vercel
-
-# 4. Untuk deploy ke production
-vercel --prod
-```
-
----
-
-## 3. Catatan Penting
-- Semua halaman (Landing Page, Parent Portal, Kids View, Interactive Story Reader) akan langsung aktif dan responsive di URL Vercel (`https://kidstorypedia.vercel.app`).
+## Sebelum public launch
+- Set `CONFIG.showStoriesInReview = false` di `src/config.ts` setelah cerita v2 disetujui scholar (lihat `docs/IMPLEMENTATION.md`).
+- Hubungkan payment provider (`src/lib/billing.ts`) dan set `CONFIG.paymentsDemoMode = false`.
+- Ganti alamat kontak placeholder di halaman Privacy.
