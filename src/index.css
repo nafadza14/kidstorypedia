@@ -46,6 +46,15 @@ body {
 /* Hide scrollbars on horizontal story rows */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 
+/* Marquee auto-scroll animation for Top 5 Story of the Week */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 30s linear infinite;
+}
+
 /* ─── Safe-area insets for notched phones (iPhone X+, etc.) ─── */
 .safe-top    { padding-top:    env(safe-area-inset-top,    0); }
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }

@@ -226,7 +226,7 @@ export default function Onboarding() {
                 <div>
                   <span className={label}>{tx("Bahasa cerita pilihan", "Preferred story language", "لغة القصص المفضلة")}</span>
                   <div className="flex gap-2">
-                    {([["en", "English"], ["ar", "العربية"]] as const).map(([id, l]) => (
+                    {([["en", "English"], ["id", "Indonesia"], ["ar", "العربية"]] as const).map(([id, l]) => (
                       <button type="button" key={id} onClick={() => setChildLang(id)} className={cn("flex-1 rounded-full border py-2 text-sm cursor-pointer", childLang === id ? "bg-white text-black border-white" : "border-white/20 hover:bg-white/10")} aria-pressed={childLang === id}>{l}</button>
                     ))}
                   </div>

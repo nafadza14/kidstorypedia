@@ -47,7 +47,7 @@ export default function StoryLibrary() {
       if (bedtime && !s.bedtime) return false;
       if (r && (s.ageRange[1] < r[0] || s.ageRange[0] > r[1])) return false;
       if (needle) {
-        const hay = [s.title.en, s.title.ar, s.description.en, s.description.ar, ...s.values].join(" ").toLowerCase();
+        const hay = [s.title.en, s.title.ar, s.title.id, s.description.en, s.description.ar, s.description.id, ...s.values].join(" ").toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;

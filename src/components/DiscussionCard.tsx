@@ -29,7 +29,7 @@ export function DiscussionCard({ story, childId, onDone }: { story: Story; child
 
   const celebrate = (fresh: string[]) => fresh.forEach(id => {
     const b = BADGES.find(x => x.id === id);
-    if (b) toast(tx(`Lencana terbuka: ${b.name.en}`, `Badge unlocked: ${b.name.en}`, `شارة جديدة: ${b.name.ar}`));
+    if (b) toast(tx(`Lencana terbuka: ${loc(b.name, "id")}`, `Badge unlocked: ${loc(b.name, "en")}`, `شارة جديدة: ${loc(b.name, "ar")}`));
   });
 
   const complete = (type: "discussion_completed" | "action_completed" | "reflection_completed", note?: string) => {

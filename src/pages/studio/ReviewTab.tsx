@@ -85,7 +85,7 @@ function ReviewDetail({ story, editor, onEdit }: { story: Story; editor: string;
     transitionStory(story.id, story, to, by, n || (kind === "next" ? "Approved" : "Sent back"));
     setNote("");
     setChecks({});
-    toast(`${STATE_LABEL[story.state]} → ${STATE_LABEL[to]}`);
+    toast(`${loc(STATE_LABEL[story.state], language)} → ${loc(STATE_LABEL[to], language)}`);
   }
 
   function runValidation() {
@@ -113,7 +113,7 @@ function ReviewDetail({ story, editor, onEdit }: { story: Story; editor: string;
                   <span className={cn("w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-mono border", cur ? "bg-white text-black border-white" : done ? "border-emerald-400/60 text-emerald-300" : "border-white/15 text-zinc-500")}>
                     {done ? <Check className="w-3.5 h-3.5" /> : i + 1}
                   </span>
-                  <span className={cn("text-[10px] text-center leading-tight", cur ? "text-white" : "text-zinc-500")}>{STATE_LABEL[s]}</span>
+                  <span className={cn("text-[10px] text-center leading-tight", cur ? "text-white" : "text-zinc-500")}>{loc(STATE_LABEL[s], language)}</span>
                 </div>
                 {i < CONTENT_STATES.length - 1 && <span className={cn("h-px w-4 -mt-4", done ? "bg-emerald-400/50" : "bg-white/10")} />}
               </li>
@@ -144,12 +144,12 @@ function ReviewDetail({ story, editor, onEdit }: { story: Story; editor: string;
         </div>
         {block && <div className="text-xs text-amber-300 mb-3">{block}</div>}
         <div className="flex flex-wrap gap-2 items-center">
-          {next && <button className={btn.primary} disabled={!!block} onClick={() => move(next, "next")}>{tx("Setujui →", "Approve →", "اعتماد →")} {STATE_LABEL[next]}</button>}
-          {prev && <button className={btn.ghost} disabled={!reviewer.trim()} onClick={() => move(prev, "prev")}>← {STATE_LABEL[prev]}</button>}
+          {next && <button className={btn.primary} disabled={!!block} onClick={() => move(next, "next")}>{tx("Setujui →", "Approve →", "اعتماد →")} {loc(STATE_LABEL[next], language)}</button>}
+          {prev && <button className={btn.ghost} disabled={!reviewer.trim()} onClick={() => move(prev, "prev")}>← {loc(STATE_LABEL[prev], language)}</button>}
           {idx > 0 && (
             <span className="flex items-center gap-1.5">
               <select className={sel} value={back} onChange={e => setBack(e.target.value as ContentState)}>
-                {CONTENT_STATES.filter((_, i) => i < idx).map(s => <option key={s} value={s}>{STATE_LABEL[s]}</option>)}
+                {CONTENT_STATES.filter((_, i) => i < idx).map(s => <option key={s} value={s}>{loc(STATE_LABEL[s], language)}</option>)}
               </select>
               <button className={btn.small} disabled={!reviewer.trim() || !note.trim()} onClick={() => move(back, "back")} title={tx("Catatan diperlukan", "Note required", "الملاحظة مطلوبة")}>{tx("Kirim kembali", "Send back", "إرجاع")}</button>
             </span>
@@ -159,7 +159,7 @@ function ReviewDetail({ story, editor, onEdit }: { story: Story; editor: string;
 
       <Panel title={tx("Validasi otomatis", "Automated validation", "التحقق الآلي")} action={
         <span className="flex gap-2 items-center">
-          <select className={sel} value={vLang} onChange={e => setVLang(e.target.value as Lang)}><option value="en">EN</option><option value="ar">AR</option></select>
+          <select className={sel} value={vLang} onChange={e => setVLang(e.target.value as Lang)}><option value="en">EN</option><option value="id">ID</option><option value="ar">AR</option></select>
           <button className={btn.small} onClick={runValidation}>{tx("Jalankan validasi", "Run validation", "تشغيل التحقق")}</button>
         </span>
       }>
@@ -185,7 +185,7 @@ function ReviewDetail({ story, editor, onEdit }: { story: Story; editor: string;
                 {log.map(r => (
                   <tr key={r.id}>
                     <td className={td + " text-xs font-mono text-zinc-400 whitespace-nowrap"}>{fmtDate(r.at)}</td>
-                    <td className={td + " text-xs whitespace-nowrap"}>{STATE_LABEL[r.from]} → {STATE_LABEL[r.to]}</td>
+                    <td className={td + " text-xs whitespace-nowrap"}>{loc(STATE_LABEL[r.from], language)} → {loc(STATE_LABEL[r.to], language)}</td>
                     <td className={td + " text-xs"}>{r.by}</td>
                     <td className={td + " text-xs text-zinc-300"}>{r.note}</td>
                   </tr>

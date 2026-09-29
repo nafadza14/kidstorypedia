@@ -73,11 +73,11 @@ export function Avatar({ seed, size = 32, className }: { seed: string; size?: nu
 }
 
 export function ReviewBadge({ state }: { state: ContentState }) {
-  const { tx } = useLanguage();
+  const { tx, language } = useLanguage();
   if (state === "published") {
     return <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-300"><ShieldCheck className="w-3 h-3" />{tx("Ditinjau", "Reviewed", "مُراجَعة")}</span>;
   }
-  return <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-300 border border-amber-300/30 rounded-full px-2 py-0.5">{STATE_LABEL[state]}</span>;
+  return <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-300 border border-amber-300/30 rounded-full px-2 py-0.5">{loc(STATE_LABEL[state], language)}</span>;
 }
 
 export function Modal({ open, onClose, children, title, wide }: { open: boolean; onClose: () => void; children: React.ReactNode; title?: string; wide?: boolean }) {

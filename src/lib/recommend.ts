@@ -32,25 +32,25 @@ export function recommendStories(s: AppState, child: ChildProfile, lang: Lang = 
       const why: string[] = [];
       if (recentValue && st.values.includes(recentValue)) {
         score += 3;
-        why.push(lang === "ar" ? `يعزّز ${loc(VALUE_MAP[recentValue].name, lang)} في سياق قصصي مختلف` : `reinforces ${VALUE_MAP[recentValue].name.en.toLowerCase()} through a different narrative`);
+        why.push(lang === "ar" ? `يعزّز ${loc(VALUE_MAP[recentValue].name, lang)} في سياق قصصي مختلف` : lang === "id" ? `memperkuat ${loc(VALUE_MAP[recentValue].name, lang).toLowerCase()} melalui narasi berbeda` : `reinforces ${VALUE_MAP[recentValue].name.en.toLowerCase()} through a different narrative`);
       } else if (recentValue && st.values.some(v => VALUE_MAP[recentValue].related.includes(v))) {
         score += 2;
         const v = st.values.find(x => VALUE_MAP[recentValue].related.includes(x))!;
-        why.push(lang === "ar" ? `ينتقل من ${loc(VALUE_MAP[recentValue].name, lang)} إلى ${loc(VALUE_MAP[v].name, lang)}` : `builds from ${VALUE_MAP[recentValue].name.en.toLowerCase()} to ${VALUE_MAP[v].name.en.toLowerCase()}`);
+        why.push(lang === "ar" ? `ينتقل من ${loc(VALUE_MAP[recentValue].name, lang)} إلى ${loc(VALUE_MAP[v].name, lang)}` : lang === "id" ? `membangun dari ${loc(VALUE_MAP[recentValue].name, lang).toLowerCase()} ke ${loc(VALUE_MAP[v].name, lang).toLowerCase()}` : `builds from ${VALUE_MAP[recentValue].name.en.toLowerCase()} to ${VALUE_MAP[v].name.en.toLowerCase()}`);
       }
       if (last && st.category !== last.category) score += 0.5;
       const fresh = st.values.find(v => leastExplored.has(v));
       if (fresh) {
         score += 1.5;
-        if (!why.length) why.push(lang === "ar" ? `يستكشف قيمة جديدة: ${loc(VALUE_MAP[fresh].name, lang)}` : `explores a new value: ${VALUE_MAP[fresh].name.en.toLowerCase()}`);
+        if (!why.length) why.push(lang === "ar" ? `يستكشف قيمة جديدة: ${loc(VALUE_MAP[fresh].name, lang)}` : lang === "id" ? `menjelajahi nilai baru: ${loc(VALUE_MAP[fresh].name, lang).toLowerCase()}` : `explores a new value: ${VALUE_MAP[fresh].name.en.toLowerCase()}`);
       }
-      if (goals.includes("bedtime") && st.bedtime) { score += 1.5; if (why.length < 2) why.push(lang === "ar" ? "مناسبة لوقت النوم" : "a calm bedtime story"); }
+      if (goals.includes("bedtime") && st.bedtime) { score += 1.5; if (why.length < 2) why.push(lang === "ar" ? "مناسبة لوقت النوم" : lang === "id" ? "cerita pengantar tidur yang tenang" : "a calm bedtime story"); }
       if (goals.includes("prophets") && st.category === "prophets") score += 1.5;
       if (goals.includes("history") && (st.category === "seerah" || st.category === "sahabah")) score += 1.5;
       if (goals.includes("reading") && st.durationMin <= 6) score += 0.5;
       if (canAccessStory(s, st)) score += 2;
       if (st.state === "published") score += 0.5;
-      const reason = why.length ? why.join(lang === "ar" ? "، و" : "; ") : (lang === "ar" ? "مناسبة لعمر طفلك" : "a good fit for your child's age");
+      const reason = why.length ? why.join(lang === "ar" ? "، و" : "; ") : (lang === "ar" ? "مناسبة لعمر طفلك" : lang === "id" ? "cocok untuk usia anakmu" : "a good fit for your child's age");
       return { kind: "story" as const, story: st, reason, score };
     })
     .sort((a, b) => b.score - a.score);
@@ -62,10 +62,10 @@ export function nextStep(s: AppState, child: ChildProfile, lang: Lang = "en"): N
   const lastEvent = [...s.events].reverse().find(e => e.childId === child.id && e.type === "story_completed");
   const last = findStory(s, lastEvent?.storyId);
   if (last && !hasEvent(s, child.id, "discussion_completed", last.id)) {
-    return { kind: "discuss", story: last, reason: lang === "ar" ? "ناقشا القصة الأخيرة قبل البدء بقصة جديدة" : "Talk about the last story together before starting a new one" };
+    return { kind: "discuss", story: last, reason: lang === "ar" ? "ناقشا القصة الأخيرة قبل البدء بقصة جديدة" : lang === "id" ? "Bicarakan cerita terakhir bersama sebelum memulai yang baru" : "Talk about the last story together before starting a new one" };
   }
   if (last && !hasEvent(s, child.id, "action_completed", last.id)) {
-    return { kind: "action", story: last, reason: lang === "ar" ? "جرّبوا تحدي العمل العائلي لهذه القصة" : "Try this story's family action challenge in real life" };
+    return { kind: "action", story: last, reason: lang === "ar" ? "جرّبوا تحدي العمل العائلي لهذه القصة" : lang === "id" ? "Coba tantangan aksi keluarga dari cerita ini di kehidupan nyata" : "Try this story's family action challenge in real life" };
   }
   return recommendStories(s, child, lang, 1)[0];
 }

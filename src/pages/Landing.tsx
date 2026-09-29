@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowUpRight, BookOpen, Check, Compass, Heart, Languages, MessageCircle, Moon, School, ShieldCheck,
-  Sparkles, Sprout, UserCheck, Zap, Ban, Cpu, Eye, Scale, FileText, Clock,
+  Sparkles, Sprout, Star, Trophy, UserCheck, Zap, Ban, Cpu, Eye, Scale, FileText, Clock,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PublicFooter, PublicNav } from "@/components/PublicNav";
@@ -176,14 +176,9 @@ export default function Landing() {
 
       <main className="relative z-10">
         {/* HERO */}
-        <section className="min-h-screen pt-28 sm:pt-36 pb-12 px-5 sm:px-8 max-w-7xl mx-auto flex flex-col justify-between">
-          <div className="grid lg:grid-cols-12 gap-8 items-center my-auto">
+        <section className="pt-24 sm:pt-28 pb-12 px-5 sm:px-8 max-w-7xl mx-auto flex flex-col">
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 flex flex-col items-start">
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md mb-6 text-xs sm:text-sm text-zinc-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                <span>{tx("Setiap cerita menjadi kesempatan untuk tumbuh.", "Every story becomes an opportunity to grow.", "كل قصة فرصة للنمو.")}</span>
-              </div>
-
               {/* Animated rotating headline */}
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.05] mb-6 min-h-[2.4em] sm:min-h-[2.2em] lg:min-h-[2em]">
                 <AnimatedHeadline text={heroText} heroIdx={heroIdx} />
@@ -230,15 +225,28 @@ export default function Landing() {
             <div className="hidden lg:block lg:col-span-5" />
           </div>
 
-          {/* Trust indicators */}
-          <ul className="pt-8 border-t border-white/10 flex flex-wrap justify-center lg:justify-between gap-x-6 gap-y-3 text-xs sm:text-sm text-zinc-300">
-            {trust.map(({ icon: Icon, label }) => (
-              <li key={label} className="inline-flex items-center gap-2">
-                <Icon className="w-4 h-4 text-white/80" aria-hidden />
-                <span>{label}</span>
-              </li>
-            ))}
-          </ul>
+          {/* Top 5 Story of the Week */}
+          {featured.length > 0 && (
+            <div className="mt-12 w-full">
+              <h3 className="text-xs font-mono text-zinc-400 mb-4 flex items-center gap-2">
+                <Trophy className="w-3.5 h-3.5 text-amber-300" />
+                {tx("Top 5 Cerita Minggu Ini", "Top 5 Stories of the Week", "أفضل ٥ قصص الأسبوع")}
+              </h3>
+              <div className="overflow-hidden relative">
+                <div className="flex gap-4 animate-marquee hover:[animation-play-state:paused]" style={{ width: "max-content" }}>
+                  {[...featured, ...featured].map((story, i) => (
+                    <Link key={`top5-${i}`} to={`/stories/${story.slug}`} className="shrink-0 w-32 sm:w-40 relative group">
+                      <StoryCover story={story} locked={story.premium} className="aspect-[3/4] rounded-2xl group-hover:opacity-90 transition-opacity" />
+                      <div className="absolute top-2 left-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/70 border border-white/20 backdrop-blur-sm flex items-center justify-center text-[11px] sm:text-xs font-bold text-white">
+                        #{(i % 5) + 1}
+                      </div>
+                      <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl pointer-events-none" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* FEATURED STORIES */}
@@ -274,6 +282,18 @@ export default function Landing() {
             })}
           </div>
         </section>
+
+        {/* Trust indicators */}
+        <div className="py-10 sm:py-12 px-5 sm:px-8 max-w-7xl mx-auto">
+          <ul className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-xs sm:text-sm text-zinc-300">
+            {trust.map(({ icon: Icon, label }) => (
+              <li key={label} className="inline-flex items-center gap-2">
+                <Icon className="w-4 h-4 text-white/80" aria-hidden />
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* HOW IT WORKS */}
         <section id="how-it-works" className={sectionCls}>

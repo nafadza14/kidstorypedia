@@ -52,7 +52,7 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
     { name: tx("2 · Pengambilan (RAG)", "2 · Retrieval (RAG)", "٢ · الاسترجاع"), desc: tx("Mendasarkan model pada sumber yang disetujui saja", "Grounds the model in approved sources only", "يعتمد على المصادر المعتمدة"), s: ctx.ok ? "ok" : "fail", detail: ctx.ok ? `${ctx.c.sources.length} sources` : ctx.error },
     { name: tx("3 · Pembuatan terkendali", "3 · Constrained generation", "٣ · التوليد المقيّد"), desc: tx("Output JSON terstruktur dari model kuat", "Structured JSON output from the strong model", "مخرجات منظمة"), s: running ? "running" : !res ? "idle" : res.ok || res.layer === "validation" ? "ok" : res.layer === "generation" ? "fail" : "idle", detail: res && !res.ok && res.layer === "generation" ? res.error : undefined },
     { name: tx("4 · Validasi output", "4 · Output validation", "٤ · التحقق من المخرجات"), desc: tx("Skema, sumber, kutipan palsu, tokoh suci, kebijakan visual", "Schema, sources, fabricated quotes, sacred figures, visual policy", "المخطط والمصادر والاقتباسات"), s: !res || running ? "idle" : res.layer === "validation" ? "fail" : res.ok ? (errors ? "fail" : res.issues?.length ? "warn" : "ok") : "idle" },
-    { name: tx("5 · Tinjauan manusia", "5 · Human review", "٥ · المراجعة البشرية"), desc: tx("Tidak pernah diterbitkan otomatis - masuk ke antrian tinjauan", "Never auto-published - goes to the review queue", "لا نشر تلقائي"), s: story ? "warn" : "idle", detail: story ? `${tx("Diantrekan sebagai", "Queued as", "في قائمة")}: ${STATE_LABEL[story.state]}` : undefined },
+    { name: tx("5 · Tinjauan manusia", "5 · Human review", "٥ · المراجعة البشرية"), desc: tx("Tidak pernah diterbitkan otomatis - masuk ke antrian tinjauan", "Never auto-published - goes to the review queue", "لا نشر تلقائي"), s: story ? "warn" : "idle", detail: story ? `${tx("Diantrekan sebagai", "Queued as", "في قائمة")}: ${loc(STATE_LABEL[story.state], language)}` : undefined },
   ];
 
   async function run() {
@@ -194,7 +194,7 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
               <button className={btn.small} onClick={() => onReview(story.id)}>{tx("Ke antrian tinjauan", "Go to review queue", "إلى المراجعة")}</button>
             </span>
           }>
-            <div className="text-xs font-mono text-zinc-500 mb-3">{story.id} · {STATE_LABEL[story.state]} · v{story.version}</div>
+            <div className="text-xs font-mono text-zinc-500 mb-3">{story.id} · {loc(STATE_LABEL[story.state], language)} · v{story.version}</div>
             <div className="space-y-3">
               {story.pages.map((p, i) => (
                 <div key={i} className="rounded-xl border border-white/10 p-3 flex gap-3">

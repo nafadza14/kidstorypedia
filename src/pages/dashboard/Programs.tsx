@@ -29,7 +29,7 @@ function ProgramCard({ program }: { program: Program }) {
   const enroll = () => {
     setState(s => ({ ...s, enrollments: [...s.enrollments, { programId: program.id, childId: child.id, startedAt: now(), completedDays: [] }] }));
     track("program_enrolled", { program: program.id });
-    toast(tx(`${child.name} bergabung di ${program.name.en}`, `${child.name} joined ${program.name.en}`, `انضم ${child.name} إلى ${loc(program.name, "ar")}`));
+    toast(tx(`${child.name} bergabung di ${loc(program.name, "id")}`, `${child.name} joined ${loc(program.name, "en")}`, `انضم ${child.name} إلى ${loc(program.name, "ar")}`));
   };
 
   const markDone = () => {
@@ -43,7 +43,7 @@ function ProgramCard({ program }: { program: Program }) {
     track("action_completed", { program: program.id, day: day.day });
     const all = [...fresh, ...evaluateBadges(child.id)];
     toast(tx(`Hari ${day.day} selesai`, `Day ${day.day} complete`, `اكتمل اليوم ${day.day}`));
-    all.forEach(id => { const b = BADGES.find(x => x.id === id); if (b) toast(tx(`Lencana terbuka: ${b.name.en}`, `Badge unlocked: ${b.name.en}`, `شارة جديدة: ${b.name.ar}`)); });
+    all.forEach(id => { const b = BADGES.find(x => x.id === id); if (b) toast(tx(`Lencana terbuka: ${loc(b.name, "id")}`, `Badge unlocked: ${loc(b.name, "en")}`, `شارة جديدة: ${loc(b.name, "ar")}`)); });
     setSelectedDay(null);
   };
 

@@ -4,6 +4,7 @@ import { Panel, Stat, btn, toast } from "@/components/kit";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { STATE_LABEL, VALUE_MAP } from "@/data/values";
 import { seedDemoFamily } from "@/lib/demo";
+import { loc } from "@/lib/content";
 import { activation } from "@/lib/learning";
 import { contentStats, eventCounts, funnel, revenue, scenario, unitEconomics, weeklyNorthStar } from "@/lib/metrics";
 import { useStore } from "@/store";
@@ -32,7 +33,7 @@ function Num({ value, onChange, step = 1 }: { value: number; onChange: (n: numbe
 
 /** Business dashboard (PRD §52–55, §71, §86–88). */
 export default function Admin() {
-  const { tx } = useLanguage();
+  const { tx, language } = useLanguage();
   const state = useStore(s => s);
   const f = useMemo(() => funnel(state), [state]);
   const ns = useMemo(() => weeklyNorthStar(state), [state]);
@@ -84,11 +85,11 @@ export default function Admin() {
             )}
           </Panel>
           <Panel title={tx("Nilai yang dipraktikkan", "Values practiced", "القيم الممارسة")}>
-            <CountBars rows={cs.values.map(([v, n]) => ({ label: VALUE_MAP[v as ValueId]?.name.en || v, n, color: VALUE_MAP[v as ValueId]?.color }))} />
+            <CountBars rows={cs.values.map(([v, n]) => ({ label: VALUE_MAP[v as ValueId] ? loc(VALUE_MAP[v as ValueId].name, language) : v, n, color: VALUE_MAP[v as ValueId]?.color }))} />
           </Panel>
           <Panel title={tx("Distribusi usia", "Age distribution", "توزيع الأعمار")}><CountBars rows={cs.ages.map(([a, n]) => ({ label: `${tx("Usia", "Age", "عمر")} ${a}`, n }))} /></Panel>
-          <Panel title={tx("Penggunaan bahasa", "Language usage", "اللغات")}><CountBars rows={cs.langs.map(([l, n]) => ({ label: l === "ar" ? "العربية" : "English", n }))} /></Panel>
-          <Panel title={tx("Konten berdasarkan status tata kelola", "Content by governance state", "المحتوى حسب الحالة")}><CountBars rows={cs.states.map(([s, n]) => ({ label: STATE_LABEL[s as ContentState] || s, n }))} /></Panel>
+          <Panel title={tx("Penggunaan bahasa", "Language usage", "اللغات")}><CountBars rows={cs.langs.map(([l, n]) => ({ label: l === "ar" ? "العربية" : l === "id" ? "Indonesia" : "English", n }))} /></Panel>
+          <Panel title={tx("Konten berdasarkan status tata kelola", "Content by governance state", "المحتوى حسب الحالة")}><CountBars rows={cs.states.map(([s, n]) => ({ label: STATE_LABEL[s as ContentState] ? loc(STATE_LABEL[s as ContentState], language) : s, n }))} /></Panel>
         </div>
 
         <h2 className="font-heading text-xl mb-3">{tx("Pendapatan & ekonomi", "Revenue & economics", "الإيرادات والاقتصاديات")}</h2>

@@ -26,7 +26,7 @@ export default function StoriesTab({ onOpen, onReview }: { onOpen: (id: string) 
         <input value={q} onChange={e => setQ(e.target.value)} placeholder={tx("Cari judul, id, nilai…", "Search title, id, value…", "بحث…")} className={inp + " max-w-xs"} />
         <select value={st} onChange={e => setSt(e.target.value)} className={sel}>
           <option value="">{tx("Semua status", "All states", "كل الحالات")}</option>
-          {CONTENT_STATES.map(s => <option key={s} value={s}>{STATE_LABEL[s]}</option>)}
+          {CONTENT_STATES.map(s => <option key={s} value={s}>{loc(STATE_LABEL[s], language)}</option>)}
         </select>
         <select value={cat} onChange={e => setCat(e.target.value)} className={sel}>
           <option value="">{tx("Semua kategori", "All categories", "كل الفئات")}</option>

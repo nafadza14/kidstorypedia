@@ -49,7 +49,7 @@ function LocInput({ value, onChange, area, rows = 3 }: { value: Localized | unde
 }
 
 function StoryEditor({ story, editor }: { story: Story; editor: string }) {
-  const { tx } = useLanguage();
+  const { tx, language } = useLanguage();
   const state = useStore(s => s);
   const [d, setD] = useState<Story>(() => clone(story));
   const [note, setNote] = useState("");
@@ -115,7 +115,7 @@ function StoryEditor({ story, editor }: { story: Story; editor: string }) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Field label={tx("Kategori", "Category", "الفئة")}>
                 <select className={sel + " w-full"} value={d.category} onChange={e => patch({ category: e.target.value as StoryCategory })}>
-                  {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name.en}</option>)}
+                  {CATEGORIES.map(c => <option key={c.id} value={c.id}>{loc(c.name, language)}</option>)}
                 </select>
               </Field>
               <Field label={tx("Usia min / maks", "Age min / max", "العمر")}>
@@ -140,7 +140,7 @@ function StoryEditor({ story, editor }: { story: Story; editor: string }) {
             <Field label={tx("Nilai (taksonomi 12 nilai)", "Values (12-value taxonomy)", "القيم")}>
               <div className="flex flex-wrap gap-1.5">
                 {VALUES.map(v => (
-                  <Toggle key={v.id} color={v.color} on={d.values.includes(v.id)} onClick={() => patch({ values: d.values.includes(v.id) ? d.values.filter(x => x !== v.id) : [...d.values, v.id as ValueId] })}>{v.name.en}</Toggle>
+                  <Toggle key={v.id} color={v.color} on={d.values.includes(v.id)} onClick={() => patch({ values: d.values.includes(v.id) ? d.values.filter(x => x !== v.id) : [...d.values, v.id as ValueId] })}>{loc(v.name, language)}</Toggle>
                 ))}
               </div>
             </Field>

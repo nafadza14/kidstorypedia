@@ -144,7 +144,7 @@ export default function Children() {
                     {state.activeChildId === c.id && <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white text-black">{tx("Aktif", "Active", "نشط")}</span>}
                   </div>
                   <div className="text-xs text-zinc-400 font-mono mt-0.5">
-                    {tx(`Usia ${c.age}`, `Age ${c.age}`, `العمر ${c.age}`)} · {levelLabel(c.readingLevel)} · {c.language === "ar" ? "العربية" : "English"} · {tx(`${c.dailyGoalMin} mnt/hari`, `${c.dailyGoalMin} min/day`, `${c.dailyGoalMin} د/يوم`)}
+                    {tx(`Usia ${c.age}`, `Age ${c.age}`, `العمر ${c.age}`)} · {levelLabel(c.readingLevel)} · {c.language === "ar" ? "العربية" : c.language === "id" ? "Indonesia" : "English"} · {tx(`${c.dailyGoalMin} mnt/hari`, `${c.dailyGoalMin} min/day`, `${c.dailyGoalMin} د/يوم`)}
                   </div>
                   <div className="text-xs text-zinc-300 mt-3">
                     {tx(`${st.storiesCompleted} cerita · ${st.discussions} diskusi · ${fmtDuration(st.readingSeconds)} membaca · ${st.badges} lencana`, `${st.storiesCompleted} stories · ${st.discussions} discussions · ${fmtDuration(st.readingSeconds)} reading · ${st.badges} badges`, `${st.storiesCompleted} قصص · ${st.discussions} نقاشات · ${fmtDuration(st.readingSeconds)} قراءة · ${st.badges} شارات`)}

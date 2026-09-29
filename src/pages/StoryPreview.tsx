@@ -12,13 +12,13 @@ import { SOURCE_MAP } from "@/data/sources";
 import { useSeo } from "@/hooks/useSeo";
 import type { SourceType } from "@/types";
 
-const SOURCE_TYPE: Record<SourceType, [string, string]> = {
-  quran: ["Qur'an", "القرآن"],
-  hadith: ["Hadith", "الحديث"],
-  sirah: ["Sirah", "السيرة"],
-  tafsir: ["Tafsir", "التفسير"],
-  scholarly: ["Scholarly", "مرجع علمي"],
-  original_fable: ["Original fable", "حكاية أصلية"],
+const SOURCE_TYPE: Record<SourceType, [string, string, string]> = {
+  quran: ["Qur'an", "القرآن", "Al-Quran"],
+  hadith: ["Hadith", "الحديث", "Hadis"],
+  sirah: ["Sirah", "السيرة", "Sirah"],
+  tafsir: ["Tafsir", "التفسير", "Tafsir"],
+  scholarly: ["Scholarly", "مرجع علمي", "Akademis"],
+  original_fable: ["Original fable", "حكاية أصلية", "Fabel asli"],
 };
 
 export default function StoryPreview() {
@@ -194,7 +194,7 @@ export default function StoryPreview() {
               <ul className="space-y-3">
                 {story.sources.map(id => SOURCE_MAP[id]).filter(Boolean).map(s => (
                   <li key={s.id} className="text-sm">
-                    <div className="text-[10px] font-mono uppercase tracking-wide text-zinc-500">{tx(SOURCE_TYPE[s.type][0], SOURCE_TYPE[s.type][0], SOURCE_TYPE[s.type][1])}</div>
+                    <div className="text-[10px] font-mono uppercase tracking-wide text-zinc-500">{tx(SOURCE_TYPE[s.type][2], SOURCE_TYPE[s.type][0], SOURCE_TYPE[s.type][1])}</div>
                     <div className="text-zinc-100">{s.reference}</div>
                     {s.note && <div className="text-xs text-zinc-400">{s.note}</div>}
                   </li>

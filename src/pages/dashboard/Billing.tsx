@@ -146,7 +146,7 @@ export default function Billing() {
               </button>
             )}
             <Link to="/dashboard/programs" onClick={closeCancel} className="block rounded-2xl border border-white/10 p-4 hover:border-white/30">
-              <div className="text-sm font-medium">{tx(`Coba "${suggestedProgram.name.en}"`, `Try "${suggestedProgram.name.en}"`, `جرّب «${loc(suggestedProgram.name, "ar")}»`)}</div>
+              <div className="text-sm font-medium">{tx(`Coba "${loc(suggestedProgram.name, "id")}"`, `Try "${loc(suggestedProgram.name, "en")}"`, `جرّب «${loc(suggestedProgram.name, "ar")}»`)}</div>
               <div className="text-xs text-zinc-400">{loc(suggestedProgram.description, language)}</div>
             </Link>
             <div className="flex justify-between items-center pt-3">

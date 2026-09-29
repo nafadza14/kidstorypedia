@@ -138,7 +138,7 @@ export default function StoryReader() {
     }
     track("story_completed", { storyId: story!.id, childId: child.id });
     const fresh = logEvent({ childId: child.id, type: "story_completed", storyId: story!.id, storyVersion: story!.version, values: story!.values });
-    fresh.forEach(b => { const d = BADGES.find(x => x.id === b); if (d) toast(tx(`Lencana baru: ${d.name.en}!`, `New badge: ${d.name.en}!`, `شارة جديدة: ${d.name.ar}!`)); });
+    fresh.forEach(b => { const d = BADGES.find(x => x.id === b); if (d) toast(tx(`Lencana baru: ${loc(d.name, "id")}!`, `New badge: ${loc(d.name, "en")}!`, `شارة جديدة: ${loc(d.name, "ar")}!`)); });
     setPhase("celebrate");
   }
 
