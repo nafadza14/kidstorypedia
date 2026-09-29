@@ -14,11 +14,11 @@ export function FamilyGate({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="max-w-md w-full rounded-3xl border border-white/15 bg-zinc-900/70 p-8 text-center">
         <div className="text-3xl mb-4">✳︎</div>
-        <h1 className="text-2xl font-heading mb-2">{tx("Set up your family first", "أعدّ ملف عائلتك أولاً")}</h1>
-        <p className="text-sm text-zinc-400 mb-6">{tx("Create a parent account and add your child — it takes about two minutes.", "أنشئ حساب الوالدين وأضف طفلك — يستغرق الأمر دقيقتين تقريباً.")}</p>
+        <h1 className="text-2xl font-heading mb-2">{tx("Siapkan keluargamu dulu", "Set up your family first", "أعدّ ملف عائلتك أولاً")}</h1>
+        <p className="text-sm text-zinc-400 mb-6">{tx("Buat akun orang tua dan tambahkan anakmu - hanya butuh sekitar dua menit.", "Create a parent account and add your child - it takes about two minutes.", "أنشئ حساب الوالدين وأضف طفلك - يستغرق الأمر دقيقتين تقريباً.")}</p>
         <div className="flex flex-col gap-3">
-          <Link to="/onboarding" className={btn.primary}>{tx("Start Your Family Learning Journey", "ابدأ رحلة التعلم العائلية")}</Link>
-          <button className={btn.ghost} onClick={() => seedDemoFamily()}>{tx("Explore with a demo family", "استكشف مع عائلة تجريبية")}</button>
+          <Link to="/onboarding" className={btn.primary}>{tx("Mulai Perjalanan Belajar Keluarga", "Start Your Family Learning Journey", "ابدأ رحلة التعلم العائلية")}</Link>
+          <button className={btn.ghost} onClick={() => seedDemoFamily()}>{tx("Jelajahi dengan keluarga demo", "Explore with a demo family", "استكشف مع عائلة تجريبية")}</button>
         </div>
       </div>
     </div>

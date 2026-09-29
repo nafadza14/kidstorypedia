@@ -7,7 +7,7 @@ const L = (en: string, ar?: string): Localized => ({ en, ar });
  *
  * `state` reflects the governance workflow. The three stories from the
  * original MVP are `published`. Stories added in v2.0 were drafted from the
- * listed primary sources and are in `scholar_review` — they must be signed
+ * listed primary sources and are in `scholar_review` - they must be signed
  * off by a qualified reviewer before public launch (see src/config.ts).
  */
 export const CANONICAL_STORIES: Story[] = [
@@ -87,7 +87,7 @@ export const CANONICAL_STORIES: Story[] = [
     pages: [
       {
         page: 1,
-        text: L("Prophet Nuh called his people to worship Allah alone for a very, very long time — a thousand years less fifty. Only a few believed, yet he never gave up.", "دعا النبي نوح قومه إلى عبادة الله وحده زمناً طويلاً جداً — ألف سنة إلا خمسين عاماً. آمن به قليلون، ومع ذلك لم يستسلم أبداً."),
+        text: L("Prophet Nuh called his people to worship Allah alone for a very, very long time - a thousand years less fifty. Only a few believed, yet he never gave up.", "دعا النبي نوح قومه إلى عبادة الله وحده زمناً طويلاً جداً - ألف سنة إلا خمسين عاماً. آمن به قليلون، ومع ذلك لم يستسلم أبداً."),
         image: "https://i.pinimg.com/1200x/61/80/91/61809156c147c511cdc29785ea6589b9.jpg",
         sourceRefs: ["q29-14"],
       },
@@ -132,7 +132,7 @@ export const CANONICAL_STORIES: Story[] = [
     id: "yunus-1",
     slug: "prophet-yunus-and-the-whale",
     title: L("Prophet Yunus and the Whale", "النبي يونس والحوت"),
-    description: L("In the darkest place, Yunus remembered Allah — and Allah answered.", "في أشد الظلمات تذكّر يونس الله، فاستجاب الله له."),
+    description: L("In the darkest place, Yunus remembered Allah - and Allah answered.", "في أشد الظلمات تذكّر يونس الله، فاستجاب الله له."),
     category: "prophets",
     durationMin: 7,
     ageRange: [4, 12],
@@ -193,7 +193,7 @@ export const CANONICAL_STORIES: Story[] = [
     pages: [
       { page: 1, text: L("Prophet Ibrahim and his son Ismail were given an important task: to raise the foundations of the House of Allah, the Ka'bah, in Makkah.", "كُلِّف النبي إبراهيم وابنه إسماعيل بمهمة عظيمة: أن يرفعا قواعد بيت الله، الكعبة، في مكة."), sourceRefs: ["q2-127"] },
       { page: 2, text: L("Stone by stone, they worked together. It was hard work in the hot sun, but they did not complain.", "حجراً بعد حجر، عملا معاً. كان العمل شاقاً تحت الشمس الحارة، لكنهما لم يتذمرا."), sourceRefs: ["q2-127"] },
-      { page: 3, text: L("As they built, they made du'a: 'Our Lord, accept this from us. Indeed You are the All-Hearing, the All-Knowing.' They did not boast — they asked Allah to accept.", "وكانا يدعوان وهما يبنيان: «رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ». لم يتفاخرا، بل سألا الله القبول."), sourceRefs: ["q2-127"] },
+      { page: 3, text: L("As they built, they made du'a: 'Our Lord, accept this from us. Indeed You are the All-Hearing, the All-Knowing.' They did not boast - they asked Allah to accept.", "وكانا يدعوان وهما يبنيان: «رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ». لم يتفاخرا، بل سألا الله القبول."), sourceRefs: ["q2-127"] },
     ],
     discussion: {
       questions: [
@@ -235,7 +235,7 @@ export const CANONICAL_STORIES: Story[] = [
         L("What did Musa say that showed his courage?", "ماذا قال موسى مما يدل على شجاعته؟"),
         L("What is something that feels scary for you? How can remembering Allah help?", "ما الشيء الذي يخيفك؟ وكيف يساعدك ذكر الله؟"),
       ],
-      action: L("Try one small brave thing today — like speaking up in class or trying a new food — and say Bismillah first.", "جرّب شيئاً شجاعاً صغيراً اليوم — مثل المشاركة في الصف أو تذوق طعام جديد — وقل «بسم الله» أولاً."),
+      action: L("Try one small brave thing today - like speaking up in class or trying a new food - and say Bismillah first.", "جرّب شيئاً شجاعاً صغيراً اليوم - مثل المشاركة في الصف أو تذوق طعام جديد - وقل «بسم الله» أولاً."),
       reflection: L("What brave thing did you do today?", "ما الشيء الشجاع الذي فعلته اليوم؟"),
       dua: { arabic: "إِنَّ مَعِيَ رَبِّي سَيَهْدِينِ", transliteration: "Inna ma'iya Rabbi sayahdin", meaning: L("Indeed, with me is my Lord; He will guide me.", "إن ربي معي وسيهديني."), source: "Qur'an 26:62" },
     },
@@ -252,7 +252,7 @@ export const CANONICAL_STORIES: Story[] = [
     id: "sulaiman-ant",
     slug: "prophet-sulaiman-and-the-ant",
     title: L("Prophet Sulaiman and the Ant", "النبي سليمان والنملة"),
-    description: L("A great king hears a tiny ant — and responds with a smile and gratitude.", "ملك عظيم يسمع نملة صغيرة، فيبتسم ويشكر الله."),
+    description: L("A great king hears a tiny ant - and responds with a smile and gratitude.", "ملك عظيم يسمع نملة صغيرة، فيبتسم ويشكر الله."),
     category: "prophets",
     durationMin: 5,
     ageRange: [4, 10],
@@ -294,7 +294,7 @@ export const CANONICAL_STORIES: Story[] = [
     ageRange: [5, 12],
     values: ["trustworthiness", "honesty", "kindness"],
     pages: [
-      { page: 1, text: L("In Makkah, young Muhammad ﷺ was known for always telling the truth and keeping what people trusted him with. They called him 'Al-Amin' — the Trustworthy.", "في مكة، عُرف محمد ﷺ منذ شبابه بالصدق وحفظ الأمانات، فلقّبه الناس «الأمين»."), sourceRefs: ["ibnhisham-amin"] },
+      { page: 1, text: L("In Makkah, young Muhammad ﷺ was known for always telling the truth and keeping what people trusted him with. They called him 'Al-Amin' - the Trustworthy.", "في مكة، عُرف محمد ﷺ منذ شبابه بالصدق وحفظ الأمانات، فلقّبه الناس «الأمين»."), sourceRefs: ["ibnhisham-amin"] },
       { page: 2, text: L("When the tribes of Quraysh rebuilt the Ka'bah, they argued about who would have the honour of placing the Black Stone. The argument grew very serious.", "ولما أعادت قريش بناء الكعبة، اختلفت القبائل فيمن ينال شرف وضع الحجر الأسود، واشتد الخلاف."), sourceRefs: ["ibnhisham-amin"] },
       { page: 3, text: L("They agreed to let the next person who entered decide. It was Al-Amin! He placed the stone on a cloth, asked each tribe's leader to hold a corner, and then set it in place himself. Everyone was satisfied.", "فاتفقوا أن يحكم بينهم أول داخل، فكان الأمين! فوضع الحجر في ثوب، وأمر كل زعيم قبيلة أن يمسك بطرف، ثم وضعه بيده في مكانه. فرضي الجميع."), sourceRefs: ["ibnhisham-amin"] },
     ],
@@ -326,7 +326,7 @@ export const CANONICAL_STORIES: Story[] = [
     values: ["courage", "patience", "trustworthiness"],
     pages: [
       { page: 1, text: L("When the Prophet ﷺ was commanded to leave Makkah for Madinah, his close friend Abu Bakr travelled with him.", "لما أُذن للنبي ﷺ بالهجرة من مكة إلى المدينة، صحبه صديقه أبو بكر."), sourceRefs: ["q9-40"] },
-      { page: 2, text: L("They hid in a cave called Thawr. Those searching for them came close — so close that Abu Bakr worried for the Prophet ﷺ.", "اختبآ في غار يُسمّى ثور، واقترب الباحثون عنهما حتى خاف أبو بكر على النبي ﷺ."), sourceRefs: ["q9-40"] },
+      { page: 2, text: L("They hid in a cave called Thawr. Those searching for them came close - so close that Abu Bakr worried for the Prophet ﷺ.", "اختبآ في غار يُسمّى ثور، واقترب الباحثون عنهما حتى خاف أبو بكر على النبي ﷺ."), sourceRefs: ["q9-40"] },
       { page: 3, text: L("The Prophet ﷺ said to him, 'Do not grieve; indeed Allah is with us.' Allah sent down tranquillity, and they continued safely on their journey.", "فقال له النبي ﷺ: «لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا». فأنزل الله سكينته، وأكملا رحلتهما بسلام."), sourceRefs: ["q9-40"] },
     ],
     discussion: {
@@ -427,7 +427,7 @@ export const CANONICAL_STORIES: Story[] = [
     values: ["courage", "perseverance", "patience"],
     pages: [
       { page: 1, text: L("Bilal was one of the first people in Makkah to believe in Allah. His master was angry and tried to force him to give up his faith.", "كان بلال من أوائل من آمنوا بالله في مكة، فغضب سيده وحاول أن يجبره على ترك دينه."), sourceRefs: ["ibnhisham-bilal"] },
-      { page: 2, text: L("Even when he was treated harshly under the hot sun, Bilal kept repeating: 'Ahad, Ahad' — Allah is One, Allah is One.", "وحتى حين عُذّب تحت الشمس الحارقة، ظل بلال يردد: «أحدٌ أحد»."), sourceRefs: ["ibnhisham-bilal"] },
+      { page: 2, text: L("Even when he was treated harshly under the hot sun, Bilal kept repeating: 'Ahad, Ahad' - Allah is One, Allah is One.", "وحتى حين عُذّب تحت الشمس الحارقة، ظل بلال يردد: «أحدٌ أحد»."), sourceRefs: ["ibnhisham-bilal"] },
       { page: 3, text: L("Abu Bakr bought Bilal's freedom. Years later, in Madinah, Bilal's beautiful voice was chosen to call the adhan for the Muslims.", "فاشترى أبو بكر بلالاً وأعتقه. وبعد سنين في المدينة، اختير صوت بلال الجميل ليرفع الأذان للمسلمين."), sourceRefs: ["ibnhisham-bilal"] },
     ],
     discussion: {
@@ -453,7 +453,7 @@ export const CANONICAL_STORIES: Story[] = [
     id: "uthman-well",
     slug: "uthman-and-the-well-of-rumah",
     title: L("'Uthman and the Well of Rumah", "عثمان وبئر رومة"),
-    description: L("A thirsty city, one well — and a companion who made it free for everyone.", "مدينة عطشى، وبئر واحدة، وصحابي جعلها مجاناً للجميع."),
+    description: L("A thirsty city, one well - and a companion who made it free for everyone.", "مدينة عطشى، وبئر واحدة، وصحابي جعلها مجاناً للجميع."),
     category: "sahabah",
     durationMin: 5,
     ageRange: [5, 12],
@@ -461,7 +461,7 @@ export const CANONICAL_STORIES: Story[] = [
     pages: [
       { page: 1, text: L("In Madinah, fresh water was hard to find. There was a well called Rumah, but people had to pay to drink from it.", "في المدينة كان الماء العذب قليلاً، وكانت هناك بئر تُسمّى رومة، يدفع الناس ثمناً ليشربوا منها."), sourceRefs: ["tirmidhi-3703"] },
       { page: 2, text: L("The Prophet ﷺ encouraged someone to buy the well for the Muslims. 'Uthman ibn 'Affan bought it with his own wealth.", "فرغّب النبي ﷺ في شراء البئر للمسلمين، فاشتراها عثمان بن عفان من ماله."), sourceRefs: ["tirmidhi-3703"] },
-      { page: 3, text: L("'Uthman made the water free for everyone — rich and poor alike. Every family could now drink.", "وجعل عثمان ماءها للناس جميعاً، الغني والفقير، فصارت كل أسرة تشرب منها."), sourceRefs: ["tirmidhi-3703"] },
+      { page: 3, text: L("'Uthman made the water free for everyone - rich and poor alike. Every family could now drink.", "وجعل عثمان ماءها للناس جميعاً، الغني والفقير، فصارت كل أسرة تشرب منها."), sourceRefs: ["tirmidhi-3703"] },
     ],
     discussion: {
       questions: [
@@ -539,7 +539,7 @@ export const CANONICAL_STORIES: Story[] = [
     id: "tariq-coin",
     slug: "tariq-and-the-lost-coin",
     title: L("Tariq and the Lost Coin", "طارق والعملة الضائعة"),
-    description: L("Tariq finds a shiny coin in the market. Keeping it would be easy — but is it right?", "يجد طارق عملة لامعة في السوق. الاحتفاظ بها سهل — لكن هل هو صحيح؟"),
+    description: L("Tariq finds a shiny coin in the market. Keeping it would be easy - but is it right?", "يجد طارق عملة لامعة في السوق. الاحتفاظ بها سهل - لكن هل هو صحيح؟"),
     category: "moral",
     durationMin: 5,
     ageRange: [4, 9],
@@ -555,7 +555,7 @@ export const CANONICAL_STORIES: Story[] = [
         L("How do you think the old man felt when he got it back?", "كيف تظن أن الرجل شعر عندما استعادها؟"),
         L("What should we do if we find something that isn't ours?", "ماذا نفعل إذا وجدنا شيئاً ليس لنا؟"),
       ],
-      action: L("Today, tell the truth even when it's hard — and tell your parent about it tonight.", "اليوم، قل الصدق حتى لو كان صعباً — وأخبر والدك عنه الليلة."),
+      action: L("Today, tell the truth even when it's hard - and tell your parent about it tonight.", "اليوم، قل الصدق حتى لو كان صعباً - وأخبر والدك عنه الليلة."),
       reflection: L("When did you choose to be honest today?", "متى اخترت أن تكون صادقاً اليوم؟"),
     },
     quiz: [{ q: L("What did Tariq do with the coin?", "ماذا فعل طارق بالعملة؟"), options: [L("Bought a treat", "اشترى حلوى"), L("Gave it back", "أعادها لصاحبها")], answer: 1 }],

@@ -48,11 +48,11 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
   const errors = (res?.issues || []).filter(i => i.severity === "error").length;
 
   const layers: { name: string; desc: string; s: Status; detail?: string }[] = [
-    { name: tx("1 · Input validation", "١ · التحقق من المدخلات"), desc: tx("Blocks unsafe topics and sacred-figure requests", "يمنع الطلبات غير الآمنة"), s: inputCheck.ok ? "ok" : "fail", detail: inputCheck.reason },
-    { name: tx("2 · Retrieval (RAG)", "٢ · الاسترجاع"), desc: tx("Grounds the model in approved sources only", "يعتمد على المصادر المعتمدة"), s: ctx.ok ? "ok" : "fail", detail: ctx.ok ? `${ctx.c.sources.length} sources` : ctx.error },
-    { name: tx("3 · Constrained generation", "٣ · التوليد المقيّد"), desc: tx("Structured JSON output from the strong model", "مخرجات منظمة"), s: running ? "running" : !res ? "idle" : res.ok || res.layer === "validation" ? "ok" : res.layer === "generation" ? "fail" : "idle", detail: res && !res.ok && res.layer === "generation" ? res.error : undefined },
-    { name: tx("4 · Output validation", "٤ · التحقق من المخرجات"), desc: tx("Schema, sources, fabricated quotes, sacred figures, visual policy", "المخطط والمصادر والاقتباسات"), s: !res || running ? "idle" : res.layer === "validation" ? "fail" : res.ok ? (errors ? "fail" : res.issues?.length ? "warn" : "ok") : "idle" },
-    { name: tx("5 · Human review", "٥ · المراجعة البشرية"), desc: tx("Never auto-published — goes to the review queue", "لا نشر تلقائي"), s: story ? "warn" : "idle", detail: story ? `${tx("Queued as", "في قائمة")}: ${STATE_LABEL[story.state]}` : undefined },
+    { name: tx("1 · Validasi input", "1 · Input validation", "١ · التحقق من المدخلات"), desc: tx("Memblokir topik tidak aman dan permintaan tokoh suci", "Blocks unsafe topics and sacred-figure requests", "يمنع الطلبات غير الآمنة"), s: inputCheck.ok ? "ok" : "fail", detail: inputCheck.reason },
+    { name: tx("2 · Pengambilan (RAG)", "2 · Retrieval (RAG)", "٢ · الاسترجاع"), desc: tx("Mendasarkan model pada sumber yang disetujui saja", "Grounds the model in approved sources only", "يعتمد على المصادر المعتمدة"), s: ctx.ok ? "ok" : "fail", detail: ctx.ok ? `${ctx.c.sources.length} sources` : ctx.error },
+    { name: tx("3 · Pembuatan terkendali", "3 · Constrained generation", "٣ · التوليد المقيّد"), desc: tx("Output JSON terstruktur dari model kuat", "Structured JSON output from the strong model", "مخرجات منظمة"), s: running ? "running" : !res ? "idle" : res.ok || res.layer === "validation" ? "ok" : res.layer === "generation" ? "fail" : "idle", detail: res && !res.ok && res.layer === "generation" ? res.error : undefined },
+    { name: tx("4 · Validasi output", "4 · Output validation", "٤ · التحقق من المخرجات"), desc: tx("Skema, sumber, kutipan palsu, tokoh suci, kebijakan visual", "Schema, sources, fabricated quotes, sacred figures, visual policy", "المخطط والمصادر والاقتباسات"), s: !res || running ? "idle" : res.layer === "validation" ? "fail" : res.ok ? (errors ? "fail" : res.issues?.length ? "warn" : "ok") : "idle" },
+    { name: tx("5 · Tinjauan manusia", "5 · Human review", "٥ · المراجعة البشرية"), desc: tx("Tidak pernah diterbitkan otomatis - masuk ke antrian tinjauan", "Never auto-published - goes to the review queue", "لا نشر تلقائي"), s: story ? "warn" : "idle", detail: story ? `${tx("Diantrekan sebagai", "Queued as", "في قائمة")}: ${STATE_LABEL[story.state]}` : undefined },
   ];
 
   async function run() {
@@ -61,7 +61,7 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
     const r = await generateStory({ mode, storyId: mode === "adapt" ? storyId : undefined, value, age, lang, pages, topic: topic || undefined, childName: childName || undefined, by: editor.trim() || "Editor" });
     setRes(r);
     setRunning(false);
-    if (r.ok) toast(tx("Draft created — awaiting human review", "تم إنشاء مسودة"));
+    if (r.ok) toast(tx("Draf dibuat - menunggu tinjauan manusia", "Draft created - awaiting human review", "تم إنشاء مسودة"));
   }
 
   async function illustrate(i: number) {
@@ -70,7 +70,7 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
     setImgBusy(i);
     const r = await generateIllustration(prompt);
     setImgBusy(null);
-    if (!r.ok || !r.output) return toast(tx(`Illustration failed: ${r.error}`, "فشل الرسم"));
+    if (!r.ok || !r.output) return toast(tx(`Ilustrasi gagal: ${r.error}`, `Illustration failed: ${r.error}`, "فشل الرسم"));
     const id = story.id;
     setState(s => {
       const cur = s.storyOverrides[id];
@@ -82,53 +82,53 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
   return (
     <div className="grid lg:grid-cols-[380px_1fr] gap-5">
       <div className="space-y-5">
-        <Panel title={tx("Request", "الطلب")}>
+        <Panel title={tx("Permintaan", "Request", "الطلب")}>
           <div className="space-y-3">
             <div className="flex gap-1.5">
               {(["fable", "adapt"] as const).map(m => (
                 <button key={m} onClick={() => setMode(m)} className={cn("flex-1 px-3 py-2 rounded-xl text-xs cursor-pointer border", mode === m ? "bg-white text-black border-white" : "border-white/15 text-zinc-300")}>
-                  {m === "fable" ? tx("Original fable", "قصة أخلاقية") : tx("Adapt canonical", "تكييف قصة")}
+                  {m === "fable" ? tx("Fabel asli", "Original fable", "قصة أخلاقية") : tx("Adaptasi kanonik", "Adapt canonical", "تكييف قصة")}
                 </button>
               ))}
             </div>
             {mode === "adapt" && (
-              <Field label={tx("Canonical story", "القصة الأصلية")}>
+              <Field label={tx("Cerita kanonik", "Canonical story", "القصة الأصلية")}>
                 <select className={sel + " w-full"} value={storyId} onChange={e => setStoryId(e.target.value)}>
                   {CANONICAL_STORIES.map(s => <option key={s.id} value={s.id}>{loc(s.title, language)}</option>)}
                 </select>
               </Field>
             )}
             <div className="grid grid-cols-2 gap-3">
-              <Field label={tx("Value", "القيمة")}>
+              <Field label={tx("Nilai", "Value", "القيمة")}>
                 <select className={sel + " w-full"} value={value} onChange={e => setValue(e.target.value as ValueId)}>
                   {VALUES.map(v => <option key={v.id} value={v.id}>{loc(v.name, language)}</option>)}
                 </select>
               </Field>
-              <Field label={tx("Age", "العمر")}>
+              <Field label={tx("Usia", "Age", "العمر")}>
                 <select className={sel + " w-full"} value={age} onChange={e => setAge(+e.target.value)}>
                   {Array.from({ length: 9 }, (_, i) => i + 4).map(a => <option key={a} value={a}>{a}</option>)}
                 </select>
               </Field>
-              <Field label={tx("Language", "اللغة")}>
+              <Field label={tx("Bahasa", "Language", "اللغة")}>
                 <select className={sel + " w-full"} value={lang} onChange={e => setLang(e.target.value as Lang)}><option value="en">English</option><option value="ar">العربية</option></select>
               </Field>
-              <Field label={tx("Pages", "الصفحات")}>
+              <Field label={tx("Halaman", "Pages", "الصفحات")}>
                 <select className={sel + " w-full"} value={pages} onChange={e => setPages(+e.target.value)}>{[3, 4, 5, 6].map(n => <option key={n}>{n}</option>)}</select>
               </Field>
             </div>
             {mode === "fable" && (
               <>
-                <Field label={tx("Theme (optional)", "الموضوع")}><input className={inp} value={topic} onChange={e => setTopic(e.target.value)} placeholder={tx("e.g. sharing toys at school", "مثال: مشاركة الألعاب")} /></Field>
-                <Field label={tx("Child first name (optional)", "اسم الطفل")}><input className={inp} value={childName} onChange={e => setChildName(e.target.value)} /></Field>
+                <Field label={tx("Tema (opsional)", "Theme (optional)", "الموضوع")}><input className={inp} value={topic} onChange={e => setTopic(e.target.value)} placeholder={tx("misal: berbagi mainan di sekolah", "e.g. sharing toys at school", "مثال: مشاركة الألعاب")} /></Field>
+                <Field label={tx("Nama depan anak (opsional)", "Child first name (optional)", "اسم الطفل")}><input className={inp} value={childName} onChange={e => setChildName(e.target.value)} /></Field>
               </>
             )}
             <button className={btn.primary + " w-full"} disabled={running || !inputCheck.ok || !ctx.ok} onClick={run}>
-              {running ? <Loader2 className="w-4 h-4 animate-spin" /> : null}{tx("Generate draft", "توليد مسودة")}
+              {running ? <Loader2 className="w-4 h-4 animate-spin" /> : null}{tx("Buat draf", "Generate draft", "توليد مسودة")}
             </button>
           </div>
         </Panel>
 
-        <Panel title={tx("Safety layers (PRD §27)", "طبقات الأمان")}>
+        <Panel title={tx("Lapisan keamanan (PRD §27)", "Safety layers (PRD §27)", "طبقات الأمان")}>
           <ol className="space-y-3">
             {layers.map(l => (
               <li key={l.name} className="flex gap-3">
@@ -145,20 +145,20 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
       </div>
 
       <div className="space-y-5 min-w-0">
-        <Panel title={tx("Retrieved context (preview)", "السياق المسترجع")}>
+        <Panel title={tx("Konteks yang diambil (pratinjau)", "Retrieved context (preview)", "السياق المسترجع")}>
           {!ctx.ok ? <p className="text-xs text-red-300">{ctx.error}</p> : (
             <div className="grid md:grid-cols-2 gap-4 text-xs">
               <div>
-                <div className="font-mono text-zinc-500 mb-1">{tx("Sources", "المصادر")} · {ctx.c.category}</div>
-                <ul className="space-y-0.5">{ctx.c.sources.map(s => <li key={s.id}><span className="font-mono text-zinc-500">{s.id}</span> — {s.reference}</li>)}</ul>
-                {!!ctx.c.facts.length && <><div className="font-mono text-zinc-500 mt-3 mb-1">{tx("Allowed facts", "الحقائق")}</div><ul className="list-disc ps-4 space-y-0.5">{ctx.c.facts.map((f, i) => <li key={i}>{f}</li>)}</ul></>}
+                <div className="font-mono text-zinc-500 mb-1">{tx("Sumber", "Sources", "المصادر")} · {ctx.c.category}</div>
+                <ul className="space-y-0.5">{ctx.c.sources.map(s => <li key={s.id}><span className="font-mono text-zinc-500">{s.id}</span> - {s.reference}</li>)}</ul>
+                {!!ctx.c.facts.length && <><div className="font-mono text-zinc-500 mt-3 mb-1">{tx("Fakta yang diizinkan", "Allowed facts", "الحقائق")}</div><ul className="list-disc ps-4 space-y-0.5">{ctx.c.facts.map((f, i) => <li key={i}>{f}</li>)}</ul></>}
               </div>
               <div>
-                <div className="font-mono text-zinc-500 mb-1">{tx("Key events", "الأحداث")}</div>
+                <div className="font-mono text-zinc-500 mb-1">{tx("Peristiwa penting", "Key events", "الأحداث")}</div>
                 <ul className="list-disc ps-4 space-y-0.5">{ctx.c.keyEvents.map((f, i) => <li key={i}>{f}</li>)}</ul>
-                <div className="font-mono text-zinc-500 mt-3 mb-1">{tx("Prohibited", "الممنوعات")}</div>
+                <div className="font-mono text-zinc-500 mt-3 mb-1">{tx("Dilarang", "Prohibited", "الممنوعات")}</div>
                 <ul className="list-disc ps-4 space-y-0.5 text-red-200/80">{ctx.c.prohibited.map((f, i) => <li key={i}>{f}</li>)}</ul>
-                {!!ctx.c.retrievedIds.length && <div className="text-zinc-500 mt-3">{tx("Retrieved stories", "القصص المسترجعة")}: {ctx.c.retrievedIds.join(", ")}</div>}
+                {!!ctx.c.retrievedIds.length && <div className="text-zinc-500 mt-3">{tx("Cerita yang diambil", "Retrieved stories", "القصص المسترجعة")}: {ctx.c.retrievedIds.join(", ")}</div>}
               </div>
             </div>
           )}
@@ -166,20 +166,20 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
 
         {notConfigured && (
           <div className="rounded-2xl border border-amber-300/30 bg-amber-300/5 p-5 text-sm">
-            <div className="font-medium text-amber-200 mb-1">{tx("AI is not configured", "الذكاء الاصطناعي غير مُعد")}</div>
+            <div className="font-medium text-amber-200 mb-1">{tx("AI belum dikonfigurasi", "AI is not configured", "الذكاء الاصطناعي غير مُعد")}</div>
             <p className="text-zinc-300 text-xs leading-relaxed">
-              {tx("Set GEMINI_API_KEY in .env.local for local development (then restart the dev server), or add it as an Environment Variable in your Vercel project settings and redeploy. See DEPLOY.md.", "اضبط GEMINI_API_KEY في ملف ‎.env.local أو في إعدادات Vercel.")}
+              {tx("Atur GEMINI_API_KEY di .env.local untuk pengembangan lokal (lalu mulai ulang dev server), atau tambahkan sebagai Environment Variable di pengaturan proyek Vercel dan deploy ulang. Lihat DEPLOY.md.", "Set GEMINI_API_KEY in .env.local for local development (then restart the dev server), or add it as an Environment Variable in your Vercel project settings and redeploy. See DEPLOY.md.", "اضبط GEMINI_API_KEY في ملف ‎.env.local أو في إعدادات Vercel.")}
             </p>
             <div className="text-[11px] font-mono text-zinc-500 mt-2">{res?.error}</div>
           </div>
         )}
         {res && !res.ok && !notConfigured && (
           <div className="rounded-2xl border border-red-400/30 bg-red-400/5 p-4 text-sm text-red-200">
-            {tx("Stopped at layer", "توقف عند الطبقة")}: <span className="font-mono">{res.layer}</span> — {res.error}
+            {tx("Berhenti di lapisan", "Stopped at layer", "توقف عند الطبقة")}: <span className="font-mono">{res.layer}</span> - {res.error}
           </div>
         )}
         {!!res?.issues?.length && (
-          <Panel title={tx("Validation issues", "مشكلات التحقق")}>
+          <Panel title={tx("Masalah validasi", "Validation issues", "مشكلات التحقق")}>
             <ul className="space-y-1 text-xs">
               {res.issues.map((i, k) => (
                 <li key={k} className="flex gap-2"><span className={cn("font-mono w-16 shrink-0", i.severity === "error" ? "text-red-300" : "text-amber-300")}>{i.severity}</span><span className="font-mono text-zinc-500 w-28 shrink-0">{i.rule}</span><span>{i.message}</span></li>
@@ -190,8 +190,8 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
         {story && (
           <Panel title={loc(story.title, lang) || story.title.en} action={
             <span className="flex gap-2">
-              <button className={btn.small} onClick={() => onOpen(story.id)}>{tx("Open in editor", "افتح في المحرر")}</button>
-              <button className={btn.small} onClick={() => onReview(story.id)}>{tx("Go to review queue", "إلى المراجعة")}</button>
+              <button className={btn.small} onClick={() => onOpen(story.id)}>{tx("Buka di editor", "Open in editor", "افتح في المحرر")}</button>
+              <button className={btn.small} onClick={() => onReview(story.id)}>{tx("Ke antrian tinjauan", "Go to review queue", "إلى المراجعة")}</button>
             </span>
           }>
             <div className="text-xs font-mono text-zinc-500 mb-3">{story.id} · {STATE_LABEL[story.state]} · v{story.version}</div>
@@ -199,14 +199,14 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
               {story.pages.map((p, i) => (
                 <div key={i} className="rounded-xl border border-white/10 p-3 flex gap-3">
                   <div className="flex-1 min-w-0">
-                    <div className="text-[10px] font-mono text-zinc-500 mb-1">{tx("Page", "صفحة")} {p.page} · {p.sourceRefs.join(", ")}</div>
+                    <div className="text-[10px] font-mono text-zinc-500 mb-1">{tx("Halaman", "Page", "صفحة")} {p.page} · {p.sourceRefs.join(", ")}</div>
                     <p className="text-sm leading-relaxed" dir={lang === "ar" ? "rtl" : undefined}>{loc(p.text, lang)}</p>
                     <p className="text-[11px] text-zinc-500 mt-1 line-clamp-2">{p.illustrationPrompt}</p>
                   </div>
                   <div className="w-28 shrink-0 flex flex-col items-center gap-1.5">
                     {p.image ? <img src={p.image} alt="" className="w-28 h-20 object-cover rounded-lg" /> : <div className="w-28 h-20 rounded-lg border border-dashed border-white/15" />}
-                    <button className={btn.small} disabled={imgBusy !== null} onClick={() => illustrate(i)} title={tx("Uses the image model (costs)", "يستخدم نموذج الصور")}>
-                      {imgBusy === i ? <Loader2 className="w-3 h-3 animate-spin" /> : null}{tx("Illustrate", "ارسم")}
+                    <button className={btn.small} disabled={imgBusy !== null} onClick={() => illustrate(i)} title={tx("Menggunakan model gambar (berbayar)", "Uses the image model (costs)", "يستخدم نموذج الصور")}>
+                      {imgBusy === i ? <Loader2 className="w-3 h-3 animate-spin" /> : null}{tx("Ilustrasi", "Illustrate", "ارسم")}
                     </button>
                   </div>
                 </div>
@@ -214,8 +214,8 @@ export default function GenerateTab({ editor, onOpen, onReview }: { editor: stri
             </div>
             <div className="mt-4 text-xs space-y-1">
               {story.discussion.questions.map((q, i) => <div key={i}>Q{i + 1}. {loc(q, lang)}</div>)}
-              <div className="text-zinc-400">{tx("Action", "العمل")}: {loc(story.discussion.action, lang)}</div>
-              <div className="text-zinc-400">{tx("Reflection", "التأمل")}: {loc(story.discussion.reflection, lang)}</div>
+              <div className="text-zinc-400">{tx("Aksi", "Action", "العمل")}: {loc(story.discussion.action, lang)}</div>
+              <div className="text-zinc-400">{tx("Refleksi", "Reflection", "التأمل")}: {loc(story.discussion.reflection, lang)}</div>
             </div>
           </Panel>
         )}

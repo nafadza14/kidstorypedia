@@ -1,6 +1,6 @@
 /**
  * AI safety layers (PRD §27) and story acceptance criteria (PRD §67).
- * Pure module — no browser or alias imports — so it can run both in the
+ * Pure module - no browser or alias imports - so it can run both in the
  * client and in the serverless function (api/ai.ts).
  */
 import type { ValidationIssue, ValidationResult } from "../../types";
@@ -31,7 +31,7 @@ export interface GeneratedStory {
   title: string;
   description?: string;
   age_range: [number, number];
-  language: "en" | "ar";
+  language: "id" | "en" | "ar";
   category: string;
   primary_values: string[];
   pages: GeneratedPage[];
@@ -43,7 +43,7 @@ export interface OutputContext {
   mode: "fable" | "adapt";
   requiredValue?: string;
   age: number;
-  lang: "en" | "ar";
+  lang: "id" | "en" | "ar";
   allowedSourceIds: string[];
   minPages: number;
   maxPages: number;
@@ -107,7 +107,7 @@ export function validateStoryOutput(raw: unknown, ctx: OutputContext): { result:
     else p.source_refs.forEach(ref => { if (!ctx.allowedSourceIds.includes(ref)) err("sources", `Page ${n} cites unknown/unapproved source "${ref}".`); });
 
     // 5. fabricated quotations / unsupported religious claims
-    if (FABRICATED_QUOTE.some(r => r.test(p.narrative || ""))) err("fabricated_quote", `Page ${n} attributes a quotation or hadith — not allowed in generated text.`);
+    if (FABRICATED_QUOTE.some(r => r.test(p.narrative || ""))) err("fabricated_quote", `Page ${n} attributes a quotation or hadith - not allowed in generated text.`);
     // 6. sacred figures as fable characters
     if (ctx.mode === "fable" && SACRED_CHARACTER.test(p.narrative || "")) err("sacred_figure", `Page ${n} uses a Prophet or Companion in an original fable.`);
     // 7. inappropriate language

@@ -29,23 +29,23 @@ type SectionId =
   | "overview" | "children" | "journal" | "discussion" | "programs" | "achievements" | "digest" | "assistant"
   | "library" | "billing" | "referral" | "settings";
 
-interface NavItem { id: SectionId; en: string; ar: string; icon: React.ComponentType<{ className?: string }>; el: React.ComponentType }
+interface NavItem { id: SectionId; id_: string; en: string; ar: string; icon: React.ComponentType<{ className?: string }>; el: React.ComponentType }
 
 const FAMILY: NavItem[] = [
-  { id: "overview", en: "Overview", ar: "نظرة عامة", icon: BarChart2, el: Overview },
-  { id: "children", en: "Children", ar: "الأطفال", icon: Users, el: Children },
-  { id: "journal", en: "Character Journal", ar: "دفتر الأخلاق", icon: NotebookPen, el: Journal },
-  { id: "discussion", en: "Discussions", ar: "النقاشات", icon: MessageSquare, el: Discussion },
-  { id: "programs", en: "Programs", ar: "البرامج", icon: Route, el: Programs },
-  { id: "achievements", en: "Achievements", ar: "الإنجازات", icon: Award, el: Achievements },
-  { id: "digest", en: "Weekly Digest", ar: "الملخص الأسبوعي", icon: Newspaper, el: Digest },
-  { id: "assistant", en: "Parent Assistant", ar: "مساعد الوالدين", icon: Bot, el: Assistant },
+  { id: "overview", id_: "Ringkasan", en: "Overview", ar: "نظرة عامة", icon: BarChart2, el: Overview },
+  { id: "children", id_: "Anak-anak", en: "Children", ar: "الأطفال", icon: Users, el: Children },
+  { id: "journal", id_: "Jurnal Karakter", en: "Character Journal", ar: "دفتر الأخلاق", icon: NotebookPen, el: Journal },
+  { id: "discussion", id_: "Diskusi", en: "Discussions", ar: "النقاشات", icon: MessageSquare, el: Discussion },
+  { id: "programs", id_: "Program", en: "Programs", ar: "البرامج", icon: Route, el: Programs },
+  { id: "achievements", id_: "Pencapaian", en: "Achievements", ar: "الإنجازات", icon: Award, el: Achievements },
+  { id: "digest", id_: "Ringkasan Mingguan", en: "Weekly Digest", ar: "الملخص الأسبوعي", icon: Newspaper, el: Digest },
+  { id: "assistant", id_: "Asisten Orang Tua", en: "Parent Assistant", ar: "مساعد الوالدين", icon: Bot, el: Assistant },
 ];
 const ACCOUNT: NavItem[] = [
-  { id: "library", en: "Packs & Library", ar: "الباقات والمكتبة", icon: Library, el: LibrarySection },
-  { id: "billing", en: "Subscription", ar: "الاشتراك", icon: CreditCard, el: Billing },
-  { id: "referral", en: "Invite Friends", ar: "ادعُ أصدقاءك", icon: Gift, el: Referral },
-  { id: "settings", en: "Settings", ar: "الإعدادات", icon: Settings, el: SettingsSection },
+  { id: "library", id_: "Paket & Perpustakaan", en: "Packs & Library", ar: "الباقات والمكتبة", icon: Library, el: LibrarySection },
+  { id: "billing", id_: "Langganan", en: "Subscription", ar: "الاشتراك", icon: CreditCard, el: Billing },
+  { id: "referral", id_: "Undang Teman", en: "Invite Friends", ar: "ادعُ أصدقاءك", icon: Gift, el: Referral },
+  { id: "settings", id_: "Pengaturan", en: "Settings", ar: "الإعدادات", icon: Settings, el: SettingsSection },
 ];
 const ALL = [...FAMILY, ...ACCOUNT];
 
@@ -56,12 +56,12 @@ function PlanPill() {
   const plan = PLANS.find(p => p.id === sub.plan);
   if (sub.status === "trialing") {
     const d = trialDaysLeft(state);
-    return <Link to="/dashboard/billing" className="text-[11px] font-mono px-3 py-1 rounded-full border border-amber-300/40 text-amber-200 bg-amber-300/5 whitespace-nowrap">{tx(`Trial · ${d} day${d === 1 ? "" : "s"} left`, `تجربة · ${d} يوم متبقٍ`)}</Link>;
+    return <Link to="/dashboard/billing" className="text-[11px] font-mono px-3 py-1 rounded-full border border-amber-300/40 text-amber-200 bg-amber-300/5 whitespace-nowrap">{tx(`Uji coba · ${d} hari tersisa`, `Trial · ${d} day${d === 1 ? "" : "s"} left`, `تجربة · ${d} يوم متبقٍ`)}</Link>;
   }
   if (isPremium(state)) {
-    return <Link to="/dashboard/billing" className="text-[11px] font-mono px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300 bg-emerald-400/5 whitespace-nowrap">{plan ? loc(plan.name, language) : tx("Premium", "مميز")}{sub.status === "cancelled" ? tx(" · ends soon", " · ينتهي قريباً") : ""}</Link>;
+    return <Link to="/dashboard/billing" className="text-[11px] font-mono px-3 py-1 rounded-full border border-emerald-400/40 text-emerald-300 bg-emerald-400/5 whitespace-nowrap">{plan ? loc(plan.name, language) : tx("Premium", "Premium", "مميز")}{sub.status === "cancelled" ? tx(" · segera berakhir", " · ends soon", " · ينتهي قريباً") : ""}</Link>;
   }
-  return <Link to="/dashboard/billing" className="text-[11px] font-mono px-3 py-1 rounded-full border border-white/20 text-zinc-300 whitespace-nowrap hover:bg-white/10">{sub.status === "paused" ? tx("Paused", "متوقف مؤقتاً") : tx("Free plan · Upgrade", "خطة مجانية · ترقية")}</Link>;
+  return <Link to="/dashboard/billing" className="text-[11px] font-mono px-3 py-1 rounded-full border border-white/20 text-zinc-300 whitespace-nowrap hover:bg-white/10">{sub.status === "paused" ? tx("Dijeda", "Paused", "متوقف مؤقتاً") : tx("Paket gratis · Upgrade", "Free plan · Upgrade", "خطة مجانية · ترقية")}</Link>;
 }
 
 function ChildSwitcher() {
@@ -84,13 +84,13 @@ function ChildSwitcher() {
         <Avatar seed={child.avatarSeed} size={28} />
         <span className="text-start">
           <span className="font-medium text-xs text-white block leading-tight">{child.name}</span>
-          <span className="text-[10px] text-zinc-400 font-mono">{tx(`Age ${child.age}`, `العمر ${child.age}`)}</span>
+          <span className="text-[10px] text-zinc-400 font-mono">{tx(`Usia ${child.age}`, `Age ${child.age}`, `العمر ${child.age}`)}</span>
         </span>
         <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
       </button>
       {open && (
         <div className="absolute end-0 mt-2 w-56 bg-zinc-950 border border-white/15 rounded-2xl p-2 shadow-2xl z-50" role="menu">
-          <div className="text-[10px] font-mono text-zinc-400 px-3 py-1 border-b border-white/10 mb-1">{tx("SWITCH CHILD", "تبديل الطفل")}</div>
+          <div className="text-[10px] font-mono text-zinc-400 px-3 py-1 border-b border-white/10 mb-1">{tx("GANTI ANAK", "SWITCH CHILD", "تبديل الطفل")}</div>
           {state.children.map(c => (
             <button
               key={c.id}
@@ -104,7 +104,7 @@ function ChildSwitcher() {
             </button>
           ))}
           <button onClick={() => { setOpen(false); navigate("/dashboard/children?add=1"); }} className="w-full mt-1 pt-2 border-t border-white/10 flex items-center gap-2 px-3 py-1.5 text-xs text-zinc-300 hover:text-white cursor-pointer">
-            <Plus className="w-3.5 h-3.5" />{tx("Add child", "إضافة طفل")}
+            <Plus className="w-3.5 h-3.5" />{tx("Tambah anak", "Add child", "إضافة طفل")}
           </button>
         </div>
       )}
@@ -122,7 +122,7 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
       className={cn("w-full flex items-center gap-3 px-3.5 py-2 rounded-full text-xs font-medium transition-all", active ? "bg-white text-black font-semibold shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5")}
     >
       <Icon className="w-4 h-4" />
-      <span>{tx(item.en, item.ar)}</span>
+      <span>{tx(item.id_, item.en, item.ar)}</span>
     </Link>
   );
 }
@@ -135,7 +135,7 @@ export default function Dashboard() {
   if (!current) return <Navigate to="/dashboard" replace />;
   const Section = current.el;
   const hour = new Date().getHours();
-  const greet = hour < 12 ? tx("Good morning", "صباح الخير") : hour < 18 ? tx("Good afternoon", "مساء الخير") : tx("Good evening", "مساء الخير");
+  const greet = hour < 12 ? tx("Selamat pagi", "Good morning", "صباح الخير") : hour < 18 ? tx("Selamat siang", "Good afternoon", "مساء الخير") : tx("Selamat malam", "Good evening", "مساء الخير");
 
   return (
     <div className="flex h-screen bg-[#0a0a0c] text-white overflow-hidden font-body selection:bg-white selection:text-black">
@@ -148,30 +148,30 @@ export default function Dashboard() {
               <span className="text-white text-lg select-none">✳︎</span>
             </Link>
           </div>
-          <nav className="p-4 space-y-5" aria-label={tx("Parent dashboard", "لوحة الوالدين")}>
+          <nav className="p-4 space-y-5" aria-label={tx("Dasbor orang tua", "Parent dashboard", "لوحة الوالدين")}>
             <div className="space-y-1">
-              <div className="px-3.5 pb-1 text-[10px] font-mono text-zinc-500 uppercase tracking-wider">{tx("Family", "العائلة")}</div>
+              <div className="px-3.5 pb-1 text-[10px] font-mono text-zinc-500 uppercase tracking-wider">{tx("Keluarga", "Family", "العائلة")}</div>
               {FAMILY.map(n => <NavButton key={n.id} item={n} active={n.id === current.id} />)}
             </div>
             <div className="space-y-1">
-              <div className="px-3.5 pb-1 text-[10px] font-mono text-zinc-500 uppercase tracking-wider">{tx("Account", "الحساب")}</div>
+              <div className="px-3.5 pb-1 text-[10px] font-mono text-zinc-500 uppercase tracking-wider">{tx("Akun", "Account", "الحساب")}</div>
               {ACCOUNT.map(n => <NavButton key={n.id} item={n} active={n.id === current.id} />)}
             </div>
           </nav>
         </div>
         <div className="p-4 border-t border-white/10 space-y-3">
           <Link to="/child" className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-full bg-white text-black text-xs font-medium hover:bg-zinc-200 transition-all">
-            <span>{tx("Switch to Kids View", "الانتقال لواجهة الأطفال")}</span>
+            <span>{tx("Beralih ke Tampilan Anak", "Switch to Kids View", "الانتقال لواجهة الأطفال")}</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
           <Link to="/" className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-full border border-white/20 text-zinc-400 hover:text-white hover:border-white/40 text-xs transition-all">
             <LogOut className="w-3.5 h-3.5" />
-            <span>{tx("Exit to home", "العودة للرئيسية")}</span>
+            <span>{tx("Keluar ke beranda", "Exit to home", "العودة للرئيسية")}</span>
           </Link>
           <div className="pt-2 space-y-1 text-[11px] text-zinc-500">
-            <Link to="/studio" className="flex items-center gap-2 hover:text-zinc-300"><PenTool className="w-3 h-3" />{tx("Content Studio", "استوديو المحتوى")}</Link>
-            <Link to="/classroom" className="flex items-center gap-2 hover:text-zinc-300"><GraduationCap className="w-3 h-3" />{tx("Classroom (B2B)", "الفصل الدراسي (للمؤسسات)")}</Link>
-            <Link to="/admin" className="flex items-center gap-2 hover:text-zinc-300"><Briefcase className="w-3 h-3" />{tx("Business dashboard", "لوحة الأعمال")}</Link>
+            <Link to="/studio" className="flex items-center gap-2 hover:text-zinc-300"><PenTool className="w-3 h-3" />{tx("Studio Konten", "Content Studio", "استوديو المحتوى")}</Link>
+            <Link to="/classroom" className="flex items-center gap-2 hover:text-zinc-300"><GraduationCap className="w-3 h-3" />{tx("Kelas (B2B)", "Classroom (B2B)", "الفصل الدراسي (للمؤسسات)")}</Link>
+            <Link to="/admin" className="flex items-center gap-2 hover:text-zinc-300"><Briefcase className="w-3 h-3" />{tx("Dasbor bisnis", "Business dashboard", "لوحة الأعمال")}</Link>
           </div>
         </div>
       </aside>
@@ -180,7 +180,7 @@ export default function Dashboard() {
       <main className="flex-1 overflow-y-auto p-5 sm:p-8 md:p-10">
         <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 pb-6 border-b border-white/10 print:hidden">
           <div>
-            <div className="text-xs text-zinc-400 font-mono mb-1">[ {tx("Family Portal", "بوابة العائلة")} / {tx(current.en, current.ar)} ]</div>
+            <div className="text-xs text-zinc-400 font-mono mb-1">[ {tx("Portal Keluarga", "Family Portal", "بوابة العائلة")} / {tx(current.id_, current.en, current.ar)} ]</div>
             <h1 className="text-2xl sm:text-3xl font-light text-white tracking-tight font-heading">
               {greet}{parentName ? `, ${parentName}` : ""}
             </h1>
@@ -190,19 +190,19 @@ export default function Dashboard() {
             <LanguageSwitcher />
             <ChildSwitcher />
             <Link to="/child" className="md:hidden inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-black text-xs font-medium">
-              <BookMarked className="w-3.5 h-3.5" />{tx("Kids View", "واجهة الأطفال")}
+              <BookMarked className="w-3.5 h-3.5" />{tx("Tampilan Anak", "Kids View", "واجهة الأطفال")}
             </Link>
           </div>
         </header>
 
         {/* Mobile nav tabs */}
-        <nav className="flex md:hidden gap-2 overflow-x-auto pb-4 mb-6 -mx-1 px-1 print:hidden" aria-label={tx("Sections", "الأقسام")}>
+        <nav className="flex md:hidden gap-2 overflow-x-auto pb-4 mb-6 -mx-1 px-1 print:hidden" aria-label={tx("Bagian", "Sections", "الأقسام")}>
           {ALL.map(n => {
             const Icon = n.icon;
             const active = n.id === current.id;
             return (
               <Link key={n.id} to={`/dashboard/${n.id}`} className={cn("flex items-center gap-2 px-4 py-2 rounded-full text-xs whitespace-nowrap transition-all shrink-0", active ? "bg-white text-black font-semibold" : "bg-zinc-900 border border-white/10 text-zinc-400")}>
-                <Icon className="w-3.5 h-3.5" />{tx(n.en, n.ar)}
+                <Icon className="w-3.5 h-3.5" />{tx(n.id_, n.en, n.ar)}
               </Link>
             );
           })}

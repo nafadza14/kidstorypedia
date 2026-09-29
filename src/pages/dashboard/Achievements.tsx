@@ -15,15 +15,15 @@ import { NoChild, PrintStyle, SectionHeader, fmtDate, useDash } from "./shared";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = { BookOpen, Moon, Compass, Hourglass, MessageCircle, Zap, Sparkles, Trophy };
 
-const HINTS: Record<string, { en: string; ar: string }> = {
-  "first-story": { en: "Finish any story together.", ar: "أكملوا أي قصة معاً." },
-  "nightly-reader": { en: "Complete 7 reading sessions.", ar: "أكملوا ٧ جلسات قراءة." },
-  "story-explorer": { en: "Read from all four categories.", ar: "اقرؤوا من الفئات الأربع." },
-  "patience-practitioner": { en: "Save 3 reflections on patience stories.", ar: "احفظوا ٣ تأملات عن الصبر." },
-  "family-reflector": { en: "Complete 5 family discussions.", ar: "أكملوا ٥ نقاشات عائلية." },
-  "action-taker": { en: "Complete 5 action challenges.", ar: "أكملوا ٥ تحديات عملية." },
-  "value-explorer": { en: "Explore 6 different values.", ar: "استكشفوا ٦ قيم مختلفة." },
-  "program-finisher": { en: "Finish a family program.", ar: "أنهوا برنامجاً عائلياً." },
+const HINTS: Record<string, { id: string; en: string; ar: string }> = {
+  "first-story": { id: "Selesaikan cerita apapun bersama.", en: "Finish any story together.", ar: "أكملوا أي قصة معاً." },
+  "nightly-reader": { id: "Selesaikan 7 sesi membaca.", en: "Complete 7 reading sessions.", ar: "أكملوا ٧ جلسات قراءة." },
+  "story-explorer": { id: "Baca dari semua empat kategori.", en: "Read from all four categories.", ar: "اقرؤوا من الفئات الأربع." },
+  "patience-practitioner": { id: "Simpan 3 refleksi tentang cerita kesabaran.", en: "Save 3 reflections on patience stories.", ar: "احفظوا ٣ تأملات عن الصبر." },
+  "family-reflector": { id: "Selesaikan 5 diskusi keluarga.", en: "Complete 5 family discussions.", ar: "أكملوا ٥ نقاشات عائلية." },
+  "action-taker": { id: "Selesaikan 5 tantangan aksi.", en: "Complete 5 action challenges.", ar: "أكملوا ٥ تحديات عملية." },
+  "value-explorer": { id: "Jelajahi 6 nilai berbeda.", en: "Explore 6 different values.", ar: "استكشفوا ٦ قيم مختلفة." },
+  "program-finisher": { id: "Selesaikan sebuah program keluarga.", en: "Finish a family program.", ar: "أنهوا برنامجاً عائلياً." },
 };
 
 function CertificateView({ cert, child, stories, discussions, personalised, lang }: { cert: Certificate; child: ChildProfile; stories: number; discussions: number; personalised: boolean; lang: Lang }) {
@@ -51,7 +51,7 @@ function CertificateView({ cert, child, stories, discussions, personalised, lang
         <div className="text-start"><div className="border-t border-zinc-400 pt-1 w-36">{ar ? "الوالد/الوالدة" : "Parent"}</div></div>
         <div>{fmtDate(cert.at, lang)}</div>
       </div>
-      <p className="text-[10px] text-zinc-400 mt-6">{ar ? "تحتفي هذه الشهادة بأنشطة التعلم العائلية، ولا تقيس أخلاق الطفل." : "This certificate celebrates family learning activities — it does not measure a child's character."}</p>
+      <p className="text-[10px] text-zinc-400 mt-6">{ar ? "تحتفي هذه الشهادة بأنشطة التعلم العائلية، ولا تقيم أخلاق الطفل." : "This certificate celebrates family learning activities - it does not measure a child's character."}</p>
     </div>
   );
 }
@@ -74,20 +74,20 @@ export default function Achievements() {
     const cert: Certificate = {
       id: uid("cert"),
       childId: child.id,
-      title: premium ? tx("Character Journey Certificate", "شهادة رحلة الأخلاق") : tx("Family Learning Certificate", "شهادة التعلم العائلي"),
+      title: premium ? tx("Sertifikat Perjalanan Karakter", "Character Journey Certificate", "شهادة رحلة الأخلاق") : tx("Sertifikat Pembelajaran Keluarga", "Family Learning Certificate", "شهادة التعلم العائلي"),
       at: now(),
       values,
     };
     setState(s => ({ ...s, certificates: [...s.certificates, cert] }));
     track("certificate_generated", { childId: child.id, personalised: premium });
-    toast(tx("Certificate created", "تم إنشاء الشهادة"));
+    toast(tx("Sertifikat dibuat", "Certificate created", "تم إنشاء الشهادة"));
     setViewing(cert);
   };
 
   return (
     <div className="space-y-6">
       <PrintStyle />
-      <SectionHeader title={tx("Achievements & Certificates", "الإنجازات والشهادات")} subtitle={tx("Badges celebrate learning habits — reading, talking and practising together.", "الشارات تحتفي بعادات التعلم — القراءة والحوار والممارسة معاً.")} />
+      <SectionHeader title={tx("Pencapaian & Sertifikat", "Achievements & Certificates", "الإنجازات والشهادات")} subtitle={tx("Lencana merayakan kebiasaan belajar - membaca, berdiskusi, dan berlatih bersama.", "Badges celebrate learning habits - reading, talking and practising together.", "الشارات تحتفي بعادات التعلم - القراءة والحوار والممارسة معاً.")} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {BADGES.map(b => {
@@ -102,7 +102,7 @@ export default function Achievements() {
               <div className={cn("font-heading", !unlocked && "text-zinc-400")}>{loc(b.name, language)}</div>
               <p className="text-xs text-zinc-400 mt-1">{loc(b.description, language)}</p>
               <p className="text-[11px] font-mono mt-2 text-zinc-500">
-                {a ? tx(`Unlocked ${fmtDate(a.at, language)}`, `فُتحت ${fmtDate(a.at, language)}`) : tx(HINTS[b.id]?.en || "", HINTS[b.id]?.ar)}
+                {a ? tx(`Terbuka ${fmtDate(a.at, language)}`, `Unlocked ${fmtDate(a.at, language)}`, `فُتحت ${fmtDate(a.at, language)}`) : tx(HINTS[b.id]?.id || "", HINTS[b.id]?.en || "", HINTS[b.id]?.ar)}
               </p>
             </div>
           );
@@ -110,16 +110,16 @@ export default function Achievements() {
       </div>
 
       <Panel
-        title={tx("Certificates", "الشهادات")}
-        action={<button className={btn.primary} onClick={generate}><Award className="w-4 h-4" />{tx("Create certificate", "إنشاء شهادة")}</button>}
+        title={tx("Sertifikat", "Certificates", "الشهادات")}
+        action={<button className={btn.primary} onClick={generate}><Award className="w-4 h-4" />{tx("Buat sertifikat", "Create certificate", "إنشاء شهادة")}</button>}
       >
         {!premium && (
           <p className="text-xs text-zinc-400 mb-4">
-            {tx("Free families get a basic certificate. Premium certificates are personalised with the values your child explored.", "العائلات المجانية تحصل على شهادة أساسية. الشهادات المميزة مخصصة بالقيم التي استكشفها طفلك.")}{" "}
-            <button className="underline cursor-pointer" onClick={() => setPaywall(true)}>{tx("Upgrade", "ترقية")}</button>
+            {tx("Keluarga gratis mendapat sertifikat dasar. Sertifikat premium dipersonalisasi dengan nilai-nilai yang dieksplorasi anakmu.", "Free families get a basic certificate. Premium certificates are personalised with the values your child explored.", "العائلات المجانية تحصل على شهادة أساسية. الشهادات المميزة مخصصة بالقيم التي استكشفها طفلك.")}{" "}
+            <button className="underline cursor-pointer" onClick={() => setPaywall(true)}>{tx("Upgrade", "Upgrade", "ترقية")}</button>
           </p>
         )}
-        {!certs.length ? <Empty>{tx(`Create a certificate to celebrate ${child.name}'s learning journey.`, `أنشئ شهادة للاحتفاء برحلة تعلم ${child.name}.`)}</Empty> : (
+        {!certs.length ? <Empty>{tx(`Buat sertifikat untuk merayakan perjalanan belajar ${child.name}.`, `Create a certificate to celebrate ${child.name}'s learning journey.`, `أنشئ شهادة للاحتفاء برحلة تعلم ${child.name}.`)}</Empty> : (
           <ul className="divide-y divide-white/5">
             {certs.map(c => (
               <li key={c.id} className="py-3 flex items-center gap-3">
@@ -128,24 +128,24 @@ export default function Achievements() {
                   <div className="text-sm">{c.title}</div>
                   <div className="text-[11px] text-zinc-500">{fmtDate(c.at, language)}</div>
                 </div>
-                <button className={btn.small} onClick={() => setViewing(c)}><Printer className="w-3.5 h-3.5" />{tx("View & print", "عرض وطباعة")}</button>
+                <button className={btn.small} onClick={() => setViewing(c)}><Printer className="w-3.5 h-3.5" />{tx("Lihat & cetak", "View & print", "عرض وطباعة")}</button>
               </li>
             ))}
           </ul>
         )}
       </Panel>
 
-      <Modal open={!!viewing} onClose={() => setViewing(null)} wide title={tx("Certificate", "الشهادة")}>
+      <Modal open={!!viewing} onClose={() => setViewing(null)} wide title={tx("Sertifikat", "Certificate", "الشهادة")}>
         {viewing && (
           <>
             <CertificateView cert={viewing} child={child} stories={stats.storiesCompleted} discussions={stats.discussions} personalised={viewing.values.length > 0} lang={language} />
             <div className="flex justify-end mt-4">
-              <button className={btn.primary} onClick={() => window.print()}><Printer className="w-4 h-4" />{tx("Print", "طباعة")}</button>
+              <button className={btn.primary} onClick={() => window.print()}><Printer className="w-4 h-4" />{tx("Cetak", "Print", "طباعة")}</button>
             </div>
           </>
         )}
       </Modal>
-      <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Personalised certificates are part of Premium.", "الشهادات المخصصة جزء من الخطة المميزة.")} />
+      <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Sertifikat yang dipersonalisasi adalah bagian dari Premium.", "Personalised certificates are part of Premium.", "الشهادات المخصصة جزء من الخطة المميزة.")} />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import type { ContentState, Story, ValueId } from "@/types";
 
-/** Story cover — uses the illustration when present, otherwise a calm generated gradient. */
+/** Story cover - uses the illustration when present, otherwise a calm generated gradient. */
 export function StoryCover({ story, className, locked }: { story: Story; className?: string; locked?: boolean }) {
   const { language } = useLanguage();
   const src = story.coverImage || story.pages.find(p => p.image)?.image;
@@ -75,7 +75,7 @@ export function Avatar({ seed, size = 32, className }: { seed: string; size?: nu
 export function ReviewBadge({ state }: { state: ContentState }) {
   const { tx } = useLanguage();
   if (state === "published") {
-    return <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-300"><ShieldCheck className="w-3 h-3" />{tx("Reviewed", "مُراجَعة")}</span>;
+    return <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-300"><ShieldCheck className="w-3 h-3" />{tx("Ditinjau", "Reviewed", "مُراجَعة")}</span>;
   }
   return <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-300 border border-amber-300/30 rounded-full px-2 py-0.5">{STATE_LABEL[state]}</span>;
 }

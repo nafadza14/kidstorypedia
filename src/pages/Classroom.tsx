@@ -15,10 +15,10 @@ export default function Classroom() {
   const [params, setParams] = useSearchParams();
   const active: Tab = TABS.includes(params.get("tab") as Tab) ? (params.get("tab") as Tab) : "classes";
   const labels: Record<Tab, string> = {
-    classes: tx("Classes", "الفصول"),
-    pilot: tx("School pilot", "تجربة المدرسة"),
-    sponsorship: tx("Sponsorship", "الرعاية"),
-    pricing: tx("Pricing & pilot request", "الأسعار"),
+    classes: tx("Kelas", "Classes", "الفصول"),
+    pilot: tx("Uji coba sekolah", "School pilot", "تجربة المدرسة"),
+    sponsorship: tx("Sponsor", "Sponsorship", "الرعاية"),
+    pricing: tx("Harga & permintaan uji coba", "Pricing & pilot request", "الأسعار"),
   };
   return (
     <div className="min-h-screen">
@@ -27,7 +27,7 @@ export default function Classroom() {
         .print-report, .print-report * { color: #000 !important; border-color: #ccc !important; background: transparent !important; }
         @page { margin: 16mm; }
       }`}</style>
-      <StaffTopBar title={tx("Classroom · Schools", "الفصول والمدارس")} />
+      <StaffTopBar title={tx("Kelas & Sekolah", "Classroom · Schools", "الفصول والمدارس")} />
       <PageShell>
         <TabNav tabs={TABS.map(t => ({ id: t, label: labels[t] }))} active={active} onChange={t => setParams({ tab: t })} />
         {active === "classes" && <ClassesTab />}

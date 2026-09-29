@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 function useLinks() {
   const { tx } = useLanguage();
   return [
-    { to: "/stories", label: tx("Stories", "القصص") },
-    { to: "/pricing", label: tx("Pricing", "الأسعار") },
-    { to: "/30-nights", label: tx("30 Nights", "٣٠ ليلة") },
-    { to: "/classroom", label: tx("For Schools", "للمدارس") },
+    { to: "/stories", label: tx("Cerita", "Stories", "القصص") },
+    { to: "/pricing", label: tx("Harga", "Pricing", "الأسعار") },
+    { to: "/30-nights", label: tx("30 Malam", "30 Nights", "٣٠ ليلة") },
+    { to: "/classroom", label: tx("Untuk Sekolah", "For Schools", "للمدارس") },
   ];
 }
 
@@ -45,7 +45,7 @@ export function PublicNav({ transparent }: { transparent?: boolean }) {
         )}
       >
         <Logo />
-        <nav className="hidden md:flex items-center gap-7 text-[15px] text-zinc-200" aria-label={tx("Main", "الرئيسية")}>
+        <nav className="hidden md:flex items-center gap-7 text-[15px] text-zinc-200" aria-label={tx("Utama", "Main", "الرئيسية")}>
           {links.map(l => (
             <NavLink key={l.to} to={l.to} className={({ isActive }) => cn("hover:text-white transition-colors", isActive && "text-white underline underline-offset-8 decoration-white/40")}>
               {l.label}
@@ -55,15 +55,15 @@ export function PublicNav({ transparent }: { transparent?: boolean }) {
         <div className="flex items-center gap-3 sm:gap-4">
           <LanguageSwitcher />
           <Link to={loginTo} className="hidden md:inline text-sm text-zinc-200 hover:text-white">
-            {hasParent ? tx("Parent portal", "بوابة الوالدين") : tx("Log in", "تسجيل الدخول")}
+            {hasParent ? tx("Portal orang tua", "Parent portal", "بوابة الوالدين") : tx("Masuk", "Log in", "تسجيل الدخول")}
           </Link>
           <Link to="/onboarding" className="hidden md:inline-flex px-4 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-zinc-200 transition-colors">
-            {tx("Get Started", "ابدأ الآن")}
+            {tx("Mulai Sekarang", "Get Started", "ابدأ الآن")}
           </Link>
           <button
             onClick={() => setOpen(o => !o)}
             className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 cursor-pointer"
-            aria-label={tx("Toggle menu", "القائمة")}
+            aria-label={tx("Menu", "Toggle menu", "القائمة")}
             aria-expanded={open}
           >
             <span className={cn("w-6 h-[2px] bg-white transition-transform", open && "rotate-45 translate-y-2")} />
@@ -88,10 +88,10 @@ export function PublicNav({ transparent }: { transparent?: boolean }) {
             ))}
             <div className="pt-2 flex flex-col gap-3">
               <Link to="/onboarding" onClick={() => setOpen(false)} className="w-full text-center py-4 bg-white text-black font-semibold rounded-full text-lg">
-                {tx("Get Started", "ابدأ الآن")}
+                {tx("Mulai Sekarang", "Get Started", "ابدأ الآن")}
               </Link>
               <Link to={loginTo} onClick={() => setOpen(false)} className="w-full text-center py-4 border border-white/30 text-white rounded-full text-lg">
-                {hasParent ? tx("Parent portal", "بوابة الوالدين") : tx("Log in", "تسجيل الدخول")}
+                {hasParent ? tx("Portal orang tua", "Parent portal", "بوابة الوالدين") : tx("Masuk", "Log in", "تسجيل الدخول")}
               </Link>
             </div>
           </motion.div>
@@ -106,12 +106,12 @@ export function PublicFooter() {
   const hasParent = useStore(s => !!s.parent);
   const year = new Date().getFullYear();
   const links = [
-    { to: "/stories", label: tx("Stories", "القصص") },
-    { to: "/pricing", label: tx("Pricing", "الأسعار") },
-    { to: "/30-nights", label: tx("30 Nights", "٣٠ ليلة") },
-    { to: "/classroom", label: tx("Schools", "المدارس") },
-    { to: "/privacy", label: tx("Privacy", "الخصوصية") },
-    { to: hasParent ? "/dashboard" : "/onboarding", label: tx("Parent portal", "بوابة الوالدين") },
+    { to: "/stories", label: tx("Cerita", "Stories", "القصص") },
+    { to: "/pricing", label: tx("Harga", "Pricing", "الأسعار") },
+    { to: "/30-nights", label: tx("30 Malam", "30 Nights", "٣٠ ليلة") },
+    { to: "/classroom", label: tx("Sekolah", "Schools", "المدارس") },
+    { to: "/privacy", label: tx("Privasi", "Privacy", "الخصوصية") },
+    { to: hasParent ? "/dashboard" : "/onboarding", label: tx("Portal orang tua", "Parent portal", "بوابة الوالدين") },
   ];
   return (
     <footer className="relative z-10 border-t border-white/10 py-12 px-5 sm:px-8 max-w-7xl mx-auto text-xs text-zinc-400">
@@ -119,19 +119,19 @@ export function PublicFooter() {
         <div className="max-w-sm">
           <div className="font-heading text-white text-lg mb-2">Kidstorypedia® ✳︎</div>
           <p className="leading-relaxed">
-            {tx("Every story becomes an opportunity to grow.", "كل قصة فرصة للنمو.")}
+            {tx("Setiap cerita menjadi kesempatan untuk bertumbuh.", "Every story becomes an opportunity to grow.", "كل قصة فرصة للنمو.")}
           </p>
-          <p className="mt-3">{tx("Supported by Yayasan Omah Dongeng Kalasan", "بدعم من مؤسسة أوماه دونغينغ كالاسان")}</p>
+          <p className="mt-3">{tx("Didukung oleh Yayasan Omah Dongeng Kalasan", "Supported by Yayasan Omah Dongeng Kalasan", "بدعم من مؤسسة أوماه دونغينغ كالاسان")}</p>
         </div>
-        <nav className="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-3 text-sm" aria-label={tx("Footer", "التذييل")}>
+        <nav className="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-3 text-sm" aria-label={tx("Footer", "Footer", "التذييل")}>
           {links.map(l => (
             <Link key={l.label} to={l.to} className="hover:text-white transition-colors">{l.label}</Link>
           ))}
         </nav>
       </div>
       <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3">
-        <span>© {year} Kidstorypedia. {tx("All rights reserved.", "جميع الحقوق محفوظة.")}</span>
-        <span>{tx("Ad-free · No behavioural tracking · Parent-controlled", "بلا إعلانات · بلا تتبع سلوكي · بتحكم الوالدين")}</span>
+        <span>© {year} Kidstorypedia. {tx("Hak cipta dilindungi.", "All rights reserved.", "جميع الحقوق محفوظة.")}</span>
+        <span>{tx("Bebas iklan · Tanpa pelacakan · Dikontrol orang tua", "Ad-free · No behavioural tracking · Parent-controlled", "بلا إعلانات · بلا تتبع سلوكي · بتحكم الوالدين")}</span>
       </div>
     </footer>
   );

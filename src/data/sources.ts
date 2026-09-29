@@ -7,7 +7,7 @@ import type { Source } from "@/types";
  */
 export const SOURCES: Source[] = [
   { id: "q12-4-6", type: "quran", title: "Surah Yusuf", reference: "Qur'an 12:4–6", note: "Yusuf's dream and Yaqub's advice" },
-  { id: "q12-18", type: "quran", title: "Surah Yusuf", reference: "Qur'an 12:18", note: "\"Fa sabrun jameel\" — beautiful patience" },
+  { id: "q12-18", type: "quran", title: "Surah Yusuf", reference: "Qur'an 12:18", note: "\"Fa sabrun jameel\" - beautiful patience" },
   { id: "q12-92", type: "quran", title: "Surah Yusuf", reference: "Qur'an 12:92", note: "Yusuf forgives his brothers" },
   { id: "q29-14", type: "quran", title: "Surah Al-'Ankabut", reference: "Qur'an 29:14", note: "Nuh stayed among his people a thousand years less fifty" },
   { id: "q11-25-44", type: "quran", title: "Surah Hud", reference: "Qur'an 11:25–44", note: "Nuh's call, building the Ark, the flood" },
@@ -27,9 +27,9 @@ export const SOURCES: Source[] = [
   { id: "bukhari-3231", type: "hadith", title: "Sahih al-Bukhari", reference: "Sahih al-Bukhari 3231; Sahih Muslim 1795", note: "The day of Ta'if and the angel of the mountains" },
   { id: "abudawud-1678", type: "hadith", title: "Sunan Abi Dawud", reference: "Sunan Abi Dawud 1678; Jami' at-Tirmidhi 3675 (graded hasan)", note: "Abu Bakr brings all his wealth; 'Umar brings half" },
   { id: "tirmidhi-3703", type: "hadith", title: "Jami' at-Tirmidhi", reference: "Jami' at-Tirmidhi 3703; Sunan an-Nasa'i 3608", note: "'Uthman and the well of Rumah" },
-  { id: "ibnhisham-amin", type: "sirah", title: "As-Sirah an-Nabawiyyah (Ibn Hisham)", reference: "Ibn Hisham, Sirah — rebuilding of the Ka'bah", note: "Quraysh call him al-Amin; placing the Black Stone" },
-  { id: "ibnhisham-bilal", type: "sirah", title: "As-Sirah an-Nabawiyyah (Ibn Hisham)", reference: "Ibn Hisham, Sirah — persecution of the early Muslims", note: "Bilal repeats \"Ahad, Ahad\"; freed by Abu Bakr" },
-  { id: "fable-original", type: "original_fable", title: "Kidstorypedia original moral fable", reference: "Original fiction — no historical claims", note: "Fictional characters; values drawn from general Islamic ethics" },
+  { id: "ibnhisham-amin", type: "sirah", title: "As-Sirah an-Nabawiyyah (Ibn Hisham)", reference: "Ibn Hisham, Sirah - rebuilding of the Ka'bah", note: "Quraysh call him al-Amin; placing the Black Stone" },
+  { id: "ibnhisham-bilal", type: "sirah", title: "As-Sirah an-Nabawiyyah (Ibn Hisham)", reference: "Ibn Hisham, Sirah - persecution of the early Muslims", note: "Bilal repeats \"Ahad, Ahad\"; freed by Abu Bakr" },
+  { id: "fable-original", type: "original_fable", title: "Kidstorypedia original moral fable", reference: "Original fiction - no historical claims", note: "Fictional characters; values drawn from general Islamic ethics" },
 ];
 
 export const SOURCE_MAP: Record<string, Source> = Object.fromEntries(SOURCES.map(s => [s.id, s]));

@@ -5,7 +5,7 @@ export interface ValueDef {
   name: Localized;
   description: Localized;
   color: string; // hex, used for chips and charts
-  /** Values that reinforce each other — used by the recommendation engine */
+  /** Values that reinforce each other - used by the recommendation engine */
   related: ValueId[];
 }
 

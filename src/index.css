@@ -46,6 +46,34 @@ body {
 /* Hide scrollbars on horizontal story rows */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 
+/* ─── Safe-area insets for notched phones (iPhone X+, etc.) ─── */
+.safe-top    { padding-top:    env(safe-area-inset-top,    0); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+.safe-left   { padding-left:   env(safe-area-inset-left,   0); }
+.safe-right  { padding-right:  env(safe-area-inset-right,  0); }
+.safe-x      { padding-left:   env(safe-area-inset-left,   0); padding-right: env(safe-area-inset-right, 0); }
+.safe-y      { padding-top:    env(safe-area-inset-top,    0); padding-bottom: env(safe-area-inset-bottom, 0); }
+
+/* Apply safe-area bottom padding globally to fixed bottom bars and full-screen views */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .fixed.bottom-0,
+  .fixed.inset-0 {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+
+/* Responsive touch targets - ensure minimum 44px for interactive elements on mobile */
+@media (pointer: coarse) {
+  button, [role="button"], a, select, input[type="checkbox"], input[type="radio"] {
+    min-height: 44px;
+  }
+  /* Exclude tiny inline elements like value chips and dot indicators */
+  .rounded-full[class*="w-2"], .rounded-full[class*="w-1"],
+  .rounded-full[class*="h-2"], .rounded-full[class*="h-1"] {
+    min-height: unset;
+  }
+}
+
 @media print {
   body { background: #fff !important; }
 }

@@ -30,7 +30,7 @@ export const PLANS: Plan[] = [
   },
   {
     id: "premium_monthly",
-    name: L("Family Monthly", "العائلة — شهري"),
+    name: L("Family Monthly", "العائلة - شهري"),
     priceUsd: 7.99,
     period: "month",
     tagline: L("The full family learning journey", "رحلة التعلم العائلية الكاملة"),
@@ -46,7 +46,7 @@ export const PLANS: Plan[] = [
   },
   {
     id: "premium_annual",
-    name: L("Family Annual", "العائلة — سنوي"),
+    name: L("Family Annual", "العائلة - سنوي"),
     priceUsd: 69,
     period: "year",
     tagline: L("Save ~28% vs monthly", "وفّر نحو ٢٨٪ مقارنة بالشهري"),

@@ -4,7 +4,7 @@
  * repository interface so they can be swapped for a real backend later.
  */
 
-export type Lang = "en" | "ar";
+export type Lang = "id" | "en" | "ar";
 
 /** Canonical 12-value taxonomy (PRD §17, §100.1) */
 export type ValueId =
@@ -51,6 +51,7 @@ export interface Source {
 export interface Localized {
   en: string;
   ar?: string;
+  id?: string;
 }
 
 export interface StoryPage {
@@ -156,7 +157,7 @@ export type ParentGoal = "bedtime" | "prophets" | "character" | "history" | "rea
 
 export interface ChildProfile {
   id: string;
-  name: string; // first name only — data minimisation (PRD §32)
+  name: string; // first name only - data minimisation (PRD §32)
   age: number;
   readingLevel: ReadingLevel;
   language: Lang;
@@ -165,7 +166,7 @@ export interface ChildProfile {
   createdAt: string;
 }
 
-/** Observable learning interactions (PRD §30 — no character scores) */
+/** Observable learning interactions (PRD §30 - no character scores) */
 export type LearningEventType =
   | "story_completed"
   | "discussion_completed"

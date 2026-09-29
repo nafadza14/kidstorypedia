@@ -23,17 +23,17 @@ export default function StoriesTab({ onOpen, onReview }: { onOpen: (id: string) 
   return (
     <div>
       <div className="flex flex-wrap gap-2 items-center mb-4">
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder={tx("Search title, id, value…", "بحث…")} className={inp + " max-w-xs"} />
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder={tx("Cari judul, id, nilai…", "Search title, id, value…", "بحث…")} className={inp + " max-w-xs"} />
         <select value={st} onChange={e => setSt(e.target.value)} className={sel}>
-          <option value="">{tx("All states", "كل الحالات")}</option>
+          <option value="">{tx("Semua status", "All states", "كل الحالات")}</option>
           {CONTENT_STATES.map(s => <option key={s} value={s}>{STATE_LABEL[s]}</option>)}
         </select>
         <select value={cat} onChange={e => setCat(e.target.value)} className={sel}>
-          <option value="">{tx("All categories", "كل الفئات")}</option>
+          <option value="">{tx("Semua kategori", "All categories", "كل الفئات")}</option>
           {CATEGORIES.map(c => <option key={c.id} value={c.id}>{loc(c.name, language)}</option>)}
         </select>
         <select value={origin} onChange={e => setOrigin(e.target.value)} className={sel}>
-          <option value="">{tx("All origins", "كل المصادر")}</option>
+          <option value="">{tx("Semua asal", "All origins", "كل المصادر")}</option>
           <option value="canonical">canonical</option>
           <option value="ai_generated">ai_generated</option>
         </select>
@@ -43,13 +43,13 @@ export default function StoriesTab({ onOpen, onReview }: { onOpen: (id: string) 
         <table className="w-full min-w-[900px]">
           <thead>
             <tr>
-              <th className={th}>{tx("Title", "العنوان")}</th>
-              <th className={th}>{tx("Category", "الفئة")}</th>
-              <th className={th}>{tx("Values", "القيم")}</th>
-              <th className={th}>{tx("Origin", "الأصل")}</th>
-              <th className={th}>{tx("State", "الحالة")}</th>
-              <th className={th}>{tx("Ver.", "إصدار")}</th>
-              <th className={th}>{tx("Access", "الوصول")}</th>
+              <th className={th}>{tx("Judul", "Title", "العنوان")}</th>
+              <th className={th}>{tx("Kategori", "Category", "الفئة")}</th>
+              <th className={th}>{tx("Nilai", "Values", "القيم")}</th>
+              <th className={th}>{tx("Asal", "Origin", "الأصل")}</th>
+              <th className={th}>{tx("Status", "State", "الحالة")}</th>
+              <th className={th}>{tx("Ver.", "Ver.", "إصدار")}</th>
+              <th className={th}>{tx("Akses", "Access", "الوصول")}</th>
               <th className={th} />
             </tr>
           </thead>
@@ -67,14 +67,14 @@ export default function StoriesTab({ onOpen, onReview }: { onOpen: (id: string) 
                 </td>
                 <td className={td}><ReviewBadge state={s.state} /></td>
                 <td className={td + " font-mono text-xs"}>v{s.version}</td>
-                <td className={td + " text-xs"}>{s.premium ? <span className="text-amber-300">{tx("Premium", "مميز")}</span> : <span className="text-zinc-400">{tx("Free", "مجاني")}</span>}{s.packId && <div className="text-[10px] font-mono text-zinc-500">{s.packId}</div>}</td>
+                <td className={td + " text-xs"}>{s.premium ? <span className="text-amber-300">{tx("Premium", "Premium", "مميز")}</span> : <span className="text-zinc-400">{tx("Gratis", "Free", "مجاني")}</span>}{s.packId && <div className="text-[10px] font-mono text-zinc-500">{s.packId}</div>}</td>
                 <td className={td + " whitespace-nowrap"}>
-                  <button className={btn.small} onClick={() => onOpen(s.id)}>{tx("Edit", "تحرير")}</button>{" "}
-                  <button className={btn.small} onClick={() => onReview(s.id)}>{tx("Review", "مراجعة")}</button>
+                  <button className={btn.small} onClick={() => onOpen(s.id)}>{tx("Edit", "Edit", "تحرير")}</button>{" "}
+                  <button className={btn.small} onClick={() => onReview(s.id)}>{tx("Tinjau", "Review", "مراجعة")}</button>
                 </td>
               </tr>
             ))}
-            {!rows.length && <tr><td className={td + " text-center text-zinc-500"} colSpan={8}>{tx("No stories match.", "لا توجد نتائج.")}</td></tr>}
+            {!rows.length && <tr><td className={td + " text-center text-zinc-500"} colSpan={8}>{tx("Tidak ada cerita yang cocok.", "No stories match.", "لا توجد نتائج.")}</td></tr>}
           </tbody>
         </table>
       </div>

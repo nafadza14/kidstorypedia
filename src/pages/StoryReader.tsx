@@ -92,8 +92,8 @@ export default function StoryReader() {
   if (!story) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
-        <p className="text-xl text-zinc-400">{tx("Story not found.", "القصة غير موجودة.")}</p>
-        <Link to="/child" className="underline underline-offset-4">{tx("Go back", "العودة")}</Link>
+        <p className="text-xl text-zinc-400">{tx("Cerita tidak ditemukan.", "Story not found.", "القصة غير موجودة.")}</p>
+        <Link to="/child" className="underline underline-offset-4">{tx("Kembali", "Go back", "العودة")}</Link>
       </div>
     );
   }
@@ -104,14 +104,14 @@ export default function StoryReader() {
         <div className="max-w-md w-full text-center rounded-3xl border border-white/15 bg-zinc-900/70 p-8">
           <StoryCover story={story} className="aspect-[4/3] rounded-2xl mb-6" locked />
           <h1 className="text-2xl font-heading mb-2">{loc(story.title, language)}</h1>
-          <p className="text-sm text-zinc-400 mb-6">{tx("This story is part of a premium collection. Ask a parent to unlock it.", "هذه القصة ضمن مجموعة مميزة. اطلب من والديك فتحها.")}</p>
+          <p className="text-sm text-zinc-400 mb-6">{tx("Cerita ini bagian dari koleksi premium. Minta orang tua untuk membukanya.", "This story is part of a premium collection. Ask a parent to unlock it.", "هذه القصة ضمن مجموعة مميزة. اطلب من والديك فتحها.")}</p>
           <div className="flex flex-col gap-3">
-            <button className={btn.primary} onClick={() => setGate("paywall")}><Lock className="w-4 h-4" />{tx("Parent: unlock", "للوالدين: افتح")}</button>
-            <Link to="/child" className={btn.ghost}>{tx("Choose another story", "اختر قصة أخرى")}</Link>
+            <button className={btn.primary} onClick={() => setGate("paywall")}><Lock className="w-4 h-4" />{tx("Orang Tua: buka kunci", "Parent: unlock", "للوالدين: افتح")}</button>
+            <Link to="/child" className={btn.ghost}>{tx("Pilih cerita lain", "Choose another story", "اختر قصة أخرى")}</Link>
           </div>
         </div>
         <PinGate open={gate === "paywall"} onClose={() => setGate(null)} onPass={() => { setGate(null); setPaywall(true); }} />
-        <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Unlock this story with Family Premium or its story pack.", "افتح هذه القصة بالاشتراك العائلي أو بحزمتها.")} />
+        <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Buka cerita ini dengan Paket Keluarga Premium atau paket ceritanya.", "Unlock this story with Family Premium or its story pack.", "افتح هذه القصة بالاشتراك العائلي أو بحزمتها.")} />
       </div>
     );
   }
@@ -138,7 +138,7 @@ export default function StoryReader() {
     }
     track("story_completed", { storyId: story!.id, childId: child.id });
     const fresh = logEvent({ childId: child.id, type: "story_completed", storyId: story!.id, storyVersion: story!.version, values: story!.values });
-    fresh.forEach(b => { const d = BADGES.find(x => x.id === b); if (d) toast(tx(`New badge: ${d.name.en}!`, `شارة جديدة: ${d.name.ar}!`)); });
+    fresh.forEach(b => { const d = BADGES.find(x => x.id === b); if (d) toast(tx(`Lencana baru: ${d.name.en}!`, `New badge: ${d.name.en}!`, `شارة جديدة: ${d.name.ar}!`)); });
     setPhase("celebrate");
   }
 
@@ -170,23 +170,23 @@ export default function StoryReader() {
   return (
     <div className="fixed inset-0 bg-[#0a0a0c] text-white flex flex-col overflow-hidden">
       {/* top bar */}
-      <header className="absolute top-0 inset-x-0 p-4 sm:p-6 flex justify-between items-center z-50 bg-gradient-to-b from-black/90 to-transparent">
-        <button onClick={() => nav("/child")} className="w-11 h-11 rounded-full bg-white/10 border border-white/15 flex items-center justify-center hover:bg-white hover:text-black cursor-pointer" title={tx("Close", "إغلاق")}>
+      <header className="absolute top-0 inset-x-0 p-4 sm:p-6 pt-[max(1rem,env(safe-area-inset-top))] flex justify-between items-center z-50 bg-gradient-to-b from-black/90 to-transparent">
+        <button onClick={() => nav("/child")} className="w-11 h-11 rounded-full bg-white/10 border border-white/15 flex items-center justify-center hover:bg-white hover:text-black cursor-pointer" title={tx("Tutup", "Close", "إغلاق")}>
           <X className="w-5 h-5" />
         </button>
-        <div className="flex items-center gap-1.5" aria-label={`Page ${page + 1} of ${total}`}>
+        <div className="flex items-center gap-1.5 max-w-[40vw] overflow-x-auto scrollbar-none" aria-label={`Page ${page + 1} of ${total}`}>
           {story.pages.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all ${i === page ? "w-8 bg-white" : i < page ? "w-3 bg-white/60" : "w-3 bg-white/15"}`} />
+            <div key={i} className={`h-1.5 rounded-full transition-all shrink-0 ${i === page ? "w-8 bg-white" : i < page ? "w-3 bg-white/60" : "w-3 bg-white/15"}`} />
           ))}
         </div>
         <div className="flex items-center gap-2">
           {language === "ar" && (
-            <button onClick={() => setTashkeel(t => !t)} className={`w-11 h-11 rounded-full border border-white/15 flex items-center justify-center cursor-pointer ${tashkeel ? "bg-white text-black" : "bg-white/10"}`} title={tx("Tashkeel", "التشكيل")}>
+            <button onClick={() => setTashkeel(t => !t)} className={`w-11 h-11 rounded-full border border-white/15 flex items-center justify-center cursor-pointer ${tashkeel ? "bg-white text-black" : "bg-white/10"}`} title={tx("Tashkeel", "Tashkeel", "التشكيل")}>
               <TypeIcon className="w-4 h-4" />
             </button>
           )}
           {state.settings.audioNarration && narration.supported && (
-            <button onClick={toggleAudio} className={`w-11 h-11 rounded-full border border-white/15 flex items-center justify-center cursor-pointer ${narration.speaking ? "bg-white text-black" : "bg-white/10 hover:bg-white/20"}`} title={tx("Listen", "استمع")}>
+            <button onClick={toggleAudio} className={`w-11 h-11 rounded-full border border-white/15 flex items-center justify-center cursor-pointer ${narration.speaking ? "bg-white text-black" : "bg-white/10 hover:bg-white/20"}`} title={tx("Dengarkan", "Listen", "استمع")}>
               {narration.speaking ? <Pause className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
           )}
@@ -203,7 +203,7 @@ export default function StoryReader() {
               <div className="w-full md:w-1/2 aspect-[4/3] rounded-3xl overflow-hidden border border-white/15 relative shrink-0 max-h-[40vh] md:max-h-none">
                 <StoryCover story={{ ...story, coverImage: cur.image || story.coverImage }} className="w-full h-full" />
                 <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-black/60 border border-white/15 text-[11px] font-mono text-zinc-300">
-                  {tx(`Page ${page + 1} of ${total}`, `الصفحة ${page + 1} من ${total}`)}
+                  {tx(`Halaman ${page + 1} dari ${total}`, `Page ${page + 1} of ${total}`, `الصفحة ${page + 1} من ${total}`)}
                 </div>
               </div>
               <div className="w-full md:w-1/2">
@@ -213,7 +213,7 @@ export default function StoryReader() {
                 </p>
                 {cur.sourceRefs.length > 0 && (
                   <p className="mt-6 text-[11px] font-mono text-zinc-500">
-                    {tx("Source", "المصدر")}: {cur.sourceRefs.map(r => SOURCE_MAP[r]?.reference || r).join(" · ")}
+                    {tx("Sumber", "Source", "المصدر")}: {cur.sourceRefs.map(r => SOURCE_MAP[r]?.reference || r).join(" · ")}
                   </p>
                 )}
               </div>
@@ -222,12 +222,12 @@ export default function StoryReader() {
         </AnimatePresence>
       </main>
 
-      <footer className="absolute bottom-0 inset-x-0 p-6 sm:p-8 flex justify-between items-center z-50 bg-gradient-to-t from-black/90 to-transparent">
-        <button onClick={prev} disabled={page === 0} className="w-14 h-14 rounded-full bg-zinc-900/80 border border-white/15 flex items-center justify-center hover:bg-white hover:text-black disabled:opacity-20 cursor-pointer" title={tx("Previous", "السابق")}>
+      <footer className="absolute bottom-0 inset-x-0 p-6 sm:p-8 pb-[max(1.5rem,env(safe-area-inset-bottom))] flex justify-between items-center z-50 bg-gradient-to-t from-black/90 to-transparent">
+        <button onClick={prev} disabled={page === 0} className="w-14 h-14 rounded-full bg-zinc-900/80 border border-white/15 flex items-center justify-center hover:bg-white hover:text-black disabled:opacity-20 cursor-pointer" title={tx("Sebelumnya", "Previous", "السابق")}>
           {dir === "rtl" ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
         </button>
         <div className="text-xs font-mono text-zinc-400 text-center px-3 line-clamp-1">{loc(story.title, language)}</div>
-        <button onClick={next} className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:bg-zinc-200 shadow-2xl cursor-pointer" title={page < total - 1 ? tx("Next", "التالي") : tx("Finish", "إنهاء")}>
+        <button onClick={next} className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:bg-zinc-200 shadow-2xl cursor-pointer" title={page < total - 1 ? tx("Selanjutnya", "Next", "التالي") : tx("Selesai", "Finish", "إنهاء")}>
           {page < total - 1 ? (dir === "rtl" ? <ChevronLeft className="w-7 h-7" /> : <ChevronRight className="w-7 h-7" />) : <Check className="w-6 h-6" />}
         </button>
       </footer>
@@ -245,9 +245,9 @@ export default function StoryReader() {
               {phase === "celebrate" && (
                 <>
                   <div className="text-5xl mb-4">✳︎</div>
-                  <h2 className="text-3xl font-heading mb-3">{tx("MashaAllah!", "ما شاء الله!")}</h2>
-                  <p className="text-zinc-300 mb-6">{tx(`You finished "${story.title.en}".`, `لقد أكملت «${loc(story.title, "ar")}».`)}</p>
-                  <div className="text-xs font-mono text-zinc-400 mb-3">{tx("Values in this story", "القيم في هذه القصة")}</div>
+                  <h2 className="text-3xl font-heading mb-3">{tx("MasyaAllah!", "MashaAllah!", "ما شاء الله!")}</h2>
+                  <p className="text-zinc-300 mb-6">{tx(`Kamu telah menyelesaikan "${story.title.en}".`, `You finished "${story.title.en}".`, `لقد أكملت «${loc(story.title, "ar")}».`)}</p>
+                  <div className="text-xs font-mono text-zinc-400 mb-3">{tx("Nilai-nilai dalam cerita ini", "Values in this story", "القيم في هذه القصة")}</div>
                   <div className="space-y-2 mb-8 text-left rtl:text-right">
                     {story.values.map(v => (
                       <div key={v} className="rounded-2xl p-3 border" style={{ borderColor: VALUE_MAP[v].color + "55", background: VALUE_MAP[v].color + "12" }}>
@@ -256,13 +256,13 @@ export default function StoryReader() {
                       </div>
                     ))}
                   </div>
-                  <button className={btn.primary + " w-full py-3.5"} onClick={() => setPhase(quiz.length ? "quiz" : "reflect")}>{tx("Continue", "متابعة")}</button>
+                  <button className={btn.primary + " w-full py-3.5"} onClick={() => setPhase(quiz.length ? "quiz" : "reflect")}>{tx("Lanjutkan", "Continue", "متابعة")}</button>
                 </>
               )}
 
               {phase === "quiz" && quiz[quizIdx] && (
                 <>
-                  <div className="text-xs font-mono text-zinc-400 mb-3">{tx(`Question ${quizIdx + 1} of ${quiz.length}`, `سؤال ${quizIdx + 1} من ${quiz.length}`)}</div>
+                  <div className="text-xs font-mono text-zinc-400 mb-3">{tx(`Pertanyaan ${quizIdx + 1} dari ${quiz.length}`, `Question ${quizIdx + 1} of ${quiz.length}`, `سؤال ${quizIdx + 1} من ${quiz.length}`)}</div>
                   <h2 className="text-2xl font-heading mb-6">{loc(quiz[quizIdx].q, language)}</h2>
                   <div className="space-y-3">
                     {quiz[quizIdx].options.map((o, i) => {
@@ -280,23 +280,23 @@ export default function StoryReader() {
 
               {phase === "reflect" && (
                 <>
-                  <h2 className="text-2xl font-heading mb-3">{tx("Think about it", "فكّر في ذلك")}</h2>
+                  <h2 className="text-2xl font-heading mb-3">{tx("Pikirkan baik-baik", "Think about it", "فكّر في ذلك")}</h2>
                   <p className="text-lg text-zinc-200 mb-8">{loc(story.discussion.reflection, language)}</p>
-                  <p className="text-sm text-zinc-400 mb-6">{tx("Say your answer out loud to your family!", "قل إجابتك بصوت عالٍ لعائلتك!")}</p>
-                  <button className={btn.primary + " w-full py-3.5"} onClick={() => setPhase("handoff")}>{tx("I thought about it", "فكّرت في ذلك")}</button>
+                  <p className="text-sm text-zinc-400 mb-6">{tx("Katakan jawabanmu dengan lantang kepada keluargamu!", "Say your answer out loud to your family!", "قل إجابتك بصوت عالٍ لعائلتك!")}</p>
+                  <button className={btn.primary + " w-full py-3.5"} onClick={() => setPhase("handoff")}>{tx("Aku sudah memikirkannya", "I thought about it", "فكّرت في ذلك")}</button>
                 </>
               )}
 
               {phase === "handoff" && (
                 <>
                   <div className="text-4xl mb-4">🤝</div>
-                  <h2 className="text-2xl font-heading mb-3">{tx("Now talk with your parent", "الآن تحدّث مع والديك")}</h2>
-                  <p className="text-zinc-300 mb-8">{tx("Show this screen to a parent — they have questions and a family challenge for you.", "أرِ هذه الشاشة لأحد والديك — لديهم أسئلة وتحدٍّ عائلي لك.")}</p>
+                  <h2 className="text-2xl font-heading mb-3">{tx("Sekarang bicaralah dengan orang tuamu", "Now talk with your parent", "الآن تحدّث مع والديك")}</h2>
+                  <p className="text-zinc-300 mb-8">{tx("Tunjukkan layar ini kepada orang tua - mereka punya pertanyaan dan tantangan keluarga untukmu.", "Show this screen to a parent - they have questions and a family challenge for you.", "أرِ هذه الشاشة لأحد والديك - لديهم أسئلة وتحدٍّ عائلي لك.")}</p>
                   <div className="flex flex-col gap-3">
                     <button className={btn.primary + " py-3.5"} onClick={() => setGate("discussion")}>
-                      {hasEvent(state, child.id, "discussion_completed", story.id) ? tx("Parent: view discussion", "للوالدين: عرض النقاش") : tx("Parent: open discussion guide", "للوالدين: افتح دليل النقاش")}
+                      {hasEvent(state, child.id, "discussion_completed", story.id) ? tx("Orang Tua: lihat diskusi", "Parent: view discussion", "للوالدين: عرض النقاش") : tx("Orang Tua: buka panduan diskusi", "Parent: open discussion guide", "للوالدين: افتح دليل النقاش")}
                     </button>
-                    <button className={btn.ghost + " py-3.5"} onClick={() => nav("/child")}>{tx("Read another story", "اقرأ قصة أخرى")}</button>
+                    <button className={btn.ghost + " py-3.5"} onClick={() => nav("/child")}>{tx("Baca cerita lain", "Read another story", "اقرأ قصة أخرى")}</button>
                   </div>
                 </>
               )}
@@ -305,17 +305,17 @@ export default function StoryReader() {
         )}
       </AnimatePresence>
 
-      <Modal open={showDiscussion} onClose={() => setShowDiscussion(false)} title={tx("Discussion guide", "دليل النقاش")}>
+      <Modal open={showDiscussion} onClose={() => setShowDiscussion(false)} title={tx("Panduan diskusi", "Discussion guide", "دليل النقاش")}>
         <DiscussionCard story={story} childId={child.id} />
         <div className="mt-6 flex gap-3">
-          <button className={btn.primary + " flex-1"} onClick={() => nav("/dashboard")}>{tx("Go to dashboard", "إلى لوحة التحكم")}</button>
-          <button className={btn.ghost + " flex-1"} onClick={() => nav("/child")}>{tx("Back to stories", "العودة للقصص")}</button>
+          <button className={btn.primary + " flex-1"} onClick={() => nav("/dashboard")}>{tx("Ke dasbor", "Go to dashboard", "إلى لوحة التحكم")}</button>
+          <button className={btn.ghost + " flex-1"} onClick={() => nav("/child")}>{tx("Kembali ke cerita", "Back to stories", "العودة للقصص")}</button>
         </div>
       </Modal>
 
-      <Modal open={timeUp} onClose={() => nav("/child")} title={tx("Reading time is up for today", "انتهى وقت القراءة لليوم")}>
-        <p className="text-zinc-300 mb-6">{tx("Great reading! Let's save the rest for tomorrow, in sha Allah.", "قراءة رائعة! لنكمل غداً إن شاء الله.")}</p>
-        <button className={btn.primary + " w-full"} onClick={() => nav("/child")}>{tx("OK", "حسناً")}</button>
+      <Modal open={timeUp} onClose={() => nav("/child")} title={tx("Waktu membaca hari ini sudah habis", "Reading time is up for today", "انتهى وقت القراءة لليوم")}>
+        <p className="text-zinc-300 mb-6">{tx("Bacaan yang hebat! Kita lanjutkan besok ya, insya Allah.", "Great reading! Let's save the rest for tomorrow, in sha Allah.", "قراءة رائعة! لنكمل غداً إن شاء الله.")}</p>
+        <button className={btn.primary + " w-full"} onClick={() => nav("/child")}>{tx("OK", "OK", "حسناً")}</button>
       </Modal>
 
       <PinGate open={gate === "discussion"} onClose={() => setGate(null)} onPass={() => { setGate(null); setShowDiscussion(true); track("discussion_opened", { storyId: story.id }); }} />

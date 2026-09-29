@@ -6,7 +6,7 @@ import type { PlanId } from "@/types";
 
 /**
  * Billing layer (PRD §33–35, §94). Runs in demo mode (no card is charged)
- * until a payment provider is wired in `checkout()` — e.g. Stripe Checkout
+ * until a payment provider is wired in `checkout()` - e.g. Stripe Checkout
  * for global, Midtrans/Xendit for Indonesia. Keep the same function
  * signatures so the UI does not change.
  */
@@ -37,7 +37,7 @@ export async function checkout(plan: PlanId): Promise<{ ok: boolean; message: st
   }));
   track("subscription_started", { plan, amount: p.priceUsd });
   // referral conversion credit for the inviter would be processed server-side
-  return { ok: true, message: "Subscription active (demo mode — no charge)" };
+  return { ok: true, message: "Subscription active (demo mode - no charge)" };
 }
 
 export async function buyPack(packId: string): Promise<{ ok: boolean; message: string }> {
@@ -51,7 +51,7 @@ export async function buyPack(packId: string): Promise<{ ok: boolean; message: s
     payments: [...s.payments, { id: uid("pay"), at: now(), amountUsd: pack.priceUsd, description: pack.name.en, kind: "pack", ref: "DEMO" }],
   }));
   track("pack_purchased", { pack: packId, amount: pack.priceUsd });
-  return { ok: true, message: "Pack unlocked (demo mode — no charge)" };
+  return { ok: true, message: "Pack unlocked (demo mode - no charge)" };
 }
 
 /** Non-manipulative cancel flow (PRD §94). */

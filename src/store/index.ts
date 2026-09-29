@@ -107,7 +107,7 @@ function persist() {
     if (state.aiLogs.length > 300) state = { ...state, aiLogs: state.aiLogs.slice(-300) };
     localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
-    /* storage unavailable or full — keep in memory */
+    /* storage unavailable or full - keep in memory */
   }
 }
 

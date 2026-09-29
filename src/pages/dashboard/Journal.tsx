@@ -16,16 +16,16 @@ const FREE_VALUES = 4;
 function Breakdown({ j }: { j: ValueJourney }) {
   const { tx } = useDash();
   const rows = [
-    { n: j.stories, en: "stories", ar: "قصص", icon: BookOpen },
-    { n: j.discussions, en: "discussions", ar: "نقاشات", icon: MessageCircle },
-    { n: j.actions, en: "actions", ar: "أعمال", icon: Target },
-    { n: j.reflections, en: "reflections", ar: "تأملات", icon: NotebookPen },
-    { n: j.observations, en: "observations", ar: "ملاحظات", icon: Eye },
+    { n: j.stories, id: "cerita", en: "stories", ar: "قصص", icon: BookOpen },
+    { n: j.discussions, id: "diskusi", en: "discussions", ar: "نقاشات", icon: MessageCircle },
+    { n: j.actions, id: "aksi", en: "actions", ar: "أعمال", icon: Target },
+    { n: j.reflections, id: "refleksi", en: "reflections", ar: "تأملات", icon: NotebookPen },
+    { n: j.observations, id: "observasi", en: "observations", ar: "ملاحظات", icon: Eye },
   ].filter(r => r.n > 0);
-  if (!rows.length) return <p className="text-xs text-zinc-500">{tx("Not explored yet", "لم تُستكشف بعد")}</p>;
+  if (!rows.length) return <p className="text-xs text-zinc-500">{tx("Belum dieksplorasi", "Not explored yet", "لم تُستكشف بعد")}</p>;
   return (
     <ul className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-zinc-400">
-      {rows.map(r => <li key={r.en} className="flex items-center gap-1"><r.icon className="w-3 h-3" />{r.n} {tx(r.en, r.ar)}</li>)}
+      {rows.map(r => <li key={r.en} className="flex items-center gap-1"><r.icon className="w-3 h-3" />{r.n} {tx(r.id, r.en, r.ar)}</li>)}
     </ul>
   );
 }
@@ -39,22 +39,22 @@ function ObservationForm({ childId, initialValue }: { childId: string; initialVa
     if (!note.trim()) return;
     logEvent({ childId, type: "observation", values: [value], note: note.trim() });
     track("observation_added", { value });
-    toast(tx("Observation added to the journal", "أُضيفت الملاحظة إلى الدفتر"));
+    toast(tx("Observasi ditambahkan ke jurnal", "Observation added to the journal", "أُضيفت الملاحظة إلى الدفتر"));
     setNote("");
   };
   return (
     <form onSubmit={submit} className="grid sm:grid-cols-[180px_1fr_auto] gap-3 items-end">
       <div>
-        <label className={label}>{tx("Value", "القيمة")}</label>
+        <label className={label}>{tx("Nilai", "Value", "القيمة")}</label>
         <select className={input} value={value} onChange={e => setValue(e.target.value as ValueId)}>
           {VALUES.map(v => <option key={v.id} value={v.id}>{loc(v.name, language)}</option>)}
         </select>
       </div>
       <div>
-        <label className={label}>{tx("What did you notice?", "ماذا لاحظت؟")}</label>
-        <input className={input} value={note} onChange={e => setNote(e.target.value)} maxLength={280} placeholder={tx("e.g. Shared her snack with her brother without being asked", "مثال: شاركت طعامها مع أخيها دون أن يُطلب منها")} />
+        <label className={label}>{tx("Apa yang kamu perhatikan?", "What did you notice?", "ماذا لاحظت؟")}</label>
+        <input className={input} value={note} onChange={e => setNote(e.target.value)} maxLength={280} placeholder={tx("Misal: Berbagi camilannya dengan adiknya tanpa diminta", "e.g. Shared her snack with her brother without being asked", "مثال: شاركت طعامها مع أخيها دون أن يُطلب منها")} />
       </div>
-      <button className={btn.primary} disabled={!note.trim()}>{tx("Add", "إضافة")}</button>
+      <button className={btn.primary} disabled={!note.trim()}>{tx("Tambah", "Add", "إضافة")}</button>
     </form>
   );
 }
@@ -76,16 +76,16 @@ function ValueDetail({ value, onBack }: { value: ValueId; onBack: () => void }) 
 
   return (
     <div className="space-y-5">
-      <button onClick={onBack} className={btn.small}><ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" />{tx("All values", "كل القيم")}</button>
+      <button onClick={onBack} className={btn.small}><ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" />{tx("Semua nilai", "All values", "كل القيم")}</button>
       <div className="rounded-3xl border p-6" style={{ borderColor: v.color + "55", background: v.color + "10" }}>
         <h3 className="font-heading text-2xl mb-1">{loc(v.name, language)}</h3>
         <p className="text-sm text-zinc-300 mb-3">{loc(v.description, language)}</p>
-        <p className="text-sm text-zinc-200 mb-2">{tx(`${child.name} practised ${loc(v.name, "en").toLowerCase()} in ${j.total} learning activit${j.total === 1 ? "y" : "ies"}.`, `مارس ${child.name} ${loc(v.name, "ar")} في ${j.total} نشاط تعلّم.`)}</p>
+        <p className="text-sm text-zinc-200 mb-2">{tx(`${child.name} mempraktikkan ${loc(v.name, "en").toLowerCase()} dalam ${j.total} aktivitas belajar.`, `${child.name} practised ${loc(v.name, "en").toLowerCase()} in ${j.total} learning activit${j.total === 1 ? "y" : "ies"}.`, `مارس ${child.name} ${loc(v.name, "ar")} في ${j.total} نشاط تعلّم.`)}</p>
         <Breakdown j={j} />
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <Panel title={tx("Connected stories", "القصص المرتبطة")}>
+        <Panel title={tx("Cerita terkait", "Connected stories", "القصص المرتبطة")}>
           {stories.length ? (
             <ul className="space-y-3">{stories.map(s => (
               <li key={s.id} className="flex items-center gap-3">
@@ -93,26 +93,26 @@ function ValueDetail({ value, onBack }: { value: ValueId; onBack: () => void }) 
                 <span className="text-sm">{loc(s.title, language)}</span>
               </li>
             ))}</ul>
-          ) : <p className="text-sm text-zinc-500">{tx("No stories yet for this value.", "لا قصص بعد لهذه القيمة.")}</p>}
+          ) : <p className="text-sm text-zinc-500">{tx("Belum ada cerita untuk nilai ini.", "No stories yet for this value.", "لا قصص بعد لهذه القيمة.")}</p>}
         </Panel>
-        <Panel title={tx("Milestones", "المحطات")}>
+        <Panel title={tx("Pencapaian", "Milestones", "المحطات")}>
           {milestones.length ? (
             <ul className="space-y-2">{milestones.map(({ a, b }) => (
               <li key={a.id} className="flex items-center gap-2 text-sm"><Award className="w-4 h-4 text-amber-300" />{loc(b!.name, language)}<span className="text-xs text-zinc-500 ms-auto">{fmtDate(a.at, language)}</span></li>
             ))}</ul>
-          ) : <p className="text-sm text-zinc-500">{tx("No milestones yet.", "لا محطات بعد.")}</p>}
+          ) : <p className="text-sm text-zinc-500">{tx("Belum ada pencapaian.", "No milestones yet.", "لا محطات بعد.")}</p>}
         </Panel>
-        <Panel title={tx(`${child.name}'s reflections`, `تأملات ${child.name}`)}>
+        <Panel title={tx(`Refleksi ${child.name}`, `${child.name}'s reflections`, `تأملات ${child.name}`)}>
           {reflections.length ? (
             <ul className="space-y-3">{reflections.map(e => (
               <li key={e.id} className="text-sm border-s-2 border-white/15 ps-3">
-                <p className="text-zinc-200">“{e.note}”</p>
+                <p className="text-zinc-200">"{e.note}"</p>
                 <p className="text-[11px] text-zinc-500 mt-1">{loc(findStory(state, e.storyId)?.title, language)} · {fmtDate(e.at, language)}</p>
               </li>
             ))}</ul>
-          ) : <p className="text-sm text-zinc-500">{tx("Reflections your child shares after stories will appear here.", "ستظهر هنا تأملات طفلك بعد القصص.")}</p>}
+          ) : <p className="text-sm text-zinc-500">{tx("Refleksi yang dibagikan anakmu setelah cerita akan muncul di sini.", "Reflections your child shares after stories will appear here.", "ستظهر هنا تأملات طفلك بعد القصص.")}</p>}
         </Panel>
-        <Panel title={tx("Parent observations", "ملاحظات الوالدين")}>
+        <Panel title={tx("Observasi orang tua", "Parent observations", "ملاحظات الوالدين")}>
           {observations.length ? (
             <ul className="space-y-3">{observations.map(e => (
               <li key={e.id} className="text-sm border-s-2 ps-3" style={{ borderColor: v.color }}>
@@ -120,10 +120,10 @@ function ValueDetail({ value, onBack }: { value: ValueId; onBack: () => void }) 
                 <p className="text-[11px] text-zinc-500 mt-1">{fmtDate(e.at, language)}</p>
               </li>
             ))}</ul>
-          ) : <p className="text-sm text-zinc-500">{tx("Notice this value at home? Add an observation below.", "لاحظت هذه القيمة في البيت؟ أضف ملاحظة أدناه.")}</p>}
+          ) : <p className="text-sm text-zinc-500">{tx("Melihat nilai ini di rumah? Tambahkan observasi di bawah.", "Notice this value at home? Add an observation below.", "لاحظت هذه القيمة في البيت؟ أضف ملاحظة أدناه.")}</p>}
         </Panel>
       </div>
-      <Panel title={tx("Add an observation", "إضافة ملاحظة")}>
+      <Panel title={tx("Tambah observasi", "Add an observation", "إضافة ملاحظة")}>
         <ObservationForm childId={child.id} initialValue={value} />
       </Panel>
     </div>
@@ -144,8 +144,8 @@ export default function Journal() {
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={tx(`${child.name}'s Character Journal`, `دفتر أخلاق ${child.name}`)}
-        subtitle={tx("A record of the values your family has explored and practised together. We count observable learning activities — character itself is never scored.", "سجل للقيم التي استكشفتها عائلتكم ومارستها معاً. نحصي أنشطة التعلم الملحوظة — ولا نقيس الأخلاق نفسها بالدرجات.")}
+        title={tx(`Jurnal Karakter ${child.name}`, `${child.name}'s Character Journal`, `دفتر أخلاق ${child.name}`)}
+        subtitle={tx("Catatan nilai-nilai yang telah dieksplorasi dan dipraktikkan keluargamu bersama. Kami menghitung aktivitas belajar yang terlihat - karakter itu sendiri tidak pernah dinilai.", "A record of the values your family has explored and practised together. We count observable learning activities - character itself is never scored.", "سجل للقيم التي استكشفتها عائلتكم ومارستها معاً. نحصي أنشطة التعلم الملحوظة - ولا نقيس الأخلاق نفسها بالدرجات.")}
       />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {journey.map((j, i) => {
@@ -165,23 +165,23 @@ export default function Journal() {
               {open ? (
                 <>
                   <p className="text-sm text-zinc-300 mb-2">
-                    {j.total ? tx(`Practised ${loc(v.name, "en").toLowerCase()} in ${j.total} learning activit${j.total === 1 ? "y" : "ies"}`, `مارس ${loc(v.name, "ar")} في ${j.total} نشاط تعلّم`) : tx("Not explored yet", "لم تُستكشف بعد")}
+                    {j.total ? tx(`Mempraktikkan ${loc(v.name, "en").toLowerCase()} dalam ${j.total} aktivitas belajar`, `Practised ${loc(v.name, "en").toLowerCase()} in ${j.total} learning activit${j.total === 1 ? "y" : "ies"}`, `مارس ${loc(v.name, "ar")} في ${j.total} نشاط تعلّم`) : tx("Belum dieksplorasi", "Not explored yet", "لم تُستكشف بعد")}
                   </p>
                   {j.total > 0 && <Breakdown j={j} />}
                 </>
               ) : (
-                <p className="text-xs text-zinc-500">{tx("Full character journey is part of Premium", "رحلة الأخلاق الكاملة جزء من الخطة المميزة")}</p>
+                <p className="text-xs text-zinc-500">{tx("Perjalanan karakter lengkap adalah bagian dari Premium", "Full character journey is part of Premium", "رحلة الأخلاق الكاملة جزء من الخطة المميزة")}</p>
               )}
             </button>
           );
         })}
       </div>
-      {!premium && <Empty>{tx(`Free families see the full journal for ${FREE_VALUES} values. Upgrade to follow all 12.`, `العائلات المجانية ترى الدفتر الكامل لـ${FREE_VALUES} قيم. قم بالترقية لمتابعة القيم الـ١٢.`)} <button className="underline cursor-pointer" onClick={() => setPaywall(true)}>{tx("See plans", "عرض الخطط")}</button></Empty>}
-      <Panel title={tx("Add a parent observation", "إضافة ملاحظة من الوالدين")}>
-        <p className="text-xs text-zinc-400 mb-3">{tx("Noticed a value in action at home? Write it down — it becomes part of the journal.", "لاحظت قيمة في البيت؟ دوّنها لتصبح جزءاً من الدفتر.")}</p>
+      {!premium && <Empty>{tx(`Keluarga gratis melihat jurnal lengkap untuk ${FREE_VALUES} nilai. Upgrade untuk mengikuti semua 12.`, `Free families see the full journal for ${FREE_VALUES} values. Upgrade to follow all 12.`, `العائلات المجانية ترى الدفتر الكامل لـ${FREE_VALUES} قيم. قم بالترقية لمتابعة القيم الـ١٢.`)} <button className="underline cursor-pointer" onClick={() => setPaywall(true)}>{tx("Lihat paket", "See plans", "عرض الخطط")}</button></Empty>}
+      <Panel title={tx("Tambah observasi orang tua", "Add a parent observation", "إضافة ملاحظة من الوالدين")}>
+        <p className="text-xs text-zinc-400 mb-3">{tx("Melihat sebuah nilai dipraktikkan di rumah? Catat - itu menjadi bagian dari jurnal.", "Noticed a value in action at home? Write it down - it becomes part of the journal.", "لاحظت قيمة في البيت؟ دوّنها لتصبح جزءاً من الدفتر.")}</p>
         <ObservationForm childId={child.id} />
       </Panel>
-      <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Follow your child's full character journey across all 12 values.", "تابع رحلة طفلك الأخلاقية الكاملة عبر القيم الـ١٢.")} />
+      <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Ikuti perjalanan karakter lengkap anakmu di semua 12 nilai.", "Follow your child's full character journey across all 12 values.", "تابع رحلة طفلك الأخلاقية الكاملة عبر القيم الـ١٢.")} />
     </div>
   );
 }

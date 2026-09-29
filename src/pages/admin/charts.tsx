@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-/** Single-series weekly bar chart — inline SVG, no libraries. Hover shows value. */
+/** Single-series weekly bar chart - inline SVG, no libraries. Hover shows value. */
 export function WeeklyBars({ data, label }: { data: { week: string; sessions: number }[]; label: string }) {
   const [hover, setHover] = useState<number | null>(null);
   const W = 640, H = 200, pad = { l: 28, r: 8, t: 16, b: 24 };
@@ -80,7 +80,7 @@ export function FunnelBars({ steps }: { steps: { step: string; n: number }[] }) 
 /** Compact labelled bar list for categorical counts. */
 export function CountBars({ rows, color }: { rows: { label: string; n: number; color?: string }[]; color?: string }) {
   const max = Math.max(1, ...rows.map(r => r.n));
-  if (!rows.length) return <p className="text-xs text-zinc-500">—</p>;
+  if (!rows.length) return <p className="text-xs text-zinc-500">-</p>;
   return (
     <div className="space-y-1">
       {rows.map(r => (

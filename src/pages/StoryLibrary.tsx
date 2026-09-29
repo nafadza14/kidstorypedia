@@ -56,9 +56,9 @@ export default function StoryLibrary() {
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   useSeo({
-    title: "Islamic Stories for Kids — Prophets, Seerah, Sahabah & Moral Stories | Kidstorypedia",
+    title: "Islamic Stories for Kids - Prophets, Seerah, Sahabah & Moral Stories | Kidstorypedia",
     description:
-      "Free Islamic stories for kids ages 4–12: stories of the Prophets for kids, Seerah and Sahabah stories, and Islamic bedtime stories with moral values — each with sources, a parent discussion guide and a family action challenge. English & Arabic.",
+      "Free Islamic stories for kids ages 4–12: stories of the Prophets for kids, Seerah and Sahabah stories, and Islamic bedtime stories with moral values - each with sources, a parent discussion guide and a family action challenge. English & Arabic.",
     canonical: "/stories",
     jsonLd: {
       "@context": "https://schema.org",
@@ -79,12 +79,13 @@ export default function StoryLibrary() {
   return (
     <PublicShell>
       <section className="px-5 sm:px-8 max-w-7xl mx-auto pt-10 pb-8">
-        <span className="text-xs text-zinc-400 font-mono mb-3 block">[ {tx("Story library", "مكتبة القصص")} ]</span>
-        <h1 className="text-4xl sm:text-6xl font-light tracking-tight mb-4">{tx("Islamic stories for kids", "قصص إسلامية للأطفال")}</h1>
+        <span className="text-xs text-zinc-400 font-mono mb-3 block">[ {tx("Perpustakaan cerita", "Story library", "مكتبة القصص")} ]</span>
+        <h1 className="text-4xl sm:text-6xl font-light tracking-tight mb-4">{tx("Cerita Islami untuk anak-anak", "Islamic stories for kids", "قصص إسلامية للأطفال")}</h1>
         <p className="text-zinc-300 max-w-2xl mb-8">
           {tx(
-            "Stories of the Prophets, the Seerah, the Sahabah and gentle moral tales — each with its sources, a parent discussion guide and a small family action.",
-            "قصص الأنبياء والسيرة والصحابة وحكايات أخلاقية لطيفة — لكل منها مصادرها ودليل نقاش للوالدين وعمل عائلي صغير.",
+            "Kisah para Nabi, Sirah, Sahabat, dan cerita moral yang lembut - masing-masing dengan sumbernya, panduan diskusi untuk orang tua, dan aksi keluarga kecil.",
+            "Stories of the Prophets, the Seerah, the Sahabah and gentle moral tales - each with its sources, a parent discussion guide and a small family action.",
+            "قصص الأنبياء والسيرة والصحابة وحكايات أخلاقية لطيفة - لكل منها مصادرها ودليل نقاش للوالدين وعمل عائلي صغير.",
           )}
         </p>
 
@@ -93,27 +94,27 @@ export default function StoryLibrary() {
           <input
             type="search"
             className={input + " ps-11 rounded-full"}
-            placeholder={tx("Search stories, e.g. patience, Yusuf…", "ابحث عن قصة، مثل: الصبر، يوسف…")}
+            placeholder={tx("Cari cerita, misal: sabar, Yusuf...", "Search stories, e.g. patience, Yusuf…", "ابحث عن قصة، مثل: الصبر، يوسف…")}
             value={q}
             onChange={e => set("q", e.target.value)}
-            aria-label={tx("Search stories", "ابحث عن القصص")}
+            aria-label={tx("Cari cerita", "Search stories", "ابحث عن القصص")}
           />
         </div>
 
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-[11px] font-mono text-zinc-500 w-16">{tx("Category", "الفئة")}</span>
-            <button className={chip(!category)} onClick={() => set("category", "")}>{tx("All", "الكل")}</button>
+            <span className="text-[11px] font-mono text-zinc-500 w-16">{tx("Kategori", "Category", "الفئة")}</span>
+            <button className={chip(!category)} onClick={() => set("category", "")}>{tx("Semua", "All", "الكل")}</button>
             {CATEGORIES.map(c => <button key={c.id} className={chip(category === c.id)} onClick={() => set("category", category === c.id ? "" : c.id)}>{loc(c.name, language)}</button>)}
           </div>
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-[11px] font-mono text-zinc-500 w-16">{tx("Age", "العمر")}</span>
-            <button className={chip(!band)} onClick={() => set("age", "")}>{tx("All ages", "كل الأعمار")}</button>
+            <span className="text-[11px] font-mono text-zinc-500 w-16">{tx("Usia", "Age", "العمر")}</span>
+            <button className={chip(!band)} onClick={() => set("age", "")}>{tx("Semua usia", "All ages", "كل الأعمار")}</button>
             {BANDS.map(b => <button key={b.id} className={chip(band === b.id)} onClick={() => set("age", band === b.id ? "" : b.id)}>{b.id}</button>)}
-            <button className={chip(bedtime)} onClick={() => set("bedtime", bedtime ? "" : "1")}><Moon className="w-3 h-3 inline me-1" />{tx("Bedtime", "قبل النوم")}</button>
+            <button className={chip(bedtime)} onClick={() => set("bedtime", bedtime ? "" : "1")}><Moon className="w-3 h-3 inline me-1" />{tx("Pengantar tidur", "Bedtime", "قبل النوم")}</button>
           </div>
           <div className="flex gap-2 items-center overflow-x-auto pb-1">
-            <span className="text-[11px] font-mono text-zinc-500 w-16 shrink-0">{tx("Value", "القيمة")}</span>
+            <span className="text-[11px] font-mono text-zinc-500 w-16 shrink-0">{tx("Nilai", "Value", "القيمة")}</span>
             {VALUES.map(v => <button key={v.id} className={chip(value === v.id)} onClick={() => set("value", value === v.id ? "" : v.id)}>{loc(v.name, language)}</button>)}
           </div>
         </div>
@@ -121,11 +122,11 @@ export default function StoryLibrary() {
 
       <section className="px-5 sm:px-8 max-w-7xl mx-auto pb-20">
         <div className="flex items-center justify-between mb-5 text-sm text-zinc-400">
-          <span>{tx(`${stories.length} stories`, `${stories.length} قصة`)}</span>
-          {hasFilters && <button className={btn.small} onClick={() => setParams(new URLSearchParams(), { replace: true })}><X className="w-3 h-3" />{tx("Clear filters", "مسح الفلاتر")}</button>}
+          <span>{tx(`${stories.length} cerita`, `${stories.length} stories`, `${stories.length} قصة`)}</span>
+          {hasFilters && <button className={btn.small} onClick={() => setParams(new URLSearchParams(), { replace: true })}><X className="w-3 h-3" />{tx("Hapus filter", "Clear filters", "مسح الفلاتر")}</button>}
         </div>
         {stories.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-sm text-zinc-400">{tx("No stories match these filters yet.", "لا توجد قصص تطابق هذه الفلاتر بعد.")}</div>
+          <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-sm text-zinc-400">{tx("Belum ada cerita yang cocok dengan filter ini.", "No stories match these filters yet.", "لا توجد قصص تطابق هذه الفلاتر بعد.")}</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {stories.map(s => {
@@ -142,9 +143,9 @@ export default function StoryLibrary() {
                     <h2 className="font-heading text-lg leading-snug group-hover:underline underline-offset-4 decoration-white/30">{loc(s.title, language)}</h2>
                     <p className="text-sm text-zinc-400 line-clamp-2">{loc(s.description, language)}</p>
                     <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400 mt-1">
-                      <span>{tx(`Ages ${s.ageRange[0]}–${s.ageRange[1]}`, `الأعمار ${s.ageRange[0]}–${s.ageRange[1]}`)}</span>
-                      <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{s.durationMin} {tx("min", "د")}</span>
-                      {s.premium && <span className="text-amber-300">{locked ? tx("Family plan", "خطة العائلة") : tx("Unlocked", "مفتوحة")}</span>}
+                      <span>{tx(`Usia ${s.ageRange[0]}–${s.ageRange[1]}`, `Ages ${s.ageRange[0]}–${s.ageRange[1]}`, `الأعمار ${s.ageRange[0]}–${s.ageRange[1]}`)}</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{s.durationMin} {tx("mnt", "min", "د")}</span>
+                      {s.premium && <span className="text-amber-300">{locked ? tx("Paket keluarga", "Family plan", "خطة العائلة") : tx("Terbuka", "Unlocked", "مفتوحة")}</span>}
                     </div>
                     <div className="flex flex-wrap gap-1.5 mt-auto pt-2">{s.values.map(v => <ValueChip key={v} id={v} />)}</div>
                   </article>

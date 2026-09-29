@@ -87,14 +87,14 @@ export async function generateStory(p: GenerateParams): Promise<GenerateResult> 
   };
   track("ai_story_requested", { mode: p.mode, value: p.value });
 
-  // Layer 1 — input validation
+  // Layer 1 - input validation
   const inputCheck = validateInput(`${p.topic || ""} ${p.childName || ""}`);
   if (!inputCheck.ok) {
     logAI({ ...logBase, inputCheck });
     return { ok: false, error: inputCheck.reason, layer: "input" };
   }
 
-  // Layer 2 — retrieval
+  // Layer 2 - retrieval
   let ctx;
   try { ctx = retrieveContext(p); } catch (e: any) { return { ok: false, error: e.message, layer: "retrieval" }; }
   logBase.retrievedSources = ctx.sources.map(s => s.id);
@@ -105,7 +105,7 @@ export async function generateStory(p: GenerateParams): Promise<GenerateResult> 
   let raw: unknown = cached;
   let model: string = CONFIG.ai.strongModel;
   if (!cached) {
-    // Layer 3 — constrained structured generation (server)
+    // Layer 3 - constrained structured generation (server)
     const r = await callAI<GeneratedStory>("story", {
       mode: p.mode, value: p.value, age: p.age, lang: p.lang, pages: p.pages, topic: p.topic, childName: p.childName,
       context: { sources: ctx.sources, facts: ctx.facts, keyEvents: ctx.keyEvents, prohibited: ctx.prohibited, canonicalPages: ctx.canonicalPages, terminology: ctx.terminology, category: ctx.category },
@@ -118,7 +118,7 @@ export async function generateStory(p: GenerateParams): Promise<GenerateResult> 
     model = r.model;
   }
 
-  // Layer 4 — output validation
+  // Layer 4 - output validation
   const { result, story: g } = validateStoryOutput(raw, {
     mode: p.mode, requiredValue: p.value, age: p.age, lang: p.lang,
     allowedSourceIds: ctx.sources.map(s => s.id), minPages: 3, maxPages: 6,
@@ -130,7 +130,7 @@ export async function generateStory(p: GenerateParams): Promise<GenerateResult> 
     return { ok: false, error: "Output failed schema validation", layer: "validation", issues: result.issues };
   }
 
-  // Convert to Story entity. Layer 5 — human review: never auto-published.
+  // Convert to Story entity. Layer 5 - human review: never auto-published.
   const base = p.mode === "adapt" ? CANONICAL_STORIES.find(s => s.id === p.storyId) : undefined;
   const id = uid(p.mode === "adapt" ? `${p.storyId}-adapt` : "ai");
   const vals = (g.primary_values || []).map(v => v.toLowerCase()).filter(v => v in VALUE_MAP) as ValueId[];
@@ -145,7 +145,7 @@ export async function generateStory(p: GenerateParams): Promise<GenerateResult> 
     durationMin: Math.max(3, Math.round(g.pages.length * 1.5)),
     ageRange: [Math.max(4, g.age_range?.[0] ?? p.age), Math.min(12, g.age_range?.[1] ?? p.age)],
     values: vals.length ? vals : [p.value],
-    pages: g.pages.map((pg, i) => ({ page: i + 1, text: L(pg.narrative), illustrationPrompt: `${pg.illustration_prompt} — ${VISUAL_POLICY}`, sourceRefs: pg.source_refs, image: base?.pages[i]?.image })),
+    pages: g.pages.map((pg, i) => ({ page: i + 1, text: L(pg.narrative), illustrationPrompt: `${pg.illustration_prompt} - ${VISUAL_POLICY}`, sourceRefs: pg.source_refs, image: base?.pages[i]?.image })),
     discussion: {
       questions: g.discussion.questions.slice(0, 3).map(L),
       action: L(g.discussion.action),
@@ -194,7 +194,7 @@ export async function askAssistant(question: string, opts: { storyId?: string; a
     const qs = st.discussion.questions.map(q => `• ${loc(q, opts.lang)}`).join("\n");
     return {
       answer: (ar ? `إليك طريقة لبدء الحديث عن «${loc(st.title, "ar")}»:\n${qs}\n\nتحدٍّ عائلي: ${loc(st.discussion.action, "ar")}` : `Here's a way to start talking about "${st.title.en}":\n${qs}\n\nFamily challenge: ${st.discussion.action.en}`) +
-        (ar ? "\n\n(المساعد الذكي غير متصل — هذه إجابة من دليل النقاش المعتمد.)" : "\n\n(The AI assistant is offline — this answer comes from the approved discussion guide.)"),
+        (ar ? "\n\n(المساعد الذكي غير متصل - هذه إجابة من دليل النقاش المعتمد.)" : "\n\n(The AI assistant is offline - this answer comes from the approved discussion guide.)"),
       grounded: true, fallback: true,
     };
   }

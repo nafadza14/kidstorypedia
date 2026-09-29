@@ -75,7 +75,7 @@ export default function ChildHome() {
           <div className="relative">
             <StoryCover story={s} locked={locked} className="aspect-[4/3] group-hover:scale-[1.02] transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent pointer-events-none" />
-            <span className="absolute bottom-3 left-3 text-[10px] font-mono bg-black/60 px-2.5 py-0.5 rounded-full border border-white/15">{s.durationMin} {tx("min", "د")}</span>
+            <span className="absolute bottom-3 left-3 text-[10px] font-mono bg-black/60 px-2.5 py-0.5 rounded-full border border-white/15">{s.durationMin} {tx("mnt", "min", "د")}</span>
             {done && <span className="absolute bottom-3 right-3 w-7 h-7 rounded-full bg-emerald-500 text-black flex items-center justify-center"><Star className="w-3.5 h-3.5 fill-current" /></span>}
             {!locked && <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white text-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><Play className="w-4 h-4 fill-current ml-0.5" /></span>}
           </div>
@@ -94,16 +94,16 @@ export default function ChildHome() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0c] text-white">
-      <header className="px-6 py-5 border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto flex justify-between items-center gap-3">
-          <div className="flex items-center gap-3 bg-zinc-900/80 pl-2 pr-4 py-1.5 rounded-full border border-white/15">
+      <header className="px-4 sm:px-6 py-3 sm:py-5 border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-40" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+        <div className="max-w-7xl mx-auto flex justify-between items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 bg-zinc-900/80 pl-2 pr-3 sm:pr-4 py-1.5 rounded-full border border-white/15 min-w-0">
             <Avatar seed={child.avatarSeed} size={36} />
-            <div>
-              <div className="font-heading text-sm">{tx(`Hi, ${child.name}!`, `أهلاً، ${child.name}!`)}</div>
-              <div className="text-[11px] text-zinc-400 font-mono">{badges.length} {tx("badges", "شارات")} · {completedIds.length} {tx("stories", "قصص")}</div>
+            <div className="min-w-0">
+              <div className="font-heading text-sm truncate">{tx(`Hai, ${child.name}!`, `Hi, ${child.name}!`, `أهلاً، ${child.name}!`)}</div>
+              <div className="text-[11px] text-zinc-400 font-mono truncate">{badges.length} {tx("lencana", "badges", "شارات")} · {completedIds.length} {tx("cerita", "stories", "قصص")}</div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {state.children.length > 1 && (
               <div className="hidden sm:flex gap-1">
                 {state.children.map(c => (
@@ -114,8 +114,8 @@ export default function ChildHome() {
               </div>
             )}
             <LanguageSwitcher />
-            <button onClick={() => setGate("/dashboard")} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 text-xs font-mono text-zinc-300 hover:text-white hover:border-white/40 cursor-pointer">
-              <Lock className="w-3 h-3" />{tx("Parents", "الوالدان")}
+            <button onClick={() => setGate("/dashboard")} className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border border-white/20 text-xs font-mono text-zinc-300 hover:text-white hover:border-white/40 cursor-pointer">
+              <Lock className="w-3 h-3" /><span className="hidden sm:inline">{tx("Orang Tua", "Parents", "الوالدان")}</span>
             </button>
           </div>
         </div>
@@ -126,8 +126,8 @@ export default function ChildHome() {
           <div className="mb-8 rounded-3xl border border-amber-300/30 bg-amber-300/10 p-6 flex items-center gap-4">
             <Moon className="w-8 h-8 text-amber-200 shrink-0" />
             <div>
-              <div className="font-heading text-lg">{tx("That's all the reading for today!", "انتهى وقت القراءة لليوم!")}</div>
-              <p className="text-sm text-zinc-300">{tx("Time to talk about what you read with your family. See you tomorrow, in sha Allah.", "حان وقت الحديث مع عائلتك عمّا قرأت. نراك غداً إن شاء الله.")}</p>
+              <div className="font-heading text-lg">{tx("Waktu membaca hari ini sudah selesai!", "That's all the reading for today!", "انتهى وقت القراءة لليوم!")}</div>
+              <p className="text-sm text-zinc-300">{tx("Saatnya ngobrol dengan keluarga tentang apa yang sudah dibaca. Sampai jumpa besok, insya Allah.", "Time to talk about what you read with your family. See you tomorrow, in sha Allah.", "حان وقت الحديث مع عائلتك عمّا قرأت. نراك غداً إن شاء الله.")}</p>
             </div>
           </div>
         )}
@@ -137,25 +137,25 @@ export default function ChildHome() {
             <div className="flex-1">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono text-zinc-300 bg-white/5 border border-white/15 mb-4">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                {continueStory ? tx("Continue reading", "مواصلة القراءة") : tx("Recommended for you", "مقترحة لك")}
+                {continueStory ? tx("Lanjutkan membaca", "Continue reading", "مواصلة القراءة") : tx("Rekomendasi untukmu", "Recommended for you", "مقترحة لك")}
               </span>
               <h1 className="text-3xl sm:text-5xl font-heading leading-tight mb-4">{loc(hero.title, language)}</h1>
               <p className="text-zinc-300 mb-8 max-w-lg">{loc(hero.description, language)}</p>
               <button onClick={() => open(hero)} disabled={limitReached} className="inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-zinc-200 cursor-pointer disabled:opacity-40">
                 {canAccessStory(state, hero) ? <Play className="w-4 h-4 fill-current" /> : <Lock className="w-4 h-4" />}
-                {tx("Read now", "اقرأ الآن")}
+                {tx("Baca sekarang", "Read now", "اقرأ الآن")}
               </button>
             </div>
             <StoryCover story={hero} className="w-full md:w-80 aspect-square rounded-2xl border border-white/20 shrink-0" />
           </section>
         )}
 
-        <Row title={tx("Recommended for you", "مقترحة لك")} items={recs.filter(r => r.id !== hero?.id)} icon={<Sparkles className="w-4 h-4 text-amber-300" />} />
+        <Row title={tx("Rekomendasi untukmu", "Recommended for you", "مقترحة لك")} items={recs.filter(r => r.id !== hero?.id)} icon={<Sparkles className="w-4 h-4 text-amber-300" />} />
 
         <div className="flex gap-2 overflow-x-auto pb-2 mb-8">
           {(["all", ...CATEGORIES.map(c => c.id)] as const).map(c => (
             <button key={c} onClick={() => setCat(c as StoryCategory | "all")} className={`px-5 py-2.5 rounded-full text-xs font-mono whitespace-nowrap cursor-pointer ${cat === c ? "bg-white text-black font-semibold" : "bg-zinc-900/80 text-zinc-400 border border-white/10 hover:text-white"}`}>
-              {c === "all" ? tx("All", "الكل") : loc(CATEGORIES.find(x => x.id === c)!.name, language)}
+              {c === "all" ? tx("Semua", "All", "الكل") : loc(CATEGORIES.find(x => x.id === c)!.name, language)}
             </button>
           ))}
         </div>
@@ -164,12 +164,12 @@ export default function ChildHome() {
           ? CATEGORIES.map(c => <Row key={c.id} title={loc(c.name, language)} items={byCat(c.id as StoryCategory)} />)
           : <Row title={loc(CATEGORIES.find(x => x.id === cat)!.name, language)} items={byCat(cat)} />}
 
-        <Row title={tx("Recently completed", "أكملتها مؤخراً")} items={recent} icon={<Star className="w-4 h-4 text-emerald-400" />} />
+        <Row title={tx("Baru saja selesai", "Recently completed", "أكملتها مؤخراً")} items={recent} icon={<Star className="w-4 h-4 text-emerald-400" />} />
 
         <section className="mb-12">
-          <h2 className="text-lg font-heading mb-4">{tx("My Character Journey", "رحلتي الأخلاقية")}</h2>
+          <h2 className="text-lg font-heading mb-4">{tx("Perjalanan Karakterku", "My Character Journey", "رحلتي الأخلاقية")}</h2>
           {journey.length === 0 ? (
-            <p className="text-sm text-zinc-400">{tx("Finish a story to start your journey!", "أكمل قصة لتبدأ رحلتك!")}</p>
+            <p className="text-sm text-zinc-400">{tx("Selesaikan cerita untuk memulai perjalananmu!", "Finish a story to start your journey!", "أكمل قصة لتبدأ رحلتك!")}</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
               {journey.map(j => {
@@ -195,7 +195,7 @@ export default function ChildHome() {
 
         <div className="text-center">
           <button onClick={() => setGate("/dashboard")} className="inline-flex items-center gap-2 text-xs font-mono text-zinc-500 hover:text-zinc-300 cursor-pointer">
-            {tx("Parent area", "منطقة الوالدين")} <ArrowUpRight className="w-3 h-3" />
+            {tx("Area orang tua", "Parent area", "منطقة الوالدين")} <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
       </main>
@@ -211,7 +211,7 @@ export default function ChildHome() {
           else nav(g);
         }}
       />
-      <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("This story is part of a premium collection. Ask a parent to unlock it.", "هذه القصة ضمن مجموعة مميزة. اطلب من والديك فتحها.")} />
+      <Paywall open={paywall} onClose={() => setPaywall(false)} reason={tx("Cerita ini termasuk koleksi premium. Minta orang tua untuk membukanya.", "This story is part of a premium collection. Ask a parent to unlock it.", "هذه القصة ضمن مجموعة مميزة. اطلب من والديك فتحها.")} />
     </div>
   );
 }

@@ -22,7 +22,9 @@ export function findStory(s: AppState, id: string | undefined): Story | undefine
 
 export function loc(text: Localized | undefined, lang: Lang): string {
   if (!text) return "";
-  return lang === "ar" ? text.ar || text.en : text.en;
+  if (lang === "ar") return text.ar || text.en;
+  if (lang === "id") return text.id || text.en;
+  return text.en;
 }
 
 /** Arabic diacritics (tashkeel) range */

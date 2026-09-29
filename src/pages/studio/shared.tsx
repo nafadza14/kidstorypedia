@@ -21,7 +21,7 @@ export function StaffTopBar({ title, children }: { title: string; children?: Rea
         <div className="flex-1" />
         {children}
         <LanguageSwitcher />
-        <Link to="/dashboard" className="text-xs text-zinc-400 hover:text-white whitespace-nowrap">{tx("← Dashboard", "← لوحة التحكم")}</Link>
+        <Link to="/dashboard" className="text-xs text-zinc-400 hover:text-white whitespace-nowrap">{tx("← Dasbor", "← Dashboard", "← لوحة التحكم")}</Link>
       </div>
     </header>
   );
@@ -78,7 +78,7 @@ export function bumpVersion(v: string): string {
   return (Math.round((isNaN(n) ? 0 : n) * 10 + 1) / 10).toFixed(1);
 }
 
-/** Canonical religious content — requires scholar sign-off before publishing (PRD §24). */
+/** Canonical religious content - requires scholar sign-off before publishing (PRD §24). */
 export function requiresScholar(story: Story) {
   return story.origin === "canonical" || ["prophets", "seerah", "sahabah"].includes(story.category);
 }
@@ -97,7 +97,7 @@ export function storyToGenerated(story: Story, lang: Lang): GeneratedStory {
   };
 }
 
-export const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "—");
+export const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "-");
 export const usd = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: n < 100 ? 2 : 0 })}`;
 export const pct = (n: number) => `${(n * 100).toFixed(n > 0 && n < 0.1 ? 1 : 0)}%`;
 

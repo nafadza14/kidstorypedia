@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * highlighting when the browser reports word boundaries. Recorded voice
  * actor audio can replace this later by setting `audioUrl` on pages.
  */
-export function useNarration(lang: "en" | "ar") {
+export function useNarration(lang: "id" | "en" | "ar") {
   const [speaking, setSpeaking] = useState(false);
   const [charIndex, setCharIndex] = useState<number | null>(null);
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -22,7 +22,7 @@ export function useNarration(lang: "en" | "ar") {
     if (!supported) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang === "ar" ? "ar-SA" : "en-US";
+    u.lang = lang === "ar" ? "ar-SA" : lang === "id" ? "id-ID" : "en-US";
     u.rate = 0.9;
     u.pitch = 1.05;
     const voice = window.speechSynthesis.getVoices().find(v => v.lang.toLowerCase().startsWith(lang));

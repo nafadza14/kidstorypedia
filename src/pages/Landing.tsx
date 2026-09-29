@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowUpRight, BookOpen, Check, Compass, Heart, Languages, MessageCircle, Moon, School, ShieldCheck,
   Sparkles, Sprout, UserCheck, Zap, Ban, Cpu, Eye, Scale, FileText, Clock,
@@ -21,16 +22,98 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   return <span className="text-xs text-zinc-400 font-mono mb-3 block">{children}</span>;
 }
 
+/* ─────────────── 5 rotating hero headlines ─────────────── */
+const HERO_HEADLINES: { id: string; en: string; ar: string }[] = [
+  {
+    id: "Rutinitas tidur yang lebih baik untuk keluarga Muslim",
+    en: "A better bedtime routine for Muslim families",
+    ar: "روتين أفضل قبل النوم للعائلات المسلمة",
+  },
+  {
+    id: "Cerita yang mengajarkan nilai untuk seumur hidup",
+    en: "Stories that teach values your children will carry for life",
+    ar: "قصص تُعلّم قيماً يحملها أطفالك مدى الحياة",
+  },
+  {
+    id: "Kearifan Islam bertemu cerita masa kini",
+    en: "Where Islamic wisdom meets modern storytelling",
+    ar: "حيث تلتقي الحكمة الإسلامية بالسرد المعاصر",
+  },
+  {
+    id: "Membangun akhlak melalui cerita, dialog, dan praktik",
+    en: "Growing character through stories, conversations and practice",
+    ar: "بناء الأخلاق عبر القصص والحوارات والممارسة",
+  },
+  {
+    id: "Setiap malam cerita baru, setiap cerita pelajaran baru",
+    en: "Every evening a new story. Every story a new lesson",
+    ar: "كل مساء قصة جديدة وكل قصة درس جديد",
+  },
+];
+
+const CYCLE_MS = 5000; // 3 s appear + 2 s pause
+const WORD_APPEAR_S = 3; // seconds for all words to appear
+
+function AnimatedHeadline({ text, heroIdx }: { text: string; heroIdx: number }) {
+  const words = text.split(/\s+/);
+  const stagger = words.length > 1 ? WORD_APPEAR_S / words.length : 0;
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.span
+        key={heroIdx}
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.35 } }}
+        className="inline"
+      >
+        {words.map((word, i) => (
+          <motion.span
+            key={`${heroIdx}-${i}`}
+            initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{
+              delay: i * stagger,
+              duration: 0.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="inline-block whitespace-pre"
+          >
+            {word}{i < words.length - 1 ? " " : ""}
+          </motion.span>
+        ))}
+      </motion.span>
+    </AnimatePresence>
+  );
+}
+
 export default function Landing() {
   const { tx, language } = useLanguage();
   const state = useStore(s => s);
   const hasParent = !!state.parent;
 
+  /* Hero rotation */
+  const [heroIdx, setHeroIdx] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => setHeroIdx(i => (i + 1) % HERO_HEADLINES.length), CYCLE_MS);
+    return () => clearInterval(timer);
+  }, []);
+
+  const heroText = tx(
+    HERO_HEADLINES[heroIdx].id,
+    HERO_HEADLINES[heroIdx].en,
+    HERO_HEADLINES[heroIdx].ar,
+  );
+
   useSeo({
-    title: tx("Kidstorypedia — A better bedtime routine for Muslim families", "كيدستوريبيديا — روتين أفضل قبل النوم للعائلات المسلمة"),
+    title: tx(
+      "Kidstorypedia - Rutinitas tidur yang lebih baik untuk keluarga Muslim",
+      "Kidstorypedia - A better bedtime routine for Muslim families",
+      "كيدستوريبيديا - روتين أفضل قبل النوم للعائلات المسلمة",
+    ),
     description: tx(
-      "Islamic stories for kids with parent discussion guides and real-life value challenges. Prophets, Seerah, Sahabah and moral stories in English and Arabic. Ad-free and parent-controlled.",
-      "قصص إسلامية للأطفال مع أدلة نقاش للوالدين وتحديات عملية للقيم. الأنبياء والسيرة والصحابة وقصص أخلاقية بالعربية والإنجليزية، بلا إعلانات.",
+      "Cerita Islami untuk anak dengan panduan diskusi orang tua dan tantangan nilai kehidupan nyata. Kisah Nabi, Sirah, Sahabat, dan cerita moral dalam Bahasa Indonesia, Inggris, dan Arab. Tanpa iklan dan dikendalikan orang tua.",
+      "Islamic stories for kids with parent discussion guides and real-life value challenges. Prophets, Seerah, Sahabah and moral stories in Indonesian, English and Arabic. Ad-free and parent-controlled.",
+      "قصص إسلامية للأطفال مع أدلة نقاش للوالدين وتحديات عملية للقيم. الأنبياء والسيرة والصحابة وقصص أخلاقية بالإندونيسية والعربية والإنجليزية، بلا إعلانات.",
     ),
     canonical: "/",
     jsonLd: {
@@ -38,7 +121,7 @@ export default function Landing() {
       "@type": "WebSite",
       name: "Kidstorypedia",
       description: "A better bedtime routine for Muslim families. Every story becomes an opportunity to grow.",
-      inLanguage: ["en", "ar"],
+      inLanguage: ["id", "en", "ar"],
     },
   });
 
@@ -46,7 +129,6 @@ export default function Landing() {
 
   const featured = useMemo(() => {
     const all = familyStories(state);
-    // published first, then one per category for variety
     const sorted = [...all].sort((a, b) => Number(b.state === "published") - Number(a.state === "published"));
     const picked: typeof all = [];
     for (const c of CATEGORIES) { const s = sorted.find(x => x.category === c.id); if (s) picked.push(s); }
@@ -55,29 +137,29 @@ export default function Landing() {
   }, [state]);
 
   const trust = [
-    { icon: Ban, label: tx("Ad-free", "بلا إعلانات") },
-    { icon: Languages, label: tx("Bilingual English / Arabic", "ثنائي اللغة: عربي / إنجليزي") },
-    { icon: Cpu, label: tx("Responsible AI", "ذكاء اصطناعي مسؤول") },
-    { icon: ShieldCheck, label: tx("Islamic content principles — sourced & reviewed", "مبادئ المحتوى الإسلامي — موثّق ومُراجَع") },
-    { icon: UserCheck, label: tx("Parent-controlled", "بتحكم الوالدين") },
+    { icon: Ban, label: tx("Tanpa iklan", "Ad-free", "بلا إعلانات") },
+    { icon: Languages, label: tx("Tiga bahasa: Indonesia / Inggris / Arab", "Trilingual: Indonesian / English / Arabic", "ثلاث لغات: إندونيسية / إنجليزية / عربية") },
+    { icon: Cpu, label: tx("AI yang bertanggung jawab", "Responsible AI", "ذكاء اصطناعي مسؤول") },
+    { icon: ShieldCheck, label: tx("Prinsip konten Islami - bersumber & ditinjau", "Islamic content principles - sourced & reviewed", "مبادئ المحتوى الإسلامي - موثّق ومُراجَع") },
+    { icon: UserCheck, label: tx("Dikendalikan orang tua", "Parent-controlled", "بتحكم الوالدين") },
   ];
 
   const loop = [
-    { icon: Compass, t: tx("Discover", "اكتشف"), d: tx("A story matched to your child's age and the values you're working on.", "قصة تناسب عمر طفلك والقيم التي تعملون عليها.") },
-    { icon: BookOpen, t: tx("Read", "اقرأ"), d: tx("Read together, or listen with narration, in English or Arabic.", "اقرؤوا معاً أو استمعوا للسرد بالعربية أو الإنجليزية.") },
-    { icon: Sparkles, t: tx("Understand", "افهم"), d: tx("Age-appropriate text and a short glossary for new words.", "نص مناسب للعمر ومسرد قصير للكلمات الجديدة.") },
-    { icon: MessageCircle, t: tx("Discuss", "ناقش"), d: tx("Three guided questions help parents start a real conversation.", "ثلاثة أسئلة موجّهة تساعد الوالدين على بدء حوار حقيقي.") },
-    { icon: Zap, t: tx("Practice", "مارس"), d: tx("A small family action challenge brings the value into daily life.", "تحدٍّ عائلي صغير ينقل القيمة إلى الحياة اليومية.") },
-    { icon: Moon, t: tx("Reflect", "تأمّل"), d: tx("A calm reflection prompt and du'a to close the evening.", "سؤال تأمل هادئ ودعاء لختام المساء.") },
-    { icon: Sprout, t: tx("Grow", "انمُ"), d: tx("The Character Journal records what your family practised — no scores.", "دفتر الأخلاق يسجّل ما مارسته العائلة — بلا درجات.") },
+    { icon: Compass, t: tx("Temukan", "Discover", "اكتشف"), d: tx("Cerita yang sesuai usia anak dan nilai yang sedang kalian kembangkan.", "A story matched to your child's age and the values you're working on.", "قصة تناسب عمر طفلك والقيم التي تعملون عليها.") },
+    { icon: BookOpen, t: tx("Baca", "Read", "اقرأ"), d: tx("Baca bersama, atau dengarkan narasinya, dalam Bahasa Indonesia, Inggris, atau Arab.", "Read together, or listen with narration, in Indonesian, English or Arabic.", "اقرؤوا معاً أو استمعوا للسرد بالإندونيسية أو الإنجليزية أو العربية.") },
+    { icon: Sparkles, t: tx("Pahami", "Understand", "افهم"), d: tx("Teks yang sesuai usia dan glosarium singkat untuk kata-kata baru.", "Age-appropriate text and a short glossary for new words.", "نص مناسب للعمر ومسرد قصير للكلمات الجديدة.") },
+    { icon: MessageCircle, t: tx("Diskusikan", "Discuss", "ناقش"), d: tx("Tiga pertanyaan panduan membantu orang tua memulai percakapan nyata.", "Three guided questions help parents start a real conversation.", "ثلاثة أسئلة موجّهة تساعد الوالدين على بدء حوار حقيقي.") },
+    { icon: Zap, t: tx("Praktikkan", "Practice", "مارس"), d: tx("Tantangan aksi keluarga kecil membawa nilai ke kehidupan sehari-hari.", "A small family action challenge brings the value into daily life.", "تحدٍّ عائلي صغير ينقل القيمة إلى الحياة اليومية.") },
+    { icon: Moon, t: tx("Renungkan", "Reflect", "تأمّل"), d: tx("Pertanyaan refleksi yang tenang dan doa untuk menutup malam.", "A calm reflection prompt and du'a to close the evening.", "سؤال تأمل هادئ ودعاء لختام المساء.") },
+    { icon: Sprout, t: tx("Tumbuh", "Grow", "انمُ"), d: tx("Jurnal Akhlak mencatat apa yang keluarga kalian praktikkan - tanpa skor.", "The Character Journal records what your family practised - no scores.", "دفتر الأخلاق يسجّل ما مارسته العائلة - بلا درجات.") },
   ];
 
   const principles = [
-    { icon: FileText, t: tx("Sources cited on every page", "مصادر موثّقة في كل صفحة"), d: tx("Every page of a canonical story references the Qur'an, hadith or sirah text it draws from, so parents can check it.", "كل صفحة من القصص الأساسية تشير إلى الآية أو الحديث أو السيرة المستندة إليها ليتحقق الوالدان.") },
-    { icon: Scale, t: tx("Scholar review workflow", "مسار مراجعة علمية"), d: tx("Stories move through source, editorial and scholar review before publishing. Stories still in review are clearly labelled.", "تمر القصص بمراجعة المصادر والتحرير والمراجعة العلمية قبل النشر، والقصص قيد المراجعة موسومة بوضوح.") },
-    { icon: Eye, t: tx("Faceless illustrations", "رسوم بلا وجوه"), d: tx("No depiction of Prophets or their faces. Illustrations focus on places, nature and objects.", "لا تصوير للأنبياء أو وجوههم. تركّز الرسوم على الأماكن والطبيعة والأشياء.") },
-    { icon: Cpu, t: tx("AI grounded in approved sources", "ذكاء اصطناعي مقيّد بالمصادر المعتمدة"), d: tx("AI only adapts reviewed content and is checked against allowed facts. It never invents quotes, hadith or events.", "يعمل الذكاء الاصطناعي على المحتوى المُراجَع فقط ويُتحقَّق منه مقابل الحقائق المسموحة، ولا يختلق أقوالاً أو أحاديث أو أحداثاً.") },
-    { icon: Ban, t: tx("No ads, no behavioural tracking", "بلا إعلانات ولا تتبع سلوكي"), d: tx("We collect only a child's first name and age. Nothing is sold or used for advertising.", "نجمع الاسم الأول للطفل وعمره فقط. لا نبيع أي بيانات ولا نستخدمها للإعلانات.") },
+    { icon: FileText, t: tx("Sumber dikutip di setiap halaman", "Sources cited on every page", "مصادر موثّقة في كل صفحة"), d: tx("Setiap halaman cerita kanonik mereferensikan Al-Qur'an, hadis, atau teks sirah yang menjadi sumbernya, sehingga orang tua dapat memeriksanya.", "Every page of a canonical story references the Qur'an, hadith or sirah text it draws from, so parents can check it.", "كل صفحة من القصص الأساسية تشير إلى الآية أو الحديث أو السيرة المستندة إليها ليتحقق الوالدان.") },
+    { icon: Scale, t: tx("Alur peninjauan ulama", "Scholar review workflow", "مسار مراجعة علمية"), d: tx("Cerita melalui peninjauan sumber, editorial, dan ulama sebelum diterbitkan. Cerita yang masih dalam peninjauan diberi label dengan jelas.", "Stories move through source, editorial and scholar review before publishing. Stories still in review are clearly labelled.", "تمر القصص بمراجعة المصادر والتحرير والمراجعة العلمية قبل النشر، والقصص قيد المراجعة موسومة بوضوح.") },
+    { icon: Eye, t: tx("Ilustrasi tanpa wajah", "Faceless illustrations", "رسوم بلا وجوه"), d: tx("Tidak ada penggambaran Nabi atau wajah mereka. Ilustrasi fokus pada tempat, alam, dan objek.", "No depiction of Prophets or their faces. Illustrations focus on places, nature and objects.", "لا تصوير للأنبياء أو وجوههم. تركّز الرسوم على الأماكن والطبيعة والأشياء.") },
+    { icon: Cpu, t: tx("AI berbasis sumber yang disetujui", "AI grounded in approved sources", "ذكاء اصطناعي مقيّد بالمصادر المعتمدة"), d: tx("AI hanya mengadaptasi konten yang telah ditinjau dan diperiksa berdasarkan fakta yang diizinkan. AI tidak pernah mengarang kutipan, hadis, atau peristiwa.", "AI only adapts reviewed content and is checked against allowed facts. It never invents quotes, hadith or events.", "يعمل الذكاء الاصطناعي على المحتوى المُراجَع فقط ويُتحقَّق منه مقابل الحقائق المسموحة، ولا يختلق أقوالاً أو أحاديث أو أحداثاً.") },
+    { icon: Ban, t: tx("Tanpa iklan, tanpa pelacakan perilaku", "No ads, no behavioural tracking", "بلا إعلانات ولا تتبع سلوكي"), d: tx("Kami hanya mengumpulkan nama depan dan usia anak. Tidak ada yang dijual atau digunakan untuk iklan.", "We collect only a child's first name and age. Nothing is sold or used for advertising.", "نجمع الاسم الأول للطفل وعمره فقط. لا نبيع أي بيانات ولا نستخدمها للإعلانات.") },
   ];
 
   const free = PLANS.find(p => p.id === "free")!;
@@ -85,7 +167,7 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-black/40 text-white selection:bg-white selection:text-black overflow-x-hidden font-body">
-      {/* Background (kept from v1) */}
+      {/* Background */}
       <img src="https://i.imgur.com/bpuBPTG.png" alt="" className="fixed inset-0 z-0 w-full h-full object-cover object-center pointer-events-none" />
       <div className="fixed inset-0 z-[1] bg-black/25 backdrop-blur-[0.5px] pointer-events-none" />
       <div className="fixed inset-0 z-[1] bg-gradient-to-t from-black/60 via-black/25 to-black/35 pointer-events-none" />
@@ -99,29 +181,49 @@ export default function Landing() {
             <div className="lg:col-span-7 flex flex-col items-start">
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md mb-6 text-xs sm:text-sm text-zinc-300">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                <span>{tx("Every story becomes an opportunity to grow.", "كل قصة فرصة للنمو.")}</span>
+                <span>{tx("Setiap cerita menjadi kesempatan untuk tumbuh.", "Every story becomes an opportunity to grow.", "كل قصة فرصة للنمو.")}</span>
               </div>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.05] mb-6">
-                {tx("A better bedtime routine for", "روتين أفضل قبل النوم")}{" "}
-                <span className="font-heading font-medium underline decoration-white/40 decoration-2 underline-offset-8">
-                  {tx("Muslim families", "للعائلات المسلمة")}
-                </span>
+
+              {/* Animated rotating headline */}
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.05] mb-6 min-h-[2.4em] sm:min-h-[2.2em] lg:min-h-[2em]">
+                <AnimatedHeadline text={heroText} heroIdx={heroIdx} />
               </h1>
+
+              {/* Dot indicators */}
+              <div className="flex items-center gap-2 mb-8">
+                {HERO_HEADLINES.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setHeroIdx(i)}
+                    className={`transition-all duration-300 rounded-full cursor-pointer ${
+                      i === heroIdx
+                        ? "w-6 h-2 bg-white"
+                        : "w-2 h-2 bg-white/30 hover:bg-white/50"
+                    }`}
+                    aria-label={`Headline ${i + 1}`}
+                  />
+                ))}
+              </div>
+
               <p className="text-lg sm:text-xl text-zinc-200 font-light max-w-xl leading-relaxed mb-10">
-                {tx("Read a story. Start a conversation. Practice a value. Build character.", "اقرأ قصة. ابدأ حواراً. مارس قيمة. ابنِ الأخلاق.")}
+                {tx(
+                  "Baca cerita. Mulai percakapan. Praktikkan sebuah nilai. Bangun akhlak.",
+                  "Read a story. Start a conversation. Practice a value. Build character.",
+                  "اقرأ قصة. ابدأ حواراً. مارس قيمة. ابنِ الأخلاق.",
+                )}
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
                 <Link to="/onboarding" className="px-8 py-4 rounded-full bg-white text-black font-medium text-base sm:text-lg hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 shadow-xl group">
-                  <span>{tx("Start Your Family Learning Journey", "ابدأ رحلة التعلم العائلية")}</span>
+                  <span>{tx("Mulai Perjalanan Belajar Keluarga", "Start Your Family Learning Journey", "ابدأ رحلة التعلم العائلية")}</span>
                   <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100" />
                 </Link>
                 <Link to="/stories" className="px-8 py-4 rounded-full border border-white/40 text-white font-medium text-base sm:text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2 backdrop-blur-sm">
-                  {tx("Explore Stories", "استكشف القصص")}
+                  {tx("Jelajahi Cerita", "Explore Stories", "استكشف القصص")}
                 </Link>
               </div>
               {hasParent && (
                 <Link to="/dashboard" className="mt-5 text-sm text-zinc-300 underline underline-offset-4 hover:text-white">
-                  {tx("Continue to your parent portal →", "المتابعة إلى بوابة الوالدين ←")}
+                  {tx("Lanjutkan ke portal orang tua →", "Continue to your parent portal →", "المتابعة إلى بوابة الوالدين ←")}
                 </Link>
               )}
             </div>
@@ -143,11 +245,11 @@ export default function Landing() {
         <section id="featured" className={sectionCls}>
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <Eyebrow>[ 01 / {tx("Featured stories", "قصص مختارة")} ]</Eyebrow>
-              <h2 className="text-3xl sm:text-5xl font-light tracking-tight">{tx("Featured stories", "قصص مختارة")}</h2>
+              <Eyebrow>[ 01 / {tx("Cerita pilihan", "Featured stories", "قصص مختارة")} ]</Eyebrow>
+              <h2 className="text-3xl sm:text-5xl font-light tracking-tight">{tx("Cerita pilihan", "Featured stories", "قصص مختارة")}</h2>
             </div>
             <Link to="/stories" className="text-white hover:opacity-70 underline underline-offset-4 inline-flex items-center gap-2">
-              {tx("Browse the full library", "تصفّح المكتبة كاملة")} <ArrowUpRight className="w-4 h-4 rtl:-scale-x-100" />
+              {tx("Jelajahi seluruh perpustakaan", "Browse the full library", "تصفّح المكتبة كاملة")} <ArrowUpRight className="w-4 h-4 rtl:-scale-x-100" />
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
@@ -160,7 +262,7 @@ export default function Landing() {
                     <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
                       <span>{cat ? loc(cat.name, language) : story.category}</span>
                       <span className="opacity-40">•</span>
-                      <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{story.durationMin} {tx("min", "د")}</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{story.durationMin} {tx("mnt", "min", "د")}</span>
                     </div>
                     <h3 className="text-sm sm:text-base font-heading leading-snug line-clamp-2">{loc(story.title, language)}</h3>
                     <div className="flex flex-wrap gap-1 mt-auto pt-1">
@@ -173,12 +275,12 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* HOW IT WORKS — the learning loop */}
+        {/* HOW IT WORKS */}
         <section id="how-it-works" className={sectionCls}>
           <div className="mb-14 max-w-2xl">
-            <Eyebrow>[ 02 / {tx("How it works", "طريقة العمل")} ]</Eyebrow>
-            <h2 className="text-3xl sm:text-5xl font-light tracking-tight mb-4">{tx("More than a story app", "أكثر من تطبيق قصص")}</h2>
-            <p className="text-zinc-300">{tx("Each story is a small learning loop your family can finish in one evening.", "كل قصة حلقة تعلم صغيرة يمكن لعائلتك إتمامها في أمسية واحدة.")}</p>
+            <Eyebrow>[ 02 / {tx("Cara kerja", "How it works", "طريقة العمل")} ]</Eyebrow>
+            <h2 className="text-3xl sm:text-5xl font-light tracking-tight mb-4">{tx("Lebih dari sekadar aplikasi cerita", "More than a story app", "أكثر من تطبيق قصص")}</h2>
+            <p className="text-zinc-300">{tx("Setiap cerita adalah siklus belajar kecil yang bisa diselesaikan keluarga dalam satu malam.", "Each story is a small learning loop your family can finish in one evening.", "كل قصة حلقة تعلم صغيرة يمكن لعائلتك إتمامها في أمسية واحدة.")}</p>
           </div>
           <ol className="grid sm:grid-cols-2 lg:grid-cols-7 gap-4">
             {loop.map(({ icon: Icon, t: title, d }, i) => (
@@ -198,10 +300,11 @@ export default function Landing() {
         <section id="values" className={sectionCls}>
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-6">
-              <Eyebrow>[ 03 / {tx("12 values", "١٢ قيمة")} ]</Eyebrow>
-              <h2 className="text-3xl sm:text-5xl font-light tracking-tight mb-6">{tx("Twelve values, practised together", "اثنتا عشرة قيمة نمارسها معاً")}</h2>
+              <Eyebrow>[ 03 / {tx("12 nilai", "12 values", "١٢ قيمة")} ]</Eyebrow>
+              <h2 className="text-3xl sm:text-5xl font-light tracking-tight mb-6">{tx("Dua belas nilai, dipraktikkan bersama", "Twelve values, practised together", "اثنتا عشرة قيمة نمارسها معاً")}</h2>
               <p className="text-zinc-300 leading-relaxed mb-8 text-base sm:text-lg">
                 {tx(
+                  "Setiap cerita ditandai dengan nilai yang diajarkannya. Alih-alih memberi skor karakter anak, Kidstorypedia mencatat apa yang benar-benar dilakukan keluarga kalian: cerita yang dibaca, percakapan yang dilakukan, dan aksi yang dipraktikkan.",
                   "Every story is tagged with the values it teaches. Instead of scoring your child's character, Kidstorypedia records what your family actually did: stories read, conversations had and actions practised.",
                   "كل قصة موسومة بالقيم التي تعلّمها. بدلاً من تقييم أخلاق طفلك بالدرجات، تسجّل كيدستوريبيديا ما فعلته عائلتك حقاً: القصص المقروءة والحوارات والأعمال المُمارَسة.",
                 )}
@@ -216,30 +319,30 @@ export default function Landing() {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">✳︎</div>
                     <div>
-                      <h3 className="text-sm font-heading">{tx("Character Journal", "دفتر الأخلاق")}</h3>
-                      <p className="text-xs text-zinc-400">{tx("Sample · this month", "نموذج · هذا الشهر")}</p>
+                      <h3 className="text-sm font-heading">{tx("Jurnal Akhlak", "Character Journal", "دفتر الأخلاق")}</h3>
+                      <p className="text-xs text-zinc-400">{tx("Contoh · bulan ini", "Sample · this month", "نموذج · هذا الشهر")}</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-[10px] font-mono bg-white/10 text-zinc-300 border border-white/15">{tx("Example", "مثال")}</span>
+                  <span className="px-3 py-1 rounded-full text-[10px] font-mono bg-white/10 text-zinc-300 border border-white/15">{tx("Contoh", "Example", "مثال")}</span>
                 </div>
                 <ul className="space-y-3">
                   {[
-                    { v: "patience" as const, en: "Practised Patience in 4 learning activities", ar: "مارس الصبر في ٤ أنشطة تعلم" },
-                    { v: "gratitude" as const, en: "Talked about Gratitude after 2 stories", ar: "تحدّث عن الشكر بعد قصتين" },
-                    { v: "honesty" as const, en: "Completed 1 Honesty action challenge", ar: "أكمل تحدياً عملياً واحداً في الصدق" },
+                    { v: "patience" as const, id: "Melatih Kesabaran dalam 4 aktivitas belajar", en: "Practised Patience in 4 learning activities", ar: "مارس الصبر في ٤ أنشطة تعلم" },
+                    { v: "gratitude" as const, id: "Membicarakan Syukur setelah 2 cerita", en: "Talked about Gratitude after 2 stories", ar: "تحدّث عن الشكر بعد قصتين" },
+                    { v: "honesty" as const, id: "Menyelesaikan 1 tantangan aksi Kejujuran", en: "Completed 1 Honesty action challenge", ar: "أكمل تحدياً عملياً واحداً في الصدق" },
                   ].map(r => (
                     <li key={r.v} className="p-4 rounded-2xl bg-black/30 border border-white/5 flex items-center justify-between gap-3">
-                      <span className="text-sm">{tx(r.en, r.ar)}</span>
+                      <span className="text-sm">{tx(r.id, r.en, r.ar)}</span>
                       <ValueChip id={r.v} />
                     </li>
                   ))}
                   <li className="p-4 rounded-2xl bg-black/30 border border-white/5">
-                    <div className="text-[11px] font-mono text-zinc-500 mb-1">{tx("Parent observation", "ملاحظة الوالدين")}</div>
-                    <p className="text-sm text-zinc-200 italic">{tx("“Waited calmly while his sister finished her turn.”", "«انتظر بهدوء حتى أنهت أخته دورها.»")}</p>
+                    <div className="text-[11px] font-mono text-zinc-500 mb-1">{tx("Observasi orang tua", "Parent observation", "ملاحظة الوالدين")}</div>
+                    <p className="text-sm text-zinc-200 italic">{tx("\"Menunggu dengan sabar saat kakaknya menyelesaikan gilirannya.\"", "“Waited calmly while his sister finished her turn.”", "«انتظر بهدوء حتى أنهت أخته دورها.»")}</p>
                   </li>
                 </ul>
                 <p className="mt-6 pt-5 border-t border-white/10 text-xs text-zinc-400">
-                  {tx("No points, no percentages — character is shown, not scored.", "بلا نقاط ولا نسب — الأخلاق تُرى ولا تُقاس بالدرجات.")}
+                  {tx("Tanpa poin, tanpa persentase - akhlak ditunjukkan, bukan dinilai.", "No points, no percentages - character is shown, not scored.", "بلا نقاط ولا نسب - الأخلاق تُرى ولا تُقاس بالدرجات.")}
                 </p>
               </div>
             </div>
@@ -249,9 +352,9 @@ export default function Landing() {
         {/* CONTENT PRINCIPLES */}
         <section id="principles" className={sectionCls}>
           <div className="mb-14 max-w-2xl">
-            <Eyebrow>[ 04 / {tx("Our content principles", "مبادئ المحتوى")} ]</Eyebrow>
-            <h2 className="text-3xl sm:text-5xl font-light tracking-tight mb-4">{tx("Our content principles", "مبادئ المحتوى لدينا")}</h2>
-            <p className="text-zinc-300">{tx("Trust has to be earned. Here is how we handle Islamic content, AI and your family's data.", "الثقة تُكتسب. هكذا نتعامل مع المحتوى الإسلامي والذكاء الاصطناعي وبيانات عائلتك.")}</p>
+            <Eyebrow>[ 04 / {tx("Prinsip konten kami", "Our content principles", "مبادئ المحتوى")} ]</Eyebrow>
+            <h2 className="text-3xl sm:text-5xl font-light tracking-tight mb-4">{tx("Prinsip konten kami", "Our content principles", "مبادئ المحتوى لدينا")}</h2>
+            <p className="text-zinc-300">{tx("Kepercayaan harus diperoleh. Inilah cara kami menangani konten Islami, AI, dan data keluarga Anda.", "Trust has to be earned. Here is how we handle Islamic content, AI and your family's data.", "الثقة تُكتسب. هكذا نتعامل مع المحتوى الإسلامي والذكاء الاصطناعي وبيانات عائلتك.")}</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {principles.map(({ icon: Icon, t: title, d }) => (
@@ -264,8 +367,8 @@ export default function Landing() {
             <Link to="/privacy" className={`${cardCls} p-7 flex flex-col justify-between hover:border-white/40 transition-colors`}>
               <Heart className="w-5 h-5 mb-5" aria-hidden />
               <div>
-                <h3 className="text-lg font-heading mb-2">{tx("Privacy & child safety", "الخصوصية وسلامة الطفل")}</h3>
-                <span className="text-sm text-zinc-300 underline underline-offset-4">{tx("Read our privacy commitments →", "اقرأ التزاماتنا للخصوصية ←")}</span>
+                <h3 className="text-lg font-heading mb-2">{tx("Privasi & keamanan anak", "Privacy & child safety", "الخصوصية وسلامة الطفل")}</h3>
+                <span className="text-sm text-zinc-300 underline underline-offset-4">{tx("Baca komitmen privasi kami →", "Read our privacy commitments →", "اقرأ التزاماتنا للخصوصية ←")}</span>
               </div>
             </Link>
           </div>
@@ -275,11 +378,11 @@ export default function Landing() {
         <section id="pricing" className={sectionCls}>
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <Eyebrow>[ 05 / {tx("Pricing", "الأسعار")} ]</Eyebrow>
-              <h2 className="text-3xl sm:text-5xl font-light tracking-tight">{tx("Start free. Upgrade when it fits.", "ابدأ مجاناً. ورقِّ اشتراكك عندما يناسبك.")}</h2>
+              <Eyebrow>[ 05 / {tx("Harga", "Pricing", "الأسعار")} ]</Eyebrow>
+              <h2 className="text-3xl sm:text-5xl font-light tracking-tight">{tx("Mulai gratis. Upgrade saat cocok.", "Start free. Upgrade when it fits.", "ابدأ مجاناً. ورقِّ اشتراكك عندما يناسبك.")}</h2>
             </div>
             <Link to="/pricing" className="text-white hover:opacity-70 underline underline-offset-4 inline-flex items-center gap-2">
-              {tx("Compare all plans", "قارن كل الخطط")} <ArrowUpRight className="w-4 h-4 rtl:-scale-x-100" />
+              {tx("Bandingkan semua paket", "Compare all plans", "قارن كل الخطط")} <ArrowUpRight className="w-4 h-4 rtl:-scale-x-100" />
             </Link>
           </div>
           <div className="grid md:grid-cols-2 gap-5">
@@ -288,8 +391,8 @@ export default function Landing() {
                 <div className="flex items-baseline justify-between gap-3 mb-1">
                   <h3 className="text-xl font-heading">{loc(p.name, language)}</h3>
                   <div className="text-2xl font-light">
-                    {p.priceUsd === 0 ? tx("$0", "٠$") : `$${p.priceUsd}`}
-                    <span className="text-xs text-zinc-400 ms-1">{p.period === "year" ? tx("/ year", "/ سنة") : p.period === "month" ? tx("/ month", "/ شهر") : ""}</span>
+                    {p.priceUsd === 0 ? tx("$0", "$0", "٠$") : `$${p.priceUsd}`}
+                    <span className="text-xs text-zinc-400 ms-1">{p.period === "year" ? tx("/ tahun", "/ year", "/ سنة") : p.period === "month" ? tx("/ bulan", "/ month", "/ شهر") : ""}</span>
                   </div>
                 </div>
                 <p className="text-sm text-zinc-400 mb-5">{loc(p.tagline, language)}</p>
@@ -309,25 +412,25 @@ export default function Landing() {
             <div className={`${cardCls} p-8 sm:p-10 flex flex-col justify-between`}>
               <div>
                 <Moon className="w-6 h-6 mb-5" aria-hidden />
-                <h2 className="text-2xl sm:text-3xl font-heading mb-3">{tx("30 Nights of Prophetic Stories", "٣٠ ليلة من القصص النبوية")}</h2>
+                <h2 className="text-2xl sm:text-3xl font-heading mb-3">{tx("30 Malam Kisah Nabi", "30 Nights of Prophetic Stories", "٣٠ ليلة من القصص النبوية")}</h2>
                 <p className="text-zinc-300 text-sm leading-relaxed mb-6">
-                  {tx("A free bedtime program: one story, one discussion question and one small action each night.", "برنامج مجاني قبل النوم: قصة وسؤال نقاش وعمل صغير كل ليلة.")}
+                  {tx("Program tidur gratis: satu cerita, satu pertanyaan diskusi, dan satu aksi kecil setiap malam.", "A free bedtime program: one story, one discussion question and one small action each night.", "برنامج مجاني قبل النوم: قصة وسؤال نقاش وعمل صغير كل ليلة.")}
                 </p>
               </div>
               <Link to="/30-nights" className="self-start px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-zinc-200">
-                {tx("Get the free program", "احصل على البرنامج المجاني")}
+                {tx("Dapatkan program gratis", "Get the free program", "احصل على البرنامج المجاني")}
               </Link>
             </div>
             <div className={`${cardCls} p-8 sm:p-10 flex flex-col justify-between`}>
               <div>
                 <School className="w-6 h-6 mb-5" aria-hidden />
-                <h2 className="text-2xl sm:text-3xl font-heading mb-3">{tx("For schools & organisations", "للمدارس والمؤسسات")}</h2>
+                <h2 className="text-2xl sm:text-3xl font-heading mb-3">{tx("Untuk sekolah & organisasi", "For schools & organisations", "للمدارس والمؤسسات")}</h2>
                 <p className="text-zinc-300 text-sm leading-relaxed mb-6">
-                  {tx("Classroom accounts, story assignments and discussion guides for Islamic schools, TPA/TPQ and community programs.", "حسابات صفية وتكليفات قصصية وأدلة نقاش للمدارس الإسلامية وحلقات التحفيظ والبرامج المجتمعية.")}
+                  {tx("Akun kelas, tugas cerita, dan panduan diskusi untuk sekolah Islam, TPA/TPQ, dan program komunitas.", "Classroom accounts, story assignments and discussion guides for Islamic schools, TPA/TPQ and community programs.", "حسابات صفية وتكليفات قصصية وأدلة نقاش للمدارس الإسلامية وحلقات التحفيظ والبرامج المجتمعية.")}
                 </p>
               </div>
               <Link to="/classroom" className="self-start px-6 py-3 rounded-full border border-white/40 text-sm hover:bg-white/10">
-                {tx("Explore classroom tools", "استكشف أدوات الصف")}
+                {tx("Jelajahi alat kelas", "Explore classroom tools", "استكشف أدوات الصف")}
               </Link>
             </div>
           </div>
@@ -336,16 +439,16 @@ export default function Landing() {
         {/* FINAL CTA */}
         <section className={`${sectionCls} text-center`}>
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl sm:text-6xl font-light tracking-tight leading-tight mb-6">{tx("Tonight's story can start a habit.", "قصة الليلة قد تبدأ عادة.")}</h2>
+            <h2 className="text-4xl sm:text-6xl font-light tracking-tight leading-tight mb-6">{tx("Cerita malam ini bisa memulai kebiasaan.", "Tonight's story can start a habit.", "قصة الليلة قد تبدأ عادة.")}</h2>
             <p className="text-lg text-zinc-300 mb-10 max-w-xl mx-auto">
-              {tx("Set up your family in a few minutes. Free to start, no card needed.", "أعدّ ملف عائلتك في دقائق. مجاني للبدء، بلا بطاقة.")}
+              {tx("Buat profil keluarga dalam beberapa menit. Gratis untuk mulai, tanpa kartu.", "Set up your family in a few minutes. Free to start, no card needed.", "أعدّ ملف عائلتك في دقائق. مجاني للبدء، بلا بطاقة.")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/onboarding" className="w-full sm:w-auto px-10 py-5 rounded-full bg-white text-black font-medium text-lg hover:bg-zinc-200 transition-all shadow-2xl">
-                {tx("Start Your Family Learning Journey", "ابدأ رحلة التعلم العائلية")}
+                {tx("Mulai Perjalanan Belajar Keluarga", "Start Your Family Learning Journey", "ابدأ رحلة التعلم العائلية")}
               </Link>
               <Link to="/stories" className="w-full sm:w-auto px-10 py-5 rounded-full border border-white/40 text-white font-medium text-lg hover:bg-white/10 transition-all backdrop-blur-sm">
-                {tx("Explore Stories", "استكشف القصص")}
+                {tx("Jelajahi Cerita", "Explore Stories", "استكشف القصص")}
               </Link>
             </div>
           </div>

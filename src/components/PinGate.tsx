@@ -4,7 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { getState } from "@/store";
 import { Modal, btn, input } from "./kit";
 
-/** Light obfuscation — the PIN protects against children, not attackers. */
+/** Light obfuscation - the PIN protects against children, not attackers. */
 export function hashPin(pin: string) {
   let h = 0;
   for (const c of `ksp:${pin}`) h = (h * 33 + c.charCodeAt(0)) >>> 0;
@@ -38,15 +38,15 @@ export function PinGate({ open, onClose, onPass }: { open: boolean; onClose: () 
   };
 
   return (
-    <Modal open={open} onClose={onClose} title={tx("Grown-ups only", "للكبار فقط")}>
+    <Modal open={open} onClose={onClose} title={tx("Khusus orang dewasa", "Grown-ups only", "للكبار فقط")}>
       <form onSubmit={submit} className="space-y-4">
         <div className="flex items-center gap-3 text-sm text-zinc-300">
           <Lock className="w-4 h-4" />
-          {hasPin ? tx("Enter your parent PIN", "أدخل الرقم السري للوالدين") : tx(`What is ${q.a} × ${q.b}?`, `كم يساوي ${q.a} × ${q.b}؟`)}
+          {hasPin ? tx("Masukkan PIN orang tua", "Enter your parent PIN", "أدخل الرقم السري للوالدين") : tx(`Berapa ${q.a} × ${q.b}?`, `What is ${q.a} × ${q.b}?`, `كم يساوي ${q.a} × ${q.b}؟`)}
         </div>
         <input autoFocus inputMode="numeric" className={input} value={val} onChange={e => setVal(e.target.value)} type={hasPin ? "password" : "text"} />
-        {err && <p className="text-xs text-rose-300">{tx("That's not right. Please try again.", "غير صحيح، حاول مرة أخرى.")}</p>}
-        <button className={btn.primary + " w-full"}>{tx("Continue", "متابعة")}</button>
+        {err && <p className="text-xs text-rose-300">{tx("Itu belum benar. Silakan coba lagi.", "That's not right. Please try again.", "غير صحيح، حاول مرة أخرى.")}</p>}
+        <button className={btn.primary + " w-full"}>{tx("Lanjutkan", "Continue", "متابعة")}</button>
       </form>
     </Modal>
   );

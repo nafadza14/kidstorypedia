@@ -8,7 +8,7 @@ import { toast } from "@/components/kit";
 import type { ChildProfile, Lang, ValueId } from "@/types";
 
 /** Common per-section context: whole store snapshot + active child + language helpers. */
-export function useDash(): { state: AppState; child: ChildProfile | undefined; language: Lang; tx: (en: string, ar?: string) => string } {
+export function useDash(): { state: AppState; child: ChildProfile | undefined; language: Lang; tx: (id: string, en: string, ar?: string) => string } {
   const state = useStore(s => s);
   const { language, tx } = useLanguage();
   return { state, child: activeChild(state), language, tx };
@@ -31,7 +31,7 @@ export function valueName(id: ValueId, lang: Lang) {
 }
 
 export function fmtDate(iso: string | undefined, lang: Lang) {
-  if (!iso) return "—";
+  if (!iso) return "-";
   try {
     return new Date(iso).toLocaleDateString(lang === "ar" ? "ar" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
   } catch {
@@ -44,7 +44,7 @@ export async function copyText(text: string, okMsg: string) {
     await navigator.clipboard.writeText(text);
     toast(okMsg);
   } catch {
-    // clipboard blocked — fall back to a prompt the user can copy from
+    // clipboard blocked - fall back to a prompt the user can copy from
     window.prompt("Copy:", text);
   }
 }
@@ -103,5 +103,5 @@ export function Pill({ children, tone = "default" }: { children: React.ReactNode
 
 export function NoChild() {
   const { tx } = useLanguage();
-  return <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-sm text-zinc-400">{tx("Add a child profile to get started.", "أضف ملف طفل للبدء.")}</div>;
+  return <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-sm text-zinc-400">{tx("Tambahkan profil anak untuk memulai.", "Add a child profile to get started.", "أضف ملف طفل للبدء.")}</div>;
 }

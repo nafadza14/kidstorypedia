@@ -1,8 +1,111 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type Language = 'en' | 'ar';
+export type Language = 'id' | 'en' | 'ar';
+
+/** Language labels shown in the switcher */
+export const LANG_LABELS: Record<Language, string> = {
+  id: 'Bahasa Indonesia',
+  en: 'English',
+  ar: 'العربية',
+};
+
+/** Short labels for compact switcher */
+export const LANG_SHORT: Record<Language, string> = {
+  id: 'ID',
+  en: 'EN',
+  ar: 'ع',
+};
+
+/**
+ * Detect language from user's locale/timezone on first visit.
+ * - Indonesia (id, ms locales or Asia/Jakarta timezone) → 'id'
+ * - Arabic-speaking countries → 'ar'
+ * - Otherwise → 'en'
+ */
+function detectLanguage(): Language {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    // Indonesia timezones
+    if (/^Asia\/(Jakarta|Makassar|Jayapura|Pontianak)$/i.test(tz)) return 'id';
+
+    const lang = (navigator.language || '').toLowerCase();
+    if (lang.startsWith('id') || lang.startsWith('ms')) return 'id';
+    if (lang.startsWith('ar')) return 'ar';
+  } catch { /* fallback */ }
+  return 'en';
+}
 
 const translations: Record<Language, Record<string, string>> = {
+  id: {
+    "app.title": "Kidstorypedia",
+    "nav.features": "Fitur",
+    "nav.about": "Tentang",
+    "nav.login": "Masuk",
+    "nav.getStarted": "Mulai Sekarang",
+    "landing.badge": "Kisah Nabi & Cerita Akhlak untuk Anak-Anak",
+    "landing.title1": "Di mana setiap cerita menanam",
+    "landing.title2": "Benih Akhlak Mulia",
+    "landing.subtitle": "Memberdayakan orang tua Muslim untuk membesarkan anak-anak berakhlak mulia melalui pengalaman cerita yang mendalam dan didukung teknologi.",
+    "landing.btnParent": "Dasbor Orang Tua",
+    "landing.btnChild": "Coba Pengalaman Anak",
+    "landing.whyChoose": "Mengapa Memilih Kidstorypedia?",
+    "landing.feat1.title": "Kisah Autentik",
+    "landing.feat1.desc": "25 Nabi, Sirah Nabawiyah, dan kisah Sahabat yang direview oleh ulama Islam.",
+    "landing.feat2.title": "Pelacakan Karakter",
+    "landing.feat2.desc": "Pantau perkembangan anak Anda pada 12 nilai inti seperti kejujuran, kesabaran, dan syukur.",
+    "landing.feat3.title": "Aman & Terkurasi",
+    "landing.feat3.desc": "Tanpa iklan, tanpa konten tidak pantas. Hanya cerita Islam murni dan menarik.",
+    "landing.howItWorks.title": "Cara Kerja Kidstorypedia",
+    "landing.howItWorks.step1.title": "Pilih Cerita",
+    "landing.howItWorks.step1.desc": "Pilih dari koleksi cerita Islam autentik kami.",
+    "landing.howItWorks.step2.title": "Baca & Pelajari",
+    "landing.howItWorks.step2.desc": "Nikmati ilustrasi indah dan narasi bermakna.",
+    "landing.howItWorks.step3.title": "Pantau Kemajuan",
+    "landing.howItWorks.step3.desc": "Pantau perkembangan karakter anak Anda seiring waktu.",
+    "landing.categories.title": "Jelajahi Perpustakaan Kami",
+    "landing.categories.prophets": "Kisah Para Nabi",
+    "landing.categories.seerah": "Sirah Nabawiyah",
+    "landing.categories.sahabah": "Kehidupan Para Sahabat",
+    "landing.categories.fables": "Cerita Moral",
+    "landing.tracking.title": "Menumbuhkan Nilai-Nilai Inti",
+    "landing.tracking.desc": "Kami melacak 12 nilai Islam esensial termasuk Kejujuran, Kesabaran, dan Syukur untuk membantu Anda membimbing perkembangan karakter anak.",
+    "landing.testimonials.title": "Kata Orang Tua",
+    "landing.testimonials.t1.quote": "Kidstorypedia telah mengubah rutinitas tidur kami. Ceritanya indah dan pelacakan karakternya sangat membantu.",
+    "landing.testimonials.t1.author": "Aisha, Ibu 2 Anak",
+    "landing.testimonials.t2.quote": "Akhirnya, platform aman dan autentik untuk cerita Islam. Anak-anak saya suka ilustrasinya!",
+    "landing.testimonials.t2.author": "Omar, Ayah 3 Anak",
+    "landing.cta.title": "Siap Memulai Perjalanan Anda?",
+    "landing.cta.desc": "Bergabung dengan ribuan orang tua yang membesarkan generasi berikutnya dengan nilai-nilai Islam yang kuat.",
+    "dashboard.title": "Portal Orang Tua",
+    "dashboard.overview": "Ringkasan",
+    "dashboard.childProfiles": "Profil Anak",
+    "dashboard.discussion": "Panduan Diskusi",
+    "dashboard.achievements": "Pencapaian",
+    "dashboard.settings": "Pengaturan",
+    "dashboard.switchChild": "Beralih ke Tampilan Anak",
+    "dashboard.greeting": "Assalamu'alaikum, Ummi Sarah",
+    "dashboard.subtitle": "Begini perkembangan {name} hari ini.",
+    "child.greeting": "Hai, {name}!",
+    "child.continue": "Lanjut Membaca",
+    "child.readNow": "Baca Sekarang",
+    "child.mins": "menit",
+    "cat.All": "Semua",
+    "cat.Prophets": "Para Nabi",
+    "cat.Seerah": "Sirah",
+    "cat.Sahabah": "Sahabat",
+    "cat.Fables": "Cerita Moral",
+    "reader.notFound": "Cerita tidak ditemukan.",
+    "reader.goBack": "Kembali",
+    "reader.mashaAllah": "MasyaAllah!",
+    "reader.completed": "Kamu telah menyelesaikan \"{title}\" dan belajar tentang {values}.",
+    "reader.readAnother": "Baca Cerita Lain",
+    "reader.tellUmmi": "Ceritakan pada Ummi (Dasbor Orang Tua)",
+    "val.Honesty": "Kejujuran",
+    "val.Patience": "Kesabaran",
+    "val.Gratitude": "Syukur",
+    "val.Courage": "Keberanian",
+    "val.Generosity": "Kedermawanan",
+  },
   en: {
     "app.title": "Kidstorypedia",
     "nav.features": "Features",
@@ -52,27 +155,7 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.switchChild": "Switch to Child View",
     "dashboard.greeting": "Assalamu'alaikum, Ummi Sarah",
     "dashboard.subtitle": "Here's how {name} is growing today.",
-    "dashboard.tab.overview": "Overview",
-    "dashboard.tab.character": "Character Tracking",
-    "dashboard.tab.history": "Reading History",
-    "dashboard.stat.stories": "Stories Completed",
-    "dashboard.stat.storiesSub": "+3 this week",
-    "dashboard.stat.time": "Reading Time",
-    "dashboard.stat.timeSub": "Avg 15m / day",
-    "dashboard.stat.badges": "Badges Earned",
-    "dashboard.stat.badgesSub": "Latest: Truthful One",
-    "dashboard.char.title": "Character Progress",
-    "dashboard.char.desc": "Monitor {name}'s growth across core values.",
-    "dashboard.rec.title": "Recommended Next Story",
-    "dashboard.rec.desc": "Based on focus area: Patience",
-    "dashboard.rec.generate": "Discover Featured Story",
-    "dashboard.rec.generating": "Preparing Story...",
-    "dashboard.rec.read": "Read Story",
-    "dashboard.detail.title": "Detailed Character Tracking",
-    "dashboard.detail.desc": "View detailed insights and discussion prompts.",
-    "dashboard.detail.coming": "Detailed view coming in next update.",
     "child.greeting": "Hi, {name}!",
-    "child.points": "{points} Points",
     "child.continue": "Continue Reading",
     "child.readNow": "Read Now",
     "child.mins": "mins",
@@ -142,27 +225,7 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.switchChild": "التبديل لواجهة الطفل",
     "dashboard.greeting": "السلام عليكم، أم سارة",
     "dashboard.subtitle": "إليك كيف ينمو {name} اليوم.",
-    "dashboard.tab.overview": "نظرة عامة",
-    "dashboard.tab.character": "تتبع الأخلاق",
-    "dashboard.tab.history": "سجل القراءة",
-    "dashboard.stat.stories": "القصص المكتملة",
-    "dashboard.stat.storiesSub": "+٣ هذا الأسبوع",
-    "dashboard.stat.time": "وقت القراءة",
-    "dashboard.stat.timeSub": "متوسط ١٥ دقيقة / يوم",
-    "dashboard.stat.badges": "الشارات المكتسبة",
-    "dashboard.stat.badgesSub": "الأحدث: الصادق",
-    "dashboard.char.title": "تقدم الأخلاق",
-    "dashboard.char.desc": "راقب نمو {name} في القيم الأساسية.",
-    "dashboard.rec.title": "القصة التالية الموصى بها",
-    "dashboard.rec.desc": "بناءً على مجال التركيز: الصبر",
-    "dashboard.rec.generate": "تأليف قصة أخلاقية جديدة",
-    "dashboard.rec.generating": "جاري إعداد القصة...",
-    "dashboard.rec.read": "اقرأ القصة",
-    "dashboard.detail.title": "تتبع الأخلاق بالتفصيل",
-    "dashboard.detail.desc": "عرض رؤى تفصيلية ومحفزات للنقاش.",
-    "dashboard.detail.coming": "العرض التفصيلي قادم في التحديث القادم.",
     "child.greeting": "أهلاً، {name}!",
-    "child.points": "{points} نقطة",
     "child.continue": "مواصلة القراءة",
     "child.readNow": "اقرأ الآن",
     "child.mins": "دقيقة",
@@ -189,25 +252,38 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
-  /** Inline bilingual string helper: tx("Hello", "مرحبا") */
-  tx: (en: string, ar?: string) => string;
+  /** Trilingual inline helper: tx("Teks Indonesia", "English text", "النص العربي") */
+  tx: (id: string, en: string, ar?: string) => string;
   dir: 'ltr' | 'rtl';
 }
 
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const STORAGE_KEY = 'kidstorypedia:lang';
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    try { return (localStorage.getItem('kidstorypedia:lang') as Language) || 'en'; } catch { return 'en'; }
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY) as Language | null;
+      if (saved && (saved === 'id' || saved === 'en' || saved === 'ar')) return saved;
+    } catch { /* ignore */ }
+    return detectLanguage();
   });
+
   const setLanguage = (l: Language) => {
     setLanguageState(l);
-    try { localStorage.setItem('kidstorypedia:lang', l); } catch { /* ignore */ }
+    try { localStorage.setItem(STORAGE_KEY, l); } catch { /* ignore */ }
   };
-  const tx = (en: string, ar?: string) => (language === 'ar' && ar ? ar : en);
+
+  /** tx("Indonesia", "English", "عربي") - returns the string matching current language */
+  const tx = (id: string, en: string, ar?: string) => {
+    if (language === 'ar' && ar) return ar;
+    if (language === 'id') return id;
+    return en;
+  };
 
   const t = (key: string, params?: Record<string, string | number>) => {
-    let text = translations[language][key] || key;
+    let text = translations[language]?.[key] || translations['en']?.[key] || key;
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
         text = text.replace(`{${k}}`, String(v));
