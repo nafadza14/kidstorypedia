@@ -63,6 +63,7 @@ export function initialState(): AppState {
     ownedPacks: [],
     referral: { code: randomCode(), invited: [], bonusDays: 0 },
     settings: {
+      readerStyle: "book",
       audioNarration: true,
       tashkeel: true,
       dailyScreenLimitMin: 30,

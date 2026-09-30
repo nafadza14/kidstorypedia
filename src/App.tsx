@@ -8,6 +8,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ToastHost } from "./components/kit";
 import { FamilyGate } from "./components/FamilyGate";
 import Landing from "./pages/Landing";
+import { NOINDEX_PREFIXES, SEO_TOPICS } from "./lib/seo";
 
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Pricing = lazy(() => import("./pages/Pricing"));
@@ -21,10 +22,31 @@ const StoryReader = lazy(() => import("./pages/StoryReader"));
 const Studio = lazy(() => import("./pages/Studio"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Classroom = lazy(() => import("./pages/Classroom"));
+const TopicPage = lazy(() => import("./pages/TopicPage"));
 
 function ScrollTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+/** Private and per-family routes must never be indexed. */
+function RouteRobots() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const hide = NOINDEX_PREFIXES.some(p => pathname === p || pathname.startsWith(p.endsWith("/") ? p : p + "/") || (p.endsWith("/") && pathname.startsWith(p)));
+    if (!hide) return;
+    let el = document.head.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    const prev = el?.content ?? null;
+    if (!el) { el = document.createElement("meta"); el.name = "robots"; document.head.appendChild(el); }
+    el.content = "noindex, nofollow";
+    const alts = Array.from(document.head.querySelectorAll('link[rel="alternate"][hreflang]'));
+    alts.forEach(a => a.remove());
+    return () => {
+      if (prev === null) el?.remove(); else if (el) el.content = prev;
+      alts.forEach(a => document.head.appendChild(a));
+    };
+  }, [pathname]);
   return null;
 }
 
@@ -37,6 +59,7 @@ export default function App() {
     <LanguageProvider>
       <Router>
         <ScrollTop />
+        <RouteRobots />
         <div className="min-h-screen bg-[#0a0a0c] text-white font-body selection:bg-white selection:text-black">
           <Suspense fallback={<Loading />}>
             <Routes>
@@ -56,6 +79,7 @@ export default function App() {
               <Route path="/studio/:tab" element={<Studio />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/classroom" element={<Classroom />} />
+              {SEO_TOPICS.map(t => <Route key={t.slug} path={`/${t.slug}`} element={<TopicPage topic={t} />} />)}
               <Route path="*" element={<Landing />} />
             </Routes>
           </Suspense>

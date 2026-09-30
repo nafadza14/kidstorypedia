@@ -9,7 +9,7 @@ import type { AnalyticsEvent } from "@/types";
  */
 export type EventName =
   | "landing_view" | "signup_started" | "signup_completed" | "child_created" | "onboarding_completed"
-  | "story_viewed" | "story_started" | "story_page_viewed" | "story_completed" | "audio_started"
+  | "story_viewed" | "story_started" | "story_page_viewed" | "story_completed" | "audio_started" | "reader_style_changed"
   | "discussion_opened" | "discussion_completed" | "action_started" | "action_completed" | "reflection_completed"
   | "badge_unlocked" | "certificate_generated" | "paywall_viewed" | "checkout_started"
   | "subscription_started" | "subscription_cancelled" | "referral_sent" | "referral_converted"

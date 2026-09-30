@@ -264,6 +264,12 @@ const STORAGE_KEY = 'kidstorypedia:lang';
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
+      // ?lang=id|en|ar (used by hreflang links and shared URLs) wins and is remembered
+      const q = new URLSearchParams(window.location.search).get('lang');
+      if (q === 'id' || q === 'en' || q === 'ar') {
+        localStorage.setItem(STORAGE_KEY, q);
+        return q;
+      }
       const saved = localStorage.getItem(STORAGE_KEY) as Language | null;
       if (saved && (saved === 'id' || saved === 'en' || saved === 'ar')) return saved;
     } catch { /* ignore */ }

@@ -6,7 +6,7 @@ import { useStore } from "@/store";
 import { useSeo } from "@/hooks/useSeo";
 
 export default function Privacy() {
-  const { tx } = useLanguage();
+  const { tx, language } = useLanguage();
   const retention = useStore(s => s.settings.dataRetentionMonths);
   const hasParent = useStore(s => !!s.parent);
 
@@ -18,6 +18,8 @@ export default function Privacy() {
       "كيف تحمي كيدستوريبيديا الأطفال والعائلات: أقل قدر من البيانات، حسابات بتحكم الوالدين، بلا إعلانات، موافقة الوالدين، الحذف والتصدير.",
     ),
     canonical: "/privacy",
+    alternates: true,
+    lang: language,
   });
 
   const sections: { id: string; h: string; body: React.ReactNode }[] = [

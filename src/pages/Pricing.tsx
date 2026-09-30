@@ -32,6 +32,8 @@ export default function Pricing() {
       "ابدأ مجاناً مع قصص إسلامية للأطفال قبل النوم. خطط العائلة تفتح المكتبة كاملة وحتى ٥ ملفات أطفال وأدلة النقاش الكاملة. بلا إعلانات، وإلغاء في أي وقت.",
     ),
     canonical: "/pricing",
+    alternates: true,
+    lang: language,
   });
 
   const choosePlan = async (plan: PlanId) => {

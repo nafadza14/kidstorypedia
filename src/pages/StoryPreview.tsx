@@ -5,11 +5,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { PublicShell } from "@/components/PublicNav";
 import { ReviewBadge, StoryCover, ValueChip, btn } from "@/components/kit";
 import { useStore } from "@/store";
-import { familyStories, findStory, loc } from "@/lib/content";
+import { familyStories, findStory, loc, sourceNote, sourceRef } from "@/lib/content";
 import { track } from "@/lib/analytics";
 import { CATEGORIES, VALUE_MAP } from "@/data/values";
 import { SOURCE_MAP } from "@/data/sources";
 import { useSeo } from "@/hooks/useSeo";
+import { storyMeta } from "@/lib/seo";
 import type { SourceType } from "@/types";
 
 const SOURCE_TYPE: Record<SourceType, [string, string, string]> = {
@@ -44,34 +45,10 @@ export default function StoryPreview() {
       .map(x => x.s);
   }, [state, story]);
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
   useSeo(
     story
-      ? {
-          title: `${story.title.en} - Islamic Story for Kids Ages ${story.ageRange[0]}–${story.ageRange[1]} | Kidstorypedia`,
-          description: `${story.description.en} Teaches ${story.values.map(v => VALUE_MAP[v].name.en.toLowerCase()).join(" and ")}. Includes sources, a parent discussion guide and a family action challenge.`,
-          canonical: `/stories/${story.slug}`,
-          image: story.coverImage,
-          type: "book",
-          jsonLd: {
-            "@context": "https://schema.org",
-            "@type": ["Book", "CreativeWork"],
-            name: story.title.en,
-            alternateName: story.title.ar,
-            description: story.description.en,
-            url: `${origin}/stories/${story.slug}`,
-            image: story.coverImage,
-            inLanguage: story.title.ar ? ["en", "ar"] : ["en"],
-            genre: CATEGORIES.find(c => c.id === story.category)?.name.en,
-            timeRequired: `PT${story.durationMin}M`,
-            audience: { "@type": "PeopleAudience", suggestedMinAge: story.ageRange[0], suggestedMaxAge: story.ageRange[1] },
-            about: story.values.map(v => ({ "@type": "Thing", name: VALUE_MAP[v].name.en })),
-            isAccessibleForFree: !story.premium,
-            publisher: { "@type": "Organization", name: "Kidstorypedia" },
-            citation: story.sources.map(id => SOURCE_MAP[id]?.reference).filter(Boolean),
-          },
-        }
-      : { title: tx("Cerita tidak ditemukan | Kidstorypedia", "Story not found | Kidstorypedia", "القصة غير موجودة | كيدستوريبيديا") },
+      ? { ...storyMeta(story, language), lang: language }
+      : { title: tx("Cerita tidak ditemukan | Kidstorypedia", "Story not found | Kidstorypedia", "القصة غير موجودة | كيدستوريبيديا"), noindex: true },
   );
 
   useEffect(() => { if (story) track("story_viewed", { storyId: story.id, surface: "public_preview" }); }, [story?.id]);
@@ -161,7 +138,7 @@ export default function StoryPreview() {
                     {loc(firstPage.text, language)}
                   </p>
                   {pageSources.length > 0 && (
-                    <footer className="mt-4 text-xs font-mono text-zinc-500">{tx("Sumber: ", "Source: ", "المصدر: ")}{pageSources.map(s => s.reference).join("; ")}</footer>
+                    <footer className="mt-4 text-xs font-mono text-zinc-500">{tx("Sumber: ", "Source: ", "المصدر: ")}{pageSources.map(s => sourceRef(s, language)).join("; ")}</footer>
                   )}
                 </blockquote>
                 <p className="text-sm text-zinc-400 mt-3">{tx(`Halaman 1 dari ${story.pages.length}.`, `Page 1 of ${story.pages.length}.`, `الصفحة ١ من ${story.pages.length}.`)}</p>
@@ -195,8 +172,8 @@ export default function StoryPreview() {
                 {story.sources.map(id => SOURCE_MAP[id]).filter(Boolean).map(s => (
                   <li key={s.id} className="text-sm">
                     <div className="text-[10px] font-mono uppercase tracking-wide text-zinc-500">{tx(SOURCE_TYPE[s.type][2], SOURCE_TYPE[s.type][0], SOURCE_TYPE[s.type][1])}</div>
-                    <div className="text-zinc-100">{s.reference}</div>
-                    {s.note && <div className="text-xs text-zinc-400">{s.note}</div>}
+                    <div className="text-zinc-100">{sourceRef(s, language)}</div>
+                    {s.note && <div className="text-xs text-zinc-400">{sourceNote(s, language)}</div>}
                   </li>
                 ))}
               </ul>

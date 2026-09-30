@@ -86,3 +86,54 @@ body {
 @media print {
   body { background: #fff !important; }
 }
+
+/* ─── Story reader: book style ─── */
+.paper {
+  background-color: #f7efdc;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .22 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.55), rgba(255,255,255,0) 70%),
+    linear-gradient(180deg, #f9f3e3, #efe3c6);
+  color: #2b2217;
+}
+/* spine shading: page on the left of the gutter / right of the gutter */
+.paper-left  { box-shadow: inset -28px 0 36px -18px rgba(70,45,15,.38), inset -2px 0 3px rgba(70,45,15,.25); }
+.paper-right { box-shadow: inset 28px 0 36px -18px rgba(70,45,15,.38), inset 2px 0 3px rgba(70,45,15,.25); }
+.paper-single { box-shadow: inset 18px 0 26px -16px rgba(70,45,15,.32); }
+/* stacked page edges (book thickness) */
+.book-edges-left  { box-shadow: -1px 1px 0 #e9dfc6, -3px 2px 0 #d8caa9, -4px 3px 0 #ece2ca, -6px 4px 0 #cfc09c, -7px 5px 0 #e6dbc0; }
+.book-edges-right { box-shadow: 1px 1px 0 #e9dfc6, 3px 2px 0 #d8caa9, 4px 3px 0 #ece2ca, 6px 4px 0 #cfc09c, 7px 5px 0 #e6dbc0; }
+.book-cover {
+  background: linear-gradient(135deg, #5a3a22, #3b2414 60%, #2a190d);
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,.75), 0 18px 30px -12px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,220,170,.12);
+}
+.desk {
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255,196,120,.16), transparent 60%),
+    radial-gradient(ellipse at center, #1d1712 0%, #0b0907 75%);
+}
+.font-book { font-family: 'Lora', Georgia, 'Times New Roman', serif; }
+[dir="rtl"] .font-book { font-family: 'Amiri', serif; }
+.drop-cap::first-letter {
+  float: left; font-size: 3.1em; line-height: .85; padding: .08em .1em 0 0; color: #7a4a1e; font-weight: 600;
+}
+[dir="rtl"] .drop-cap::first-letter { float: right; padding: .08em 0 0 .1em; }
+
+/* ─── Story reader: bedtime style ─── */
+.night-sky {
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,240,210,.8), transparent),
+    radial-gradient(1px 1px at 28% 72%, rgba(255,240,210,.6), transparent),
+    radial-gradient(1.5px 1.5px at 47% 12%, rgba(255,240,210,.7), transparent),
+    radial-gradient(1px 1px at 63% 38%, rgba(255,240,210,.5), transparent),
+    radial-gradient(1.5px 1.5px at 78% 82%, rgba(255,240,210,.7), transparent),
+    radial-gradient(1px 1px at 88% 22%, rgba(255,240,210,.6), transparent),
+    radial-gradient(1px 1px at 8% 88%, rgba(255,240,210,.5), transparent),
+    radial-gradient(1.5px 1.5px at 38% 48%, rgba(255,240,210,.35), transparent),
+    radial-gradient(ellipse at 50% 120%, #1b2344 0%, #0c1024 45%, #06070f 100%);
+}
+@keyframes twinkle { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
+.twinkle { animation: twinkle 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .twinkle, .animate-marquee { animation: none; }
+}

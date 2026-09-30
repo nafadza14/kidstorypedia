@@ -86,6 +86,8 @@ export interface ComprehensionQuestion {
 
 export interface GlossaryTerm {
   term: string;
+  /** Indonesian spelling of the term, if different. */
+  termId?: string;
   meaning: Localized;
 }
 
@@ -251,7 +253,11 @@ export interface Referral {
   redeemedFrom?: string;
 }
 
+/** Visual style of the story reader, chosen in parent settings. */
+export type ReaderStyle = "book" | "cinematic" | "picture" | "bedtime";
+
 export interface Settings {
+  readerStyle: ReaderStyle;
   audioNarration: boolean;
   tashkeel: boolean;
   dailyScreenLimitMin: number;

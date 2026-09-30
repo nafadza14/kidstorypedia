@@ -28,6 +28,7 @@ export default function Onboarding() {
     title: tx("Mulai perjalanan belajar keluarga | Kidstorypedia", "Start your family learning journey | Kidstorypedia", "ابدأ رحلة التعلم العائلية | كيدستوريبيديا"),
     description: tx("Buat akun keluarga Kidstorypedia gratis dalam beberapa menit: tambahkan anak, pilih tujuan, dan dapatkan rekomendasi cerita pertama.", "Create a free Kidstorypedia family account in a few minutes: add your child, choose your goals and get a first recommended story.", "أنشئ حساباً عائلياً مجانياً في دقائق: أضف طفلك واختر أهدافك واحصل على أول قصة مقترحة."),
     canonical: "/onboarding",
+    noindex: true,
   });
 
   const [step, setStep] = useState(1);

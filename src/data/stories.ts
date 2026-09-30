@@ -1,4 +1,5 @@
 import type { Localized, Story } from "@/types";
+import { applyIndonesian } from "./stories.id";
 
 const L = (en: string, ar?: string): Localized => ({ en, ar });
 
@@ -10,7 +11,7 @@ const L = (en: string, ar?: string): Localized => ({ en, ar });
  * listed primary sources and are in `scholar_review` - they must be signed
  * off by a qualified reviewer before public launch (see src/config.ts).
  */
-export const CANONICAL_STORIES: Story[] = [
+const RAW_STORIES: Story[] = [
   // ───────────────────────────── PROPHETS ─────────────────────────────
   {
     id: "yusuf-1",
@@ -635,3 +636,5 @@ export const CANONICAL_STORIES: Story[] = [
     bedtime: true,
   },
 ];
+
+export const CANONICAL_STORIES: Story[] = RAW_STORIES.map(applyIndonesian);

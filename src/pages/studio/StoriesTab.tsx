@@ -17,7 +17,7 @@ export default function StoriesTab({ onOpen, onReview }: { onOpen: (id: string) 
 
   const rows = stories.filter(s =>
     (!st || s.state === st) && (!cat || s.category === cat) && (!origin || s.origin === origin) &&
-    (!q || `${s.title.en} ${s.title.ar || ""} ${s.id} ${s.values.join(" ")}`.toLowerCase().includes(q.toLowerCase())),
+    (!q || `${s.title.en} ${s.title.ar || ""} ${s.title.id || ""} ${s.id} ${s.values.join(" ")}`.toLowerCase().includes(q.toLowerCase())),
   );
 
   return (

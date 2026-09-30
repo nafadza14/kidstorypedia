@@ -157,7 +157,7 @@ function ClassDetail({ c }: { c: Classroom }) {
               <thead>
                 <tr>
                   <th className={th}>{tx("Siswa", "Student", "الطالب")}</th>
-                  {c.assignments.map(a => <th key={a.id} className={th + " max-w-[120px] truncate"} title={findStory(state, a.storyId)?.title.en}>{(findStory(state, a.storyId)?.title.en || a.storyId).slice(0, 18)}</th>)}
+                  {c.assignments.map(a => <th key={a.id} className={th + " max-w-[120px] truncate"} title={loc(findStory(state, a.storyId)?.title, language)}>{(loc(findStory(state, a.storyId)?.title, language) || a.storyId).slice(0, 18)}</th>)}
                   <th className={th}>{tx("Diskusi", "Discussions", "النقاشات")}</th>
                   <th className={th}>%</th>
                 </tr>

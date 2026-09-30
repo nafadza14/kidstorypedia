@@ -1,13 +1,29 @@
 {
-  "name": "Kidstorypedia — Islamic Character Learning",
+  "name": "Kidstorypedia - Cerita Islami & Pendidikan Akhlak Anak",
   "short_name": "Kidstorypedia",
-  "description": "Trusted Islamic stories turned into family learning journeys for children ages 4–12.",
+  "description": "Cerita Islami tepercaya yang menjadi perjalanan belajar keluarga untuk anak usia 4–12 tahun.",
   "start_url": "/child",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0c",
   "theme_color": "#0a0a0c",
   "icons": [
-    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
-  ]
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "lang": "id"
 }

@@ -21,7 +21,7 @@ export default function Assistant() {
   const story = stories.find(s => s.id === storyId);
   const suggestions = story
     ? [
-      tx(`Bagaimana cara menjelaskan pelajaran utama dari "${story.title.en}" kepada anak usia ${child.age} tahun?`, `How do I explain the main lesson of "${story.title.en}" to a ${child.age}-year-old?`, `كيف أشرح الدرس الأساسي في «${loc(story.title, "ar")}» لطفل عمره ${child.age}؟`),
+      tx(`Bagaimana cara menjelaskan pelajaran utama dari "${loc(story.title, "id")}" kepada anak usia ${child.age} tahun?`, `How do I explain the main lesson of "${story.title.en}" to a ${child.age}-year-old?`, `كيف أشرح الدرس الأساسي في «${loc(story.title, "ar")}» لطفل عمره ${child.age}؟`),
       tx("Pertanyaan lanjutan apa yang bisa saya ajukan saat menjelang tidur?", "What follow-up questions can I ask at bedtime?", "ما الأسئلة التي يمكنني طرحها قبل النوم؟"),
       tx("Bagaimana kami bisa mempraktikkan nilai ini di rumah minggu ini?", "How can we practise this value at home this week?", "كيف نمارس هذه القيمة في البيت هذا الأسبوع؟"),
     ]

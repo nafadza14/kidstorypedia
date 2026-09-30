@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -14,6 +14,7 @@ import { track } from "@/lib/analytics";
 import { CATEGORIES, VALUES } from "@/data/values";
 import { PLANS } from "@/data/catalog";
 import { useSeo } from "@/hooks/useSeo";
+import { homeMeta } from "@/lib/seo";
 
 const sectionCls = "py-20 sm:py-24 px-5 sm:px-8 max-w-7xl mx-auto border-t border-white/10";
 const cardCls = "rounded-3xl bg-zinc-950/40 border border-white/10 backdrop-blur-md";
@@ -25,63 +26,120 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 /* ─────────────── 5 rotating hero headlines ─────────────── */
 const HERO_HEADLINES: { id: string; en: string; ar: string }[] = [
   {
-    id: "Rutinitas tidur yang lebih baik untuk keluarga Muslim",
-    en: "A better bedtime routine for Muslim families",
-    ar: "روتين أفضل قبل النوم للعائلات المسلمة",
+    id: "Rutinitas tidur\nyang lebih baik\nuntuk keluarga\nMuslim Anda",
+    en: "A better bedtime\nroutine for every\nMuslim family,\nnight after night",
+    ar: "روتين أفضل\nوأهدأ قبل\nالنوم لكل\nعائلة مسلمة",
   },
   {
-    id: "Cerita yang mengajarkan nilai untuk seumur hidup",
-    en: "Stories that teach values your children will carry for life",
-    ar: "قصص تُعلّم قيماً يحملها أطفالك مدى الحياة",
+    id: "Cerita yang\nmengajarkan\nnilai untuk\nseumur hidup",
+    en: "Stories that\nteach values\nyour children\nwill carry for life",
+    ar: "قصص تُعلّم\nأطفالك قيماً\nيحملونها معهم\nمدى الحياة",
   },
   {
-    id: "Kearifan Islam bertemu cerita masa kini",
-    en: "Where Islamic wisdom meets modern storytelling",
-    ar: "حيث تلتقي الحكمة الإسلامية بالسرد المعاصر",
+    id: "Kearifan Islam\nyang abadi, kini\nhadir dalam\ncerita masa kini",
+    en: "Where timeless\nIslamic wisdom\nmeets modern\nstorytelling",
+    ar: "حيث تلتقي\nحكمة الإسلام\nالخالدة بفنّ\nالسرد الحديث",
   },
   {
-    id: "Membangun akhlak melalui cerita, dialog, dan praktik",
-    en: "Growing character through stories, conversations and practice",
-    ar: "بناء الأخلاق عبر القصص والحوارات والممارسة",
+    id: "Membangun\nakhlak melalui\ncerita, dialog,\ndan praktik",
+    en: "Growing character\nthrough stories,\nconversations\nand practice",
+    ar: "بناء الأخلاق\nعبر القصص\nوالحوارات\nوالممارسة",
   },
   {
-    id: "Setiap malam cerita baru, setiap cerita pelajaran baru",
-    en: "Every evening a new story. Every story a new lesson",
-    ar: "كل مساء قصة جديدة وكل قصة درس جديد",
+    id: "Setiap malam\ncerita baru,\nsetiap cerita\npelajaran baru",
+    en: "Every evening\na new story.\nEvery story\na new lesson",
+    ar: "كل مساء\nقصة جديدة\nوكل قصة\nدرس جديد",
   },
 ];
 
 const CYCLE_MS = 5000; // 3 s appear + 2 s pause
 const WORD_APPEAR_S = 3; // seconds for all words to appear
+const BASE_GAP_EM = 0.28; // natural space between words
+const MAX_EXTRA_GAP_EM = 0.5; // how much each word gap may grow before letters spread
+const MAX_TRACK_EM = 0.1; // extra letter-spacing allowed (never for Arabic)
 
-function AnimatedHeadline({ text, heroIdx }: { text: string; heroIdx: number }) {
-  const words = text.split(/\s+/);
-  const stagger = words.length > 1 ? WORD_APPEAR_S / words.length : 0;
+/**
+ * Makes every headline line exactly as wide as the longest one: first by
+ * widening word gaps (flex space-between), then, if a line is still short,
+ * by a little extra letter-spacing. Re-measured on resize and font load.
+ */
+function useEqualLines(ref: React.RefObject<HTMLSpanElement | null>, allowTracking: boolean) {
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fit = () => {
+      const lines = Array.from(el.children) as HTMLElement[];
+      el.style.width = "";
+      lines.forEach(l => { l.style.letterSpacing = ""; });
+      const fs = parseFloat(getComputedStyle(el).fontSize) || 16;
+      const nat = lines.map(l => {
+        const words = Array.from(l.children) as HTMLElement[];
+        return words.reduce((a, w) => a + w.offsetWidth, 0) + Math.max(0, words.length - 1) * BASE_GAP_EM * fs;
+      });
+      const target = Math.ceil(Math.max(...nat));
+      const available = el.parentElement?.parentElement?.clientWidth || Infinity;
+      if (!target || target > available) return; // narrow screen: let lines wrap naturally
+      el.style.width = `${target}px`;
+      if (!allowTracking) return;
+      lines.forEach((l, i) => {
+        const words = Array.from(l.children) as HTMLElement[];
+        const gapRoom = Math.max(0, words.length - 1) * MAX_EXTRA_GAP_EM * fs;
+        const short = target - nat[i] - gapRoom;
+        if (short <= 0) return;
+        const chars = (l.textContent || "").replace(/\s/g, "").length;
+        if (chars < 2) return;
+        const extra = Math.min(MAX_TRACK_EM * fs, short / chars);
+        const base = parseFloat(getComputedStyle(l).letterSpacing) || 0;
+        l.style.letterSpacing = `${base + extra}px`;
+      });
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    if (el.parentElement?.parentElement) ro.observe(el.parentElement.parentElement);
+    document.fonts?.ready.then(fit).catch(() => {});
+    return () => ro.disconnect();
+  }, [ref, allowTracking]);
+}
+
+function HeadlineBlock({ text, heroIdx, allowTracking }: { text: string; heroIdx: number; allowTracking: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEqualLines(ref, allowTracking);
+  const lineWords = text.split("\n").map(l => l.split(/\s+/));
+  const totalWords = lineWords.reduce((s, w) => s + w.length, 0);
+  const stagger = totalWords > 1 ? WORD_APPEAR_S / totalWords : 0;
+  let c = 0;
+  const gIdx = lineWords.map(words => words.map(() => c++));
 
   return (
+    <motion.span
+      ref={ref}
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.35 } }}
+      className="block max-w-full"
+    >
+      {lineWords.map((words, li) => (
+        <span key={li} className={words.length > 1 ? "flex flex-wrap justify-between gap-x-[0.28em]" : "block"}>
+          {words.map((word, wi) => (
+            <motion.span
+              key={`${heroIdx}-${gIdx[li][wi]}`}
+              className="inline-block"
+              initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ delay: gIdx[li][wi] * stagger, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {word}
+            </motion.span>
+          ))}
+        </span>
+      ))}
+    </motion.span>
+  );
+}
+
+function AnimatedHeadline({ text, heroIdx, allowTracking }: { text: string; heroIdx: number; allowTracking: boolean }) {
+  return (
     <AnimatePresence mode="wait">
-      <motion.span
-        key={heroIdx}
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { duration: 0.35 } }}
-        className="inline"
-      >
-        {words.map((word, i) => (
-          <motion.span
-            key={`${heroIdx}-${i}`}
-            initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{
-              delay: i * stagger,
-              duration: 0.45,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="inline-block whitespace-pre"
-          >
-            {word}{i < words.length - 1 ? " " : ""}
-          </motion.span>
-        ))}
-      </motion.span>
+      <HeadlineBlock key={`${heroIdx}-${text.length}`} text={text} heroIdx={heroIdx} allowTracking={allowTracking} />
     </AnimatePresence>
   );
 }
@@ -94,9 +152,10 @@ export default function Landing() {
   /* Hero rotation */
   const [heroIdx, setHeroIdx] = useState(0);
   useEffect(() => {
-    const timer = setInterval(() => setHeroIdx(i => (i + 1) % HERO_HEADLINES.length), CYCLE_MS);
-    return () => clearInterval(timer);
-  }, []);
+    // restart the countdown whenever the headline changes (incl. dot clicks)
+    const timer = setTimeout(() => setHeroIdx(i => (i + 1) % HERO_HEADLINES.length), CYCLE_MS);
+    return () => clearTimeout(timer);
+  }, [heroIdx]);
 
   const heroText = tx(
     HERO_HEADLINES[heroIdx].id,
@@ -104,26 +163,7 @@ export default function Landing() {
     HERO_HEADLINES[heroIdx].ar,
   );
 
-  useSeo({
-    title: tx(
-      "Kidstorypedia - Rutinitas tidur yang lebih baik untuk keluarga Muslim",
-      "Kidstorypedia - A better bedtime routine for Muslim families",
-      "كيدستوريبيديا - روتين أفضل قبل النوم للعائلات المسلمة",
-    ),
-    description: tx(
-      "Cerita Islami untuk anak dengan panduan diskusi orang tua dan tantangan nilai kehidupan nyata. Kisah Nabi, Sirah, Sahabat, dan cerita moral dalam Bahasa Indonesia, Inggris, dan Arab. Tanpa iklan dan dikendalikan orang tua.",
-      "Islamic stories for kids with parent discussion guides and real-life value challenges. Prophets, Seerah, Sahabah and moral stories in Indonesian, English and Arabic. Ad-free and parent-controlled.",
-      "قصص إسلامية للأطفال مع أدلة نقاش للوالدين وتحديات عملية للقيم. الأنبياء والسيرة والصحابة وقصص أخلاقية بالإندونيسية والعربية والإنجليزية، بلا إعلانات.",
-    ),
-    canonical: "/",
-    jsonLd: {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "Kidstorypedia",
-      description: "A better bedtime routine for Muslim families. Every story becomes an opportunity to grow.",
-      inLanguage: ["id", "en", "ar"],
-    },
-  });
+  useSeo({ ...homeMeta(language), lang: language });
 
   useEffect(() => { track("landing_view"); }, []);
 
@@ -134,6 +174,17 @@ export default function Landing() {
     for (const c of CATEGORIES) { const s = sorted.find(x => x.category === c.id); if (s) picked.push(s); }
     for (const s of sorted) { if (picked.length >= 5) break; if (!picked.includes(s)) picked.push(s); }
     return picked.slice(0, 5);
+  }, [state]);
+
+  /* Top 10 of the week: published first, then free-to-read, then shortest read */
+  const top10 = useMemo(() => {
+    const all = familyStories(state);
+    return [...all]
+      .sort((a, b) =>
+        Number(b.state === "published") - Number(a.state === "published") ||
+        Number(a.premium) - Number(b.premium) ||
+        a.durationMin - b.durationMin)
+      .slice(0, 10);
   }, [state]);
 
   const trust = [
@@ -180,8 +231,8 @@ export default function Landing() {
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 flex flex-col items-start">
               {/* Animated rotating headline */}
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.05] mb-6 min-h-[2.4em] sm:min-h-[2.2em] lg:min-h-[2em]">
-                <AnimatedHeadline text={heroText} heroIdx={heroIdx} />
+              <h1 className="w-fit max-w-full text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-7xl font-light tracking-tight text-white mb-6 min-h-[4.3em]">
+                <AnimatedHeadline text={heroText} heroIdx={heroIdx} allowTracking={language !== "ar"} />
               </h1>
 
               {/* Dot indicators */}
@@ -225,20 +276,20 @@ export default function Landing() {
             <div className="hidden lg:block lg:col-span-5" />
           </div>
 
-          {/* Top 5 Story of the Week */}
-          {featured.length > 0 && (
+          {/* Top 10 Story of the Week */}
+          {top10.length > 0 && (
             <div className="mt-12 w-full">
               <h3 className="text-xs font-mono text-zinc-400 mb-4 flex items-center gap-2">
                 <Trophy className="w-3.5 h-3.5 text-amber-300" />
-                {tx("Top 5 Cerita Minggu Ini", "Top 5 Stories of the Week", "أفضل ٥ قصص الأسبوع")}
+                {tx("Top 10 Cerita Minggu Ini", "Top 10 Stories of the Week", "أفضل ١٠ قصص الأسبوع")}
               </h3>
               <div className="overflow-hidden relative">
-                <div className="flex gap-4 animate-marquee hover:[animation-play-state:paused]" style={{ width: "max-content" }}>
-                  {[...featured, ...featured].map((story, i) => (
-                    <Link key={`top5-${i}`} to={`/stories/${story.slug}`} className="shrink-0 w-32 sm:w-40 relative group">
+                <div className="flex gap-4 animate-marquee hover:[animation-play-state:paused]" style={{ width: "max-content", animationDuration: `${top10.length * 6}s` }}>
+                  {[...top10, ...top10].map((story, i) => (
+                    <Link key={`top10-${i}`} to={`/stories/${story.slug}`} className="shrink-0 w-32 sm:w-40 relative group">
                       <StoryCover story={story} locked={story.premium} className="aspect-[3/4] rounded-2xl group-hover:opacity-90 transition-opacity" />
                       <div className="absolute top-2 left-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/70 border border-white/20 backdrop-blur-sm flex items-center justify-center text-[11px] sm:text-xs font-bold text-white">
-                        #{(i % 5) + 1}
+                        #{(i % top10.length) + 1}
                       </div>
                       <div className="absolute bottom-0 inset-x-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl pointer-events-none" />
                     </Link>

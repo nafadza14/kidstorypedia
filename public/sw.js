@@ -1,8 +1,8 @@
 /* Kidstorypedia offline service worker (PRD §59 offline PWA).
- * App shell: network-first for navigations (falls back to cached index.html).
+ * App shell: network-first for navigations (falls back to the cached app shell).
  * Static assets & images: stale-while-revalidate. /api is never cached. */
-const CACHE = "ksp-v2";
-const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/icons/icon.svg"];
+const CACHE = "ksp-v3";
+const SHELL = ["/app", "/manifest.webmanifest", "/icons/icon.svg"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -23,8 +23,8 @@ self.addEventListener("fetch", e => {
   if (req.mode === "navigate") {
     e.respondWith(
       fetch(req)
-        .then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put("/index.html", copy)); return res; })
-        .catch(() => caches.match("/index.html"))
+        .then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put("/app", copy)); return res; })
+        .catch(() => caches.match("/app"))
     );
     return;
   }

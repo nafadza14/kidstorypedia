@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { SEO_TOPICS } from "@/lib/seo";
+import { loc } from "@/lib/content";
 import { Link, NavLink } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -102,7 +104,7 @@ export function PublicNav({ transparent }: { transparent?: boolean }) {
 }
 
 export function PublicFooter() {
-  const { tx } = useLanguage();
+  const { tx, language } = useLanguage();
   const hasParent = useStore(s => !!s.parent);
   const year = new Date().getFullYear();
   const links = [
@@ -123,11 +125,19 @@ export function PublicFooter() {
           </p>
           <p className="mt-3">{tx("Didukung oleh Yayasan Omah Dongeng Kalasan", "Supported by Yayasan Omah Dongeng Kalasan", "بدعم من مؤسسة أوماه دونغينغ كالاسان")}</p>
         </div>
-        <nav className="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-3 text-sm" aria-label={tx("Footer", "Footer", "التذييل")}>
-          {links.map(l => (
-            <Link key={l.label} to={l.to} className="hover:text-white transition-colors">{l.label}</Link>
-          ))}
-        </nav>
+        <div className="flex flex-col sm:flex-row gap-10">
+          <nav className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm h-fit" aria-label={tx("Footer", "Footer", "التذييل")}>
+            {links.map(l => (
+              <Link key={l.label} to={l.to} className="hover:text-white transition-colors">{l.label}</Link>
+            ))}
+          </nav>
+          <nav className="flex flex-col gap-2.5 text-sm" aria-label={tx("Topik cerita", "Story topics", "مواضيع القصص")}>
+            <span className="text-[11px] font-mono text-zinc-500">{tx("Topik cerita", "Story topics", "مواضيع القصص")}</span>
+            {SEO_TOPICS.map(t => (
+              <Link key={t.slug} to={`/${t.slug}`} className="hover:text-white transition-colors">{loc(t.h1, language)}</Link>
+            ))}
+          </nav>
+        </div>
       </div>
       <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3">
         <span>© {year} Kidstorypedia. {tx("Hak cipta dilindungi.", "All rights reserved.", "جميع الحقوق محفوظة.")}</span>

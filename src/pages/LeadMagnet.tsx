@@ -26,6 +26,8 @@ export default function LeadMagnet() {
       "برنامج مجاني لمدة ٣٠ ليلة من القصص الإسلامية قبل النوم: قصة وسؤال نقاش وعمل عائلي صغير كل ليلة.",
     ),
     canonical: "/30-nights",
+    alternates: true,
+    lang: language,
   });
 
   const nights = useMemo(() => {

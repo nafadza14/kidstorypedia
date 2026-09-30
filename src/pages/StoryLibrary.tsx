@@ -9,6 +9,7 @@ import { familyStories, loc } from "@/lib/content";
 import { canAccessStory } from "@/lib/entitlements";
 import { CATEGORIES, VALUES } from "@/data/values";
 import { useSeo } from "@/hooks/useSeo";
+import { storiesIndexMeta } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import type { AgeBand, StoryCategory, ValueId } from "@/types";
 
@@ -54,25 +55,7 @@ export default function StoryLibrary() {
     });
   }, [all, q, category, value, band, bedtime]);
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-  useSeo({
-    title: "Islamic Stories for Kids - Prophets, Seerah, Sahabah & Moral Stories | Kidstorypedia",
-    description:
-      "Free Islamic stories for kids ages 4–12: stories of the Prophets for kids, Seerah and Sahabah stories, and Islamic bedtime stories with moral values - each with sources, a parent discussion guide and a family action challenge. English & Arabic.",
-    canonical: "/stories",
-    jsonLd: {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      name: "Islamic Stories for Kids",
-      numberOfItems: all.length,
-      itemListElement: all.map((s, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        url: `${origin}/stories/${s.slug}`,
-        name: s.title.en,
-      })),
-    },
-  });
+  useSeo({ ...storiesIndexMeta(language), lang: language });
 
   const hasFilters = !!(q || category || value || band || bedtime);
 

@@ -1,22 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Check, ChevronLeft, ChevronRight, Lock, Pause, Volume2, X, BookOpen, Type as TypeIcon } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Lock, Pause, Volume2, X, BookOpen, Type as TypeIcon, LayoutTemplate } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { DiscussionCard } from "@/components/DiscussionCard";
 import { Modal, StoryCover, ValueChip, btn, toast } from "@/components/kit";
 import { Paywall } from "@/components/Paywall";
 import { PinGate } from "@/components/PinGate";
 import { BADGES } from "@/data/catalog";
-import { SOURCE_MAP } from "@/data/sources";
+import { READER_STYLES, ReaderView } from "@/components/reader/ReaderViews";
 import { VALUE_MAP } from "@/data/values";
 import { useNarration } from "@/hooks/useNarration";
 import { track } from "@/lib/analytics";
 import { findStory, loc, pageText } from "@/lib/content";
 import { canAccessStory } from "@/lib/entitlements";
 import { hasEvent, logEvent, readingSecondsToday, startSession, updateSession } from "@/lib/learning";
-import { activeChild, getState, useStore } from "@/store";
-import type { GlossaryTerm } from "@/types";
+import { activeChild, getState, setState, useStore } from "@/store";
+import type { GlossaryTerm, ReaderStyle } from "@/types";
 
 type Phase = "reading" | "celebrate" | "quiz" | "reflect" | "handoff";
 
@@ -29,6 +29,9 @@ export default function StoryReader() {
   const story = findStory(state, id);
   const child = activeChild(state)!;
   const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const [styleMenu, setStyleMenu] = useState(false);
+  const swipeRef = useRef<{ x: number; y: number } | null>(null);
   const [phase, setPhase] = useState<Phase>("reading");
   const [tashkeel, setTashkeel] = useState(state.settings.tashkeel);
   const [quizIdx, setQuizIdx] = useState(0);
@@ -117,17 +120,37 @@ export default function StoryReader() {
   }
 
   const total = story.pages.length;
-  const cur = story.pages[page];
 
   function next() {
     if (page < total - 1) {
       const n = page + 1;
+      setDirection(1);
       setPage(n);
       if (sessionRef.current) updateSession(sessionRef.current, { pagesViewed: n + 1 });
       track("story_page_viewed", { storyId: story!.id, page: n + 1 });
     } else finish();
   }
-  function prev() { if (page > 0) setPage(p => p - 1); }
+  function prev() { if (page > 0) { setDirection(-1); setPage(p => p - 1); } }
+
+  const readerStyle: ReaderStyle = state.settings.readerStyle || "book";
+  const setReaderStyle = (v: ReaderStyle) => {
+    setState(s => ({ ...s, settings: { ...s.settings, readerStyle: v } }));
+    track("reader_style_changed", { style: v });
+    setStyleMenu(false);
+  };
+  const plain = (i: number) => pageText(story!.pages[i], language, child.age, tashkeel);
+
+  // swipe to turn pages (RTL-aware)
+  const onPointerDown = (e: React.PointerEvent) => { swipeRef.current = { x: e.clientX, y: e.clientY }; setStyleMenu(false); };
+  const onPointerUp = (e: React.PointerEvent) => {
+    const s0 = swipeRef.current;
+    swipeRef.current = null;
+    if (!s0 || phase !== "reading") return;
+    const dx = e.clientX - s0.x, dy = e.clientY - s0.y;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const forward = dir === "rtl" ? dx > 0 : dx < 0;
+    if (forward) next(); else prev();
+  };
 
   function finish() {
     narration.stop();
@@ -179,7 +202,23 @@ export default function StoryReader() {
             <div key={i} className={`h-1.5 rounded-full transition-all shrink-0 ${i === page ? "w-8 bg-white" : i < page ? "w-3 bg-white/60" : "w-3 bg-white/15"}`} />
           ))}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
+          <button onClick={() => setStyleMenu(m => !m)} className={`w-11 h-11 rounded-full border border-white/15 flex items-center justify-center cursor-pointer ${styleMenu ? "bg-white text-black" : "bg-white/10 hover:bg-white/20"}`} title={tx("Gaya tampilan", "Reading style", "نمط القراءة")} aria-expanded={styleMenu}>
+            <LayoutTemplate className="w-4 h-4" />
+          </button>
+          {styleMenu && (
+            <div className="absolute top-14 end-0 w-64 rounded-2xl bg-zinc-900/95 backdrop-blur-xl border border-white/15 p-2 shadow-2xl" role="menu">
+              {READER_STYLES.map(o => (
+                <button key={o.id} role="menuitemradio" aria-checked={readerStyle === o.id} onClick={() => setReaderStyle(o.id)} className={`w-full text-start px-3 py-2.5 rounded-xl cursor-pointer flex items-start gap-3 ${readerStyle === o.id ? "bg-white/10" : "hover:bg-white/5"}`}>
+                  <span className={`mt-1 w-3 h-3 rounded-full border shrink-0 ${readerStyle === o.id ? "bg-white border-white" : "border-white/30"}`} />
+                  <span>
+                    <span className="block text-sm">{tx(o.name.id, o.name.en, o.name.ar)}</span>
+                    <span className="block text-[11px] text-zinc-400 leading-snug">{tx(o.hint.id, o.hint.en, o.hint.ar)}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
           {language === "ar" && (
             <button onClick={() => setTashkeel(t => !t)} className={`w-11 h-11 rounded-full border border-white/15 flex items-center justify-center cursor-pointer ${tashkeel ? "bg-white text-black" : "bg-white/10"}`} title={tx("Tashkeel", "Tashkeel", "التشكيل")}>
               <TypeIcon className="w-4 h-4" />
@@ -194,32 +233,20 @@ export default function StoryReader() {
       </header>
 
       {/* page */}
-      <main className="flex-1 relative">
-        <AnimatePresence mode="wait">
-          <motion.div key={page} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.03 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="absolute inset-0">
-            {cur.image && <div className="absolute inset-0 bg-cover bg-center opacity-30 scale-105" style={{ backgroundImage: `url(${cur.image})`, filter: "blur(50px)" }} />}
-            <div className="absolute inset-0 bg-black/60" />
-            <div className="relative z-10 h-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 px-6 pt-24 pb-32 md:p-16 max-w-7xl mx-auto overflow-y-auto">
-              <div className="w-full md:w-1/2 aspect-[4/3] rounded-3xl overflow-hidden border border-white/15 relative shrink-0 max-h-[40vh] md:max-h-none">
-                <StoryCover story={{ ...story, coverImage: cur.image || story.coverImage }} className="w-full h-full" />
-                <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-black/60 border border-white/15 text-[11px] font-mono text-zinc-300">
-                  {tx(`Halaman ${page + 1} dari ${total}`, `Page ${page + 1} of ${total}`, `الصفحة ${page + 1} من ${total}`)}
-                </div>
-              </div>
-              <div className="w-full md:w-1/2">
-                <div className="mb-4 flex flex-wrap gap-1.5">{story.values.map(v => <ValueChip key={v} id={v} />)}</div>
-                <p className={`leading-relaxed text-zinc-100 font-light ${child.age <= 5 ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl lg:text-4xl"} ${language === "ar" ? "font-[Amiri,serif] leading-loose" : ""}`}>
-                  {rendered}
-                </p>
-                {cur.sourceRefs.length > 0 && (
-                  <p className="mt-6 text-[11px] font-mono text-zinc-500">
-                    {tx("Sumber", "Source", "المصدر")}: {cur.sourceRefs.map(r => SOURCE_MAP[r]?.reference || r).join(" · ")}
-                  </p>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+      <main className="flex-1 relative touch-pan-y" onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
+        <ReaderView
+          style={readerStyle}
+          story={story}
+          page={page}
+          total={total}
+          rendered={rendered}
+          plain={plain}
+          lang={language}
+          dir={dir}
+          age={child.age}
+          tx={tx}
+          direction={direction}
+        />
       </main>
 
       <footer className="absolute bottom-0 inset-x-0 p-6 sm:p-8 pb-[max(1.5rem,env(safe-area-inset-bottom))] flex justify-between items-center z-50 bg-gradient-to-t from-black/90 to-transparent">
@@ -233,7 +260,7 @@ export default function StoryReader() {
       </footer>
 
       {/* glossary / vocabulary assistance */}
-      <Modal open={!!term} onClose={() => setTerm(null)} title={term?.term}>
+      <Modal open={!!term} onClose={() => setTerm(null)} title={language === "id" ? term?.termId || term?.term : term?.term}>
         <p className="text-lg text-zinc-200 flex gap-3 items-start"><BookOpen className="w-5 h-5 mt-1 shrink-0" />{term && loc(term.meaning, language)}</p>
       </Modal>
 
@@ -246,7 +273,7 @@ export default function StoryReader() {
                 <>
                   <div className="text-5xl mb-4">✳︎</div>
                   <h2 className="text-3xl font-heading mb-3">{tx("MasyaAllah!", "MashaAllah!", "ما شاء الله!")}</h2>
-                  <p className="text-zinc-300 mb-6">{tx(`Kamu telah menyelesaikan "${story.title.en}".`, `You finished "${story.title.en}".`, `لقد أكملت «${loc(story.title, "ar")}».`)}</p>
+                  <p className="text-zinc-300 mb-6">{tx(`Kamu telah menyelesaikan "${loc(story.title, "id")}".`, `You finished "${story.title.en}".`, `لقد أكملت «${loc(story.title, "ar")}».`)}</p>
                   <div className="text-xs font-mono text-zinc-400 mb-3">{tx("Nilai-nilai dalam cerita ini", "Values in this story", "القيم في هذه القصة")}</div>
                   <div className="space-y-2 mb-8 text-left rtl:text-right">
                     {story.values.map(v => (
@@ -334,7 +361,7 @@ function useMemoText(text: string, glossaryIn: GlossaryTerm[] | undefined, charI
       pos += w.length;
       if (/^\s+$/.test(w)) return w;
       const clean = w.replace(/[.,!?'"«»؛،:]/g, "");
-      const g = glossary.find(x => x.term.toLowerCase() === clean.toLowerCase());
+      const g = glossary.find(x => x.term.toLowerCase() === clean.toLowerCase() || (!!x.termId && x.termId.toLowerCase() === clean.toLowerCase()));
       const active = charIndex !== null && charIndex >= start && charIndex < pos;
       const cls = active ? "bg-amber-300/30 rounded px-0.5" : "";
       if (g) return <button key={i} onClick={() => onTerm(g)} className={`underline decoration-dotted decoration-amber-300 underline-offset-4 cursor-help ${cls}`}>{w}</button>;

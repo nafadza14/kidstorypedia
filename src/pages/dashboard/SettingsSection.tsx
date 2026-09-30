@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Download, KeyRound, Lock, ShieldCheck, Trash2 } from "lucide-react";
+import { BookOpen, Download, KeyRound, Lock, ShieldCheck, Trash2 } from "lucide-react";
 import { Modal, Panel, btn, input, label, toast } from "@/components/kit";
 import { PinGate, hashPin } from "@/components/PinGate";
 import { getState, resetAll, setState } from "@/store";
-import type { Settings } from "@/types";
+import type { ReaderStyle, Settings } from "@/types";
+import { READER_STYLES } from "@/components/reader/ReaderViews";
+import { cn } from "@/lib/utils";
 import { removeChild } from "./Children";
 import { SectionHeader, Toggle, fmtDate, useDash } from "./shared";
 
@@ -130,6 +132,26 @@ export default function SettingsSection() {
         </Panel>
       </div>
 
+      <Panel title={<span className="flex items-center gap-2"><BookOpen className="w-4 h-4" />{tx("Tampilan pembaca cerita", "Story reader style", "نمط قارئ القصص")}</span>}>
+        <p className="text-xs text-zinc-400 mb-4">{tx("Pilih bagaimana cerita tampil saat dibuka layar penuh. Anak juga bisa menggantinya dari tombol di pojok atas pembaca.", "Choose how stories look when opened full screen. It can also be switched from the button at the top of the reader.", "اختر شكل القصص عند فتحها بملء الشاشة. يمكن تغييره أيضاً من الزر أعلى القارئ.")}</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3" role="radiogroup">
+          {READER_STYLES.map(o => {
+            const on = (st.readerStyle || "book") === o.id;
+            return (
+              <button key={o.id} role="radio" aria-checked={on} onClick={() => { patch({ readerStyle: o.id }); toast(tx(`Gaya pembaca: ${o.name.id}`, `Reader style: ${o.name.en}`, `نمط القراءة: ${o.name.ar}`)); }}
+                className={cn("text-start rounded-2xl border p-2.5 cursor-pointer transition-colors", on ? "border-white bg-white/10" : "border-white/10 hover:border-white/30")}>
+                <StylePreview style={o.id} />
+                <div className="mt-2.5 px-1 flex items-center gap-2">
+                  <span className={cn("w-3 h-3 rounded-full border shrink-0", on ? "bg-white border-white" : "border-white/30")} />
+                  <span className="text-sm">{tx(o.name.id, o.name.en, o.name.ar)}</span>
+                </div>
+                <p className="px-1 mt-1 text-[11px] text-zinc-400 leading-snug">{tx(o.hint.id, o.hint.en, o.hint.ar)}</p>
+              </button>
+            );
+          })}
+        </div>
+      </Panel>
+
       <Panel title={<span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4" />{tx("Privasi & data", "Privacy & data", "الخصوصية والبيانات")}</span>}>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-4">
@@ -181,6 +203,43 @@ export default function SettingsSection() {
           <button className={danger} disabled={wipeText !== "DELETE"} onClick={() => { unlockedThisVisit = false; resetAll(); navigate("/"); }}>{tx("Hapus semuanya", "Delete everything", "حذف كل شيء")}</button>
         </div>
       </Modal>
+    </div>
+  );
+}
+
+/** Small illustrative thumbnail of each reader style. */
+function StylePreview({ style }: { style: ReaderStyle }) {
+  const lines = (c: string, n = 4) => Array.from({ length: n }, (_, i) => <div key={i} className={cn("h-[3px] rounded-full", c)} style={{ width: `${[92, 100, 84, 66][i % 4]}%` }} />);
+  if (style === "book") {
+    return (
+      <div className="aspect-[4/3] rounded-xl desk flex items-center justify-center p-3">
+        <div className="book-cover rounded-[5px] p-[3px] w-full aspect-[1.5] flex" style={{ perspective: "300px" }}>
+          <div className="paper paper-left w-1/2 h-full rounded-s-[2px] p-1.5"><div className="w-full h-full rounded-[2px] bg-gradient-to-br from-amber-700/60 to-emerald-900/50" /></div>
+          <div className="paper paper-right w-1/2 h-full rounded-e-[2px] p-1.5 flex flex-col justify-center gap-1 relative origin-left" style={{ transform: "rotateY(-18deg)" }}>{lines("bg-[#5b4630]/60")}</div>
+        </div>
+      </div>
+    );
+  }
+  if (style === "cinematic") {
+    return (
+      <div className="aspect-[4/3] rounded-xl bg-[#0a0a0c] border border-white/5 flex items-center gap-2 p-3">
+        <div className="w-1/2 aspect-[4/3] rounded-md bg-gradient-to-br from-sky-700/70 to-indigo-900/70" />
+        <div className="w-1/2 flex flex-col gap-1.5">{lines("bg-white/50")}</div>
+      </div>
+    );
+  }
+  if (style === "picture") {
+    return (
+      <div className="aspect-[4/3] rounded-xl bg-gradient-to-br from-amber-500/70 via-rose-600/50 to-indigo-800/80 relative overflow-hidden">
+        <div className="absolute inset-x-2 bottom-2 rounded-lg bg-black/45 border border-white/15 p-1.5 flex flex-col gap-1">{lines("bg-white/70", 2)}</div>
+      </div>
+    );
+  }
+  return (
+    <div className="aspect-[4/3] rounded-xl night-sky relative flex flex-col items-center justify-center gap-2 p-3">
+      <div className="absolute top-2 end-3 w-3 h-3 rounded-full bg-[#f6e3b4] shadow-[0_0_10px_3px_rgba(246,227,180,.35)]" />
+      <div className="w-7 h-7 rounded-full bg-amber-200/25 ring-1 ring-amber-100/20" />
+      <div className="w-3/4 flex flex-col items-center gap-1">{lines("bg-[#f1e2c2]/60", 3)}</div>
     </div>
   );
 }
